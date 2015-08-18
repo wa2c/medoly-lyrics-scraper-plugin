@@ -77,9 +77,9 @@ public class LyricsObtainClient {
         }
 
         // 検索ワード
-        String title = requestPropertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName());
-        String artist = requestPropertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
-        String searchWord = ( (title == null ? "" : title) + " " + (artist == null ? "" : artist) ).trim();
+        String title = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()));
+        String artist = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()));
+        String searchWord = ( title + " " + artist );
 
         if (TextUtils.isEmpty(searchWord)) {
             return;
@@ -96,16 +96,6 @@ public class LyricsObtainClient {
         // 歌詞検索
         this.lyricsObtainListener = listener;
         this.webView.loadUrl(searchUrl);
-
-        try
-        {
-            Thread.sleep(2000);  // again,update takes less then 1 secs but still i give it 1.5 secs wait time to be sure
-        }
-        catch (InterruptedException ex)
-        {
-            ex.printStackTrace();
-        }
-
     }
 
 
@@ -122,6 +112,16 @@ public class LyricsObtainClient {
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            try
+            {
+                Thread.sleep(1500);
+            }
+            catch (InterruptedException e)
+            {
+                Logger.e(e);
+                returnLyrics(null);
+            }
+
             if (currentState == STATE_SEARCH) {
                 // 歌詞検索結果の取得
                 currentState = STATE_PAGE;
@@ -184,9 +184,11 @@ public class LyricsObtainClient {
                 }
 
                 Element elem = e.get(0);
-                String lyrics = elem.ownText();
+
+                String lyrics = elem.html();
+                lyrics = AppUtils.adjustLyrics(lyrics);
                 //lyrics = elem.html();
-                lyrics = elem.outerHtml();
+                //lyrics = elem.outerHtml();
 
                 // 歌詞を返す
                 returnLyrics(lyrics);
@@ -226,7 +228,7 @@ public class LyricsObtainClient {
     public interface LyricsObtainListener extends EventListener {
         /**
          * 取得イベント。
-         * @param lyrics 歌詞。
+         * @param lyrics 歌詞。取得に失敗した場合はnull。
          */
         void onLyricsObtain(String lyrics);
     }
