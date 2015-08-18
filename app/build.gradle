@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
+        minSdkVersion 17
+        targetSdkVersion 22
+        versionCode 0
+        versionName "1.0.0"
+    }
+    buildTypes {
+        debug {
+            versionNameSuffix 'd'
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:deprecation"
+        }
+    }
+}
+
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //compile 'com.android.support:appcompat-v7:22.+'
+    //compile files('libs/lastfm-java-0.1.2.jar')
+    compile files('libs/tagsoup-1.2.1.jar')
+    compile files('libs/jsoup-1.8.3.jar')
+    compile files('libs/htmlparser-1.4.jar')
+    compile files('libs/xsoup-0.3.0.jar')
+}

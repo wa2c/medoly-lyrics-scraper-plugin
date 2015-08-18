@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="16dp" >
+
+	<RelativeLayout
+		android:id="@+id/aboutAppRelativeLayout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_centerHorizontal="true" >
+
+		<ImageView
+		    android:id="@+id/aboutAppIconImageView"
+		    android:layout_width="48dp"
+		    android:layout_height="48dp"
+		    android:layout_marginRight="8dp"
+		    android:contentDescription="@null"
+		    android:src="@drawable/ic_launcher" />
+
+		<TextView
+		    android:id="@+id/aboutAppNameTextView"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentTop="true"
+		    android:layout_toRightOf="@+id/aboutAppIconImageView"
+		    android:text="@string/app_name"
+		    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+		<TextView
+			android:id="@+id/abountAppDescriptionTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/aboutAppNameTextView"
+			android:layout_below="@+id/aboutAppNameTextView"
+			android:text="@string/app_description"
+			android:textAppearance="?android:attr/textAppearanceSmall" />
+
+		<TextView
+			android:id="@+id/aboutAppVersionTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/aboutAppNameTextView"
+			android:layout_below="@+id/abountAppDescriptionTextView" />
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/aboutDeveloperRelativeLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/aboutAppRelativeLayout"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="18dp"
+		android:gravity="center" >
+
+		<TextView
+			android:id="@+id/aboutDeveloperTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:lines="1"
+			android:paddingRight="4dp"
+			android:singleLine="true"
+			android:text="Developer:" />
+
+		<TextView
+			android:id="@+id/aboutDeveloperNameTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentTop="true"
+			android:layout_toRightOf="@+id/aboutDeveloperTextView"
+			android:lines="1"
+			android:singleLine="true"
+			android:text="developer" />
+
+		<TextView
+			android:id="@+id/aboutLinkTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/aboutDeveloperTextView"
+			android:layout_toLeftOf="@+id/aboutGooglePlayTextView"
+			android:lines="1"
+			android:paddingRight="4dp"
+			android:singleLine="true"
+			android:text="Link:" />
+
+		<TextView
+			android:id="@+id/aboutGooglePlayTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/aboutDeveloperNameTextView"
+			android:layout_below="@+id/aboutDeveloperNameTextView"
+			android:lines="1"
+			android:singleLine="true"
+			android:text="Google Play" />
+
+		<TextView
+			android:id="@+id/aboutContactTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/aboutLinkTextView"
+			android:layout_toLeftOf="@+id/aboutEmailTextView"
+			android:lines="1"
+			android:paddingRight="4dp"
+			android:singleLine="true"
+			android:text="Email:" />
+
+		<TextView
+			android:id="@+id/aboutEmailTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/aboutDeveloperNameTextView"
+			android:layout_below="@+id/aboutGooglePlayTextView"
+			android:autoLink="email"
+			android:lines="1"
+			android:singleLine="true"
+			android:text="mail" />
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:id="@+id/aboutLibraryRelativeLayout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@+id/aboutDeveloperRelativeLayout"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="16dp"
+		android:gravity="center"
+		android:visibility="gone" >
+
+		<TextView
+			android:id="@+id/aboutLibraryTextView"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:lines="1"
+			android:text="[Library]"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/aboutLibraryJaudiotaggerTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_below="@+id/aboutLibraryTextView"
+			android:layout_marginTop="8dp"
+			android:lines="1"
+			android:text="Jaudiotagger"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/aboutLibraryJaudiotaggerUrlTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_alignRight="@+id/aboutLibraryJuniversalchardetUrlTextView"
+			android:layout_below="@+id/aboutLibraryJaudiotaggerTextView"
+			android:autoLink="web"
+			android:ellipsize="end"
+			android:lines="1"
+			android:text="http://www.jthink.net/jaudiotagger/" />
+
+		<TextView
+			android:id="@+id/aboutLibraryJuniversalchardetTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_below="@+id/aboutLibraryJaudiotaggerUrlTextView"
+			android:layout_marginTop="8dp"
+			android:lines="1"
+			android:text="juniversalchardet"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/aboutLibraryJuniversalchardetUrlTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentRight="true"
+			android:layout_below="@+id/aboutLibraryJuniversalchardetTextView"
+			android:autoLink="web"
+			android:ellipsize="end"
+			android:lines="1"
+			android:text="http://code.google.com/p/juniversalchardet/" />
+
+		<TextView
+			android:id="@+id/aboutLibraryDragSortListViewTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_below="@+id/aboutLibraryJuniversalchardetUrlTextView"
+			android:layout_marginTop="8dp"
+			android:lines="1"
+			android:text="DragSortListView"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/aboutLibraryDragSortListViewUrlTextView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true"
+			android:layout_alignParentRight="true"
+			android:layout_below="@+id/aboutLibraryDragSortListViewTextView"
+			android:autoLink="web"
+			android:ellipsize="end"
+			android:lines="1"
+			android:text="https://github.com/bauerca/drag-sort-listview" />
+	</RelativeLayout>
+
+	<LinearLayout
+		android:id="@+id/abountLibraryLayout"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignLeft="@+id/aboutDeveloperRelativeLayout"
+		android:layout_alignRight="@+id/aboutDeveloperRelativeLayout"
+		android:layout_below="@+id/aboutDeveloperRelativeLayout"
+		android:layout_marginTop="16dp"
+		android:gravity="center"
+		android:orientation="vertical" >
+
+		<TextView
+			android:id="@+id/aboutLibraryTextView2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:gravity="center"
+			android:lines="1"
+			android:text="[Library]"
+			android:textStyle="bold" />
+	</LinearLayout>
+
+</RelativeLayout>

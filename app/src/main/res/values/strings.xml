@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Package -->
+	<string name="app_description">Send the media information of playing to Last.fm in Medoly.</string>
+	<string name="class_receiver_label">Last.fm actions.</string>
+	<string name="label_execute_love">Love</string>
+	<string name="label_execute_unlove">UnLove</string>
+	<string name="label_execute_site">Last.fm</string>
+
+	<!-- Activity -->
+	<string name="title_activity_settings">Setting</string>
+
+	<!-- Twitter -->
+	<string name="message_no_media">The media is not selected.</string>
+	<string name="message_post_success">The playback information was sent to Last.fm..</string>
+	<string name="message_post_failure">Failed to send to Last.fm.</string>
+	<string name="message_love_success">\"%1$s\" was added to love tracks.</string>
+	<string name="message_love_failure">Failed to add to love tracks.</string>
+	<string name="message_unlove_success">\"%1$s\" was removed from love tracks.</string>
+	<string name="message_unlove_failure">Failed to remove from love tracks.</string>
+	<string name="message_auth_success">Auth succeeded.</string>
+	<string name="message_auth_failure">Auth failed.</string>
+
+
+	<!-- Main Activity -->
+	<string name="label_button_account_auth">Account Auth</string>
+	<string name="label_button_lastfm_site">Last.fm Site</string>
+	<string name="label_button_settings">Settings</string>
+	<string name="label_button_launch_medoly">Launch Medoly</string>
+	<string name="message_no_medoly">Please install Medoly.</string>
+	<string name="message_account_auth">Account authentication completed.</string>
+	<string name="message_account_not_auth">Account is not been authenticated.</string>
+	<string name="message_account_clear">Account auth cleared.</string>
+
+	<!-- Settings Activity -->
+	<string name="settings_summary_current_value">[Current Value: %1$s]</string>
+
+	<!-- Auth Dialog -->
+	<string name="title_dialog_auth">Account Auth</string>
+	<string name="message_dialog_auth">Please enter your authentication information.\n(At first, please register an account of Last.fm if you don\'t have it yet.)</string>
+	<string name="label_dialog_auth_auth">Auth</string>
+	<string name="label_dialog_auth_clear">Clear</string>
+	<string name="label_dialog_auth_username">Username</string>
+	<string name="label_dialog_auth_password">Password</string>
+
+	<!-- Preferences -->
+	<string name="pref_title_operation_play_now_enabled">Run At Media Playing</string>
+	<string name="pref_summary_operation_play_now_enabled">Enable the action at the time of media playing.</string>
+	<string name="pref_title_operation_play_start_enabled">Run At Media Start</string>
+	<string name="pref_summary_operation_play_start_enabled">Enable the action at the time of media start.</string>
+	<string name="pref_title_previous_media_enabled">Run Previous Media</string>
+	<string name="pref_summary_previous_media_enabled">Enable to run the event for the same media that has run the event already last time.</string>
+	<string name="pref_title_post_success_message_show">Show Success Message</string>
+	<string name="pref_summary_post_success_message_show">Show the message when send succeeded.</string>
+	<string name="pref_title_post_failure_message_show">Show Failure Message</string>
+	<string name="pref_summary_post_failure_message_show">Show the message when send failed. </string>
+	<string name="pref_title_application_details">App Info</string>
+	<string name="pref_summary_application_details">Show application information.</string>
+	<string name="pref_title_about">About</string>
+	<string name="pref_summary_about">About</string>
+
+
+
+	<!-- System -->
+	<string name="error_dialog_dismissed">Open the dialog again.</string>
+
+</resources>

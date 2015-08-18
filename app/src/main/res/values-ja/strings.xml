@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Package -->
+	<string name="app_description">Medolyで再生中のメディア情報をLast.fmに送信します。</string>
+	<string name="class_receiver_label">Last.fm アクション</string>
+	<string name="label_execute_love">Love</string>
+	<string name="label_execute_unlove">UnLove</string>
+	<string name="label_execute_site">Last.fmを開く</string>
+
+	<!-- Activity -->
+	<string name="title_activity_settings">設定</string>
+
+	<!-- Post -->
+	<string name="message_no_media">メディアが選択されていません。</string>
+	<string name="message_post_success">\"%1$s\" をLast.fmへ送信しました。</string>
+	<string name="message_post_failure">Last.fmへの送信に失敗しました。</string>
+	<string name="message_love_success">\"%1$s\" をLoveトラックに追加しました。</string>
+	<string name="message_love_failure">Loveトラックへの追加に失敗しました。</string>
+	<string name="message_unlove_success">\"%1$s\" をLoveトラックから削除しました。</string>
+	<string name="message_unlove_failure">Loveトラックの削除に失敗しました。</string>
+
+	<string name="message_auth_success">認証が完了しました。</string>
+	<string name="message_auth_failure">認証に失敗しました。</string>
+
+	<!-- Main Activity -->
+	<string name="label_button_account_auth">アカウント認証</string>
+	<string name="label_button_lastfm_site">Last.fm サイト</string>
+	<string name="label_button_settings">設定</string>
+	<string name="label_button_launch_medoly">Medoly 起動</string>
+	<string name="message_no_medoly">Medolyをインストールしてください。</string>
+	<string name="message_account_auth">アカウントの認証が完了しています。</string>
+	<string name="message_account_not_auth">アカウントが認証されていません。</string>
+	<string name="message_account_clear">アカウント情報をクリアしました。</string>
+
+	<!-- Settings Activity -->
+	<string name="settings_summary_current_value">[Current Value: %1$s]</string>
+
+	<!-- Auth Dialog -->
+	<string name="title_dialog_auth">アカウント認証</string>
+	<string name="message_dialog_auth">Last.fmの認証情報を入力してください。\n(アカウント未登録の場合は、最初にLast.fmのサイトで登録を完了してください。)</string>
+	<string name="label_dialog_auth_auth">認証</string>
+	<string name="label_dialog_auth_clear">クリア</string>
+	<string name="label_dialog_auth_username">ユーザ名</string>
+	<string name="label_dialog_auth_password">パスワード</string>
+
+
+	<!-- Preferences -->
+	<string name="pref_title_operation_play_now_enabled">再生中イベント</string>
+	<string name="pref_summary_operation_play_now_enabled">メディア再生中のイベントを実行します。</string>
+	<string name="pref_title_operation_play_start_enabled">再生開始イベント</string>
+	<string name="pref_summary_operation_play_start_enabled">メディア再生開始のイベントを実行します。</string>
+	<string name="pref_title_previous_media_enabled">前回メディア実行</string>
+	<string name="pref_summary_previous_media_enabled">前回イベント実行済みの同一メディアに対しても、イベントを実行します。</string>
+	<string name="pref_title_post_success_message_show">成功メッセージ表示</string>
+	<string name="pref_summary_post_success_message_show">送信に成功した際にメッセージを表示します。</string>
+	<string name="pref_title_post_failure_message_show">失敗メッセージ表示</string>
+	<string name="pref_summary_post_failure_message_show">送信に失敗した際にメッセージを表示します。</string>
+	<string name="pref_title_application_details">アプリ情報</string>
+	<string name="pref_summary_application_details">アプリ情報を表示します。</string>
+	<string name="pref_title_about">About</string>
+	<string name="pref_summary_about">About</string>
+
+
+
+	<!-- System -->
+	<string name="error_dialog_dismissed">ダイアログ操作に失敗しました。再度ダイアログを開いてください。</string>
+
+</resources>
