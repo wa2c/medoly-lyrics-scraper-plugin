@@ -7,6 +7,8 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -33,11 +35,37 @@ import us.codecraft.xsoup.Xsoup;
 
 public class LyricsObtainClient {
 
+    /** Javascriptンターフェースオブジェクト名。 */
+    private static final String JAVASCRIPT_INTERFACE = "android";
+    /** 検索ページ取得スクリプト。 */
+    private static final String SEARCH_PAGE_GET_SCRIPT = "javascript:window." + JAVASCRIPT_INTERFACE + ".getSearchResult(document.getElementsByTagName('html')[0].outerHTML);";
+    /** 歌詞ページ取得スクリプト。 */
+    private static final String LYRICS_PAGE_GET_SCRIPT = "javascript:window." + JAVASCRIPT_INTERFACE + ".getLyrics(document.getElementsByTagName('html')[0].outerHTML);";
+
+    /** 検索URL */
+    private static final String SEARCH_URL = "http://www.kasi-time.com/allsearch.php?q=%s";
+    /** 検索結果アンカーのXPATH。 */
+    private static final String SEARCH_ANCHOR_XPATH = "//a[@class='gs-title']";
+    /** 歌詞のXPATH */
+    private static final String LYRICS_XPATH = "//div[@id='lyrics']";
+
+    /** 検索ページ取得中。 */
+    private static final int STATE_SEARCH = 0;
+    /** 歌詞ページ取得中。  */
+    private static final int STATE_PAGE = 1;
+    /** 完了済み。 */
+    private static final int STATE_COMPLETE = 2;
+
+
+
     /** 要求プロパティ。 */
     private HashMap<String, String> requestPropertyMap;
 
     /** Webページ表示用WebView。 */
     private WebView webView;
+
+    /** 現在の状態 */
+    private int currentState = STATE_SEARCH;
 
 
     /**
@@ -54,92 +82,47 @@ public class LyricsObtainClient {
         this.webView.getSettings().setJavaScriptEnabled(true);
         this.webView.getSettings().setUserAgentString(context.getString(R.string.app_user_agent));
         this.webView.setVisibility(View.INVISIBLE);
-        this.webView.addJavascriptInterface(new JavaScriptInterface(), "android");
-        this.webView.setWebViewClient(searchWebViewClient);
-    }
+        this.webView.addJavascriptInterface(new JavaScriptInterface(), JAVASCRIPT_INTERFACE);
+        this.webView.setWebViewClient(new WebViewClient() {
 
-
-
-    /** 検索URL */
-    private static final String SEARCH_URL = "http://www.kasi-time.com/allsearch.php?q=%s";
-    /** 検索結果アンカーのXPATH。 */
-    private static final String SEARCH_ANCHOR_XPATH = "//a[@class='gs-title']";
-    /** 歌詞のXPATH */
-    private static final String LYRICS_XPATH = "//div[@id='lyrics']";
-
-    /**
-     * 歌詞を取得する。
-     * @param listener 結果取得リスナ。
-     */
-    public void obtainLyrics(LyricsObtainListener listener) {
-        if (listener == null) {
-            return;
-        }
-
-        // 検索ワード
-        String title = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()));
-        String artist = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()));
-        String searchWord = ( title + " " + artist );
-
-        if (TextUtils.isEmpty(searchWord)) {
-            return;
-        }
-
-        String searchUrl;
-        try {
-            searchUrl = String.format(SEARCH_URL, URLEncoder.encode(searchWord + " item", "utf-8")); // アーティスト結果がヒットしないよう、itemを追加
-        } catch (UnsupportedEncodingException e) {
-            Logger.e(e);
-            return;
-        }
-
-        // 歌詞検索
-        this.lyricsObtainListener = listener;
-        this.webView.loadUrl(searchUrl);
-    }
-
-
-    /**
-     * 歌詞検索。
-     */
-    private WebViewClient searchWebViewClient = new WebViewClient() {
-        private static final int STATE_SEARCH = 0;   // 検索結果取得
-        private static final int STATE_PAGE = 1;     // 歌詞ページ取得
-        private static final int STATE_COMPLETE = 2; // 完了
-
-        // 現在の状態
-        private int currentState = STATE_SEARCH;
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            try
-            {
-                Thread.sleep(1500);
+            // ページ読み込み完了
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                // Ajax処理待ちの遅延
+                new Handler().postDelayed(loadPage, 3000);
             }
-            catch (InterruptedException e)
-            {
-                Logger.e(e);
+
+            // ページ取得
+            private final Runnable loadPage = new Runnable() {
+                @Override
+                public void run() {
+                    if (currentState == STATE_SEARCH) {
+                        // 歌詞検索結果の取得
+                        webView.loadUrl(SEARCH_PAGE_GET_SCRIPT);
+                    } else if (currentState == STATE_PAGE) {
+                        // 歌詞ページの取得
+                        webView.loadUrl(LYRICS_PAGE_GET_SCRIPT);
+                    } else {
+                        returnLyrics(null);
+                    }
+                }
+            };
+
+            // エラー
+            @Override
+            public void onReceivedError (WebView view, int errorCode, String description, String failingUrl) {
                 returnLyrics(null);
             }
+        });
 
-            if (currentState == STATE_SEARCH) {
-                // 歌詞検索結果の取得
-                currentState = STATE_PAGE;
-                webView.loadUrl("javascript:window.android.getSearchResult(document.getElementsByTagName('html')[0].outerHTML);");
-            } else if (currentState == STATE_PAGE) {
-                // 歌詞ページの取得
-                currentState = STATE_COMPLETE;
-                webView.loadUrl("javascript:window.android.getLyrics(document.getElementsByTagName('html')[0].outerHTML);");
-            } else {
-                returnLyrics(null);
-            }
-        }
-    };
+
+
+    }
 
     /**
      * JavaScript側からコールバックされるオブジェクト。
      */
-    final public class JavaScriptInterface {
+    final private class JavaScriptInterface {
 
         /**
          * 歌詞の検索結果から歌詞ページを取得。
@@ -159,8 +142,13 @@ public class LyricsObtainClient {
                 // 歌詞ページのURLを取得
                 Element anchor = e.get(0);
                 String url = anchor.attr("href");
+                if (TextUtils.isEmpty(url)) {
+                    returnLyrics(null);
+                    return;
+                }
 
                 // 歌詞取得
+                currentState = STATE_PAGE;
                 webView.loadUrl(url);
             } catch (Exception e) {
                 Logger.e(e);
@@ -191,6 +179,7 @@ public class LyricsObtainClient {
                 //lyrics = elem.outerHtml();
 
                 // 歌詞を返す
+                currentState = STATE_COMPLETE;
                 returnLyrics(lyrics);
             } catch (Exception e) {
                 Logger.e(e);
@@ -207,6 +196,39 @@ public class LyricsObtainClient {
         if (lyricsObtainListener != null) {
             lyricsObtainListener.onLyricsObtain(lyrics);
         }
+    }
+
+
+
+    /**
+     * 歌詞を取得する。
+     * @param listener 結果取得リスナ。
+     */
+    public void obtainLyrics(LyricsObtainListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException();
+        }
+
+        // 検索ワード
+        String title = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()));
+        String artist = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()));
+        String searchWord = ( title + " " + artist );
+
+        if (TextUtils.isEmpty(searchWord)) {
+            return;
+        }
+
+        String searchUrl;
+        try {
+            searchUrl = String.format(SEARCH_URL, URLEncoder.encode(searchWord + " item", "utf-8")); // アーティスト結果がヒットしないよう、itemを追加
+        } catch (UnsupportedEncodingException e) {
+            Logger.e(e);
+            return;
+        }
+
+        // 歌詞検索
+        this.lyricsObtainListener = listener;
+        this.webView.loadUrl(searchUrl);
     }
 
 
