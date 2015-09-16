@@ -23,7 +23,7 @@ public class Logger implements UncaughtExceptionHandler {
 	/** エラーメッセージの保存キー。 */
 	public static final String PREFKEY_ERROR_LOG = "ERROR_LOG";
 	/** デバッグメッセージのタグ名。 */
-	public static final String TAG = "Medoly";
+	public static final String TAG = "MedolyLyricsScraperPlugin";
 
 	/** コンテキスト。 */
 	private static Context context = null;

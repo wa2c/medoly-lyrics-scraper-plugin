@@ -17,6 +17,8 @@ public class ActionPluginParam {
 	public static final String PLUGIN_ACTION = "com.wa2c.android.medoly.plugin.action.ACTION_MEDIA";
 	/** アクションID。 */
 	public static final String PLUGIN_ACTION_ID = "action_id";
+	/** 送信元パッケージ。 */
+	public static final String PLUGIN_SRC_PACKAGE= "src_package";
 	/** 値マップのキー。 */
 	public static final String PLUGIN_VALUE_KEY  = "value_map";
 	/** イベントキー。 */

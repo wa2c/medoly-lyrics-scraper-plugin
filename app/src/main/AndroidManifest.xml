@@ -20,12 +20,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.wa2c.android.medoly.plugin.action.lyricsscraper.SettingsActivity"
@@ -44,12 +38,14 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN" />
             </intent-filter>
 
-            <!--
-            <meta-data android:name="execute_id_love" android:value="0" />
-            <meta-data android:name="execute_label_love" android:resource="@string/label_execute_love" />
-            <meta-data android:name="execute_icon_love" android:resource="@drawable/ic_action_love" />
 
-            <meta-data android:name="execute_id_unlove" android:value="1" />
+            <meta-data android:name="execute_id_get_lyrics" android:value="0" />
+            <meta-data android:name="execute_label_get_lyrics" android:resource="@string/label_execute_get_lyrics" />
+            <meta-data android:name="execute_icon_get_lyrics" android:resource="@drawable/ic_action_love" />
+            <meta-data android:name="execute_type_get_lyrics" android:value="TYPE_GET_LYRICS" />
+
+            <!--
+             <meta-data android:name="execute_id_unlove" android:value="1" />
             <meta-data android:name="execute_label_unlove" android:resource="@string/label_execute_unlove" />
             <meta-data android:name="execute_icon_unlove" android:resource="@drawable/ic_action_unlove" />
 
@@ -59,6 +55,16 @@
             -->
 
         </receiver>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>

@@ -1,44 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources
-	xmlns:tools="http://schemas.android.com/tools"
-	tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-	<!-- App Infos -->
-	<string name="app_name">Medoly Lyrics Scraper Plugin</string>
-	<string name="base_app_name">Medoly</string>
-	<string name="domain_name">wa2c.com</string>
-	<string name="app_mail_name">medoly</string>
-	<string name="app_mail_domain">wa2c.com</string>
-	<string name="app_author">wa2c</string>
-	<string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
-	<string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lastfm</string>
+    <!-- App Infos -->
+    <string name="app_name">Medoly Lyrics Scraper Plugin</string>
+    <string name="base_app_name">Medoly</string>
+    <string name="package_name">com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
+    <string name="domain_name">wa2c.com</string>
+    <string name="app_mail_name">medoly</string>
+    <string name="app_mail_domain">wa2c.com</string>
+    <string name="app_author">wa2c</string>
+    <string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
+    <string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
 
-	<string name="app_user_agent">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit (KHTML, like Gecko) Chrome Safari</string>
+    <string name="app_user_agent">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit (KHTML, like Gecko) Chrome Safari</string>
 
-	<!-- Last.fm info -->
-	<string name="lastfm_url">http://www.last.fm/</string>
-	<string name="lastfm_url_user">http://www.last.fm/user/%1$s</string>
+    <!-- Site info -->
 
-	<!-- Library  -->
-	<string-array name="about_library_names">
-		<item>lastfm-java</item>
-	</string-array>
-	<string-array name="about_library_urls">
-		<item>https://code.google.com/p/lastfm-java/</item>
-	</string-array>
+    <!-- Library  -->
+    <string-array name="about_library_names"></string-array>
+    <string-array name="about_library_urls"></string-array>
 
-	<!-- Preferences -->
-	<string name="prefkey_auth_username">auth_username</string>
-	<string name="prefkey_auth_password">auth_password</string>
+    <!-- Preferences -->
+    <string name="prefkey_operation_media_open_enabled">operation_media_open_enabled</string>
+    <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
+    <string name="prefkey_tweet_success_message_show">success_message_show</string>
+    <string name="prefkey_tweet_failure_message_show">failure_message_show</string>
+    <string name="prefkey_application_details">application_details</string>
+    <string name="prefkey_about">about</string>
 
-	<string name="prefkey_operation_play_now_enabled">operation_play_now_enabled</string>
-	<string name="prefkey_operation_play_start_enabled">operation_play_start_enabled</string>
-	<string name="prefkey_previous_media_enabled">previous_media_enabled</string>
-	<string name="prefkey_trim_before_empty_enabled">trim_before_empty_enabled</string>
-	<string name="prefkey_omit_newline">omit_newline</string>
-	<string name="prefkey_tweet_success_message_show">tweet_success_message_show</string>
-	<string name="prefkey_tweet_failure_message_show">tweet_failure_message_show</string>
-	<string name="prefkey_application_details">application_details</string>
-	<string name="prefkey_about">about</string>
+    <string name="id_lyrics">Lyrics</string>
 
 </resources>

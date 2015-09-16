@@ -119,6 +119,10 @@ public class LyricsObtainClient {
 
     }
 
+
+    /** ハンドラ。 */
+    final Handler handler = new Handler();
+
     /**
      * JavaScript側からコールバックされるオブジェクト。
      */
@@ -141,15 +145,21 @@ public class LyricsObtainClient {
 
                 // 歌詞ページのURLを取得
                 Element anchor = e.get(0);
-                String url = anchor.attr("href");
+                final String url = anchor.attr("href");
                 if (TextUtils.isEmpty(url)) {
                     returnLyrics(null);
                     return;
                 }
 
                 // 歌詞取得
-                currentState = STATE_PAGE;
-                webView.loadUrl(url);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        currentState = STATE_PAGE;
+                        webView.loadUrl(url);
+                    }
+                });
+
             } catch (Exception e) {
                 Logger.e(e);
                 returnLyrics(null);
