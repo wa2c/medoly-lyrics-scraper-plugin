@@ -4,28 +4,22 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
-import android.webkit.WebView;
 
 import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
 import com.wa2c.android.medoly.plugin.action.Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 
@@ -68,6 +62,20 @@ public class PluginReceiver extends BroadcastReceiver {
         returnIntent.setPackage(ActionPluginParam.PLUGIN_SRC_PACKAGE);
         returnIntent.putExtra(ActionPluginParam.PLUGIN_ACTION_ID, actionId);
 
+        // カテゴリ取得
+        Set<String> categories = intent.getCategories();
+        if (categories == null || categories.size() == 0) {
+            sendLyricsResult(returnIntent, null);
+            return;
+        }
+
+        // 自動実行がOFFの場合は終了
+        if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_MEDIA_OPEN.getCategoryValue()) &&
+                !sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
+            sendLyricsResult(returnIntent, null);
+            return;
+        }
+
         // URIを取得
         Uri mediaUri = null;
         if (intent.getExtras() != null) {
@@ -90,7 +98,7 @@ public class PluginReceiver extends BroadcastReceiver {
         final String mediaUriText = mediaUri.toString();
         final String previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "");
         boolean previousMediaEnabled = sharedPreferences.getBoolean(context.getString(R.string.prefkey_previous_media_enabled), false);
-        if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUri.equals(previousMediaUri)) {
+        if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText.equals(previousMediaUri)) {
             // 前回と同じURI
             String lyrics = sharedPreferences.getString(PREFKEY_PREVIOUS_LYRICS_TEXT, null);
             sendLyricsResult(returnIntent, getLyricsUri(lyrics));
@@ -123,35 +131,21 @@ public class PluginReceiver extends BroadcastReceiver {
             return;
         }
 
-
-        // カテゴリ取得
-        Set<String> categories = intent.getCategories();
-        if (categories == null || categories.size() == 0) {
-            sendLyricsResult(returnIntent, null);
-            return;
-        }
-
         if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
             // Execute
             final String EXECUTE_GET_LYRICS_ID = "execute_id_get_lyrics";
 
             // Execute
             Bundle extras = intent.getExtras();
-            if (extras != null) {
-                if (extras.keySet().contains(EXECUTE_GET_LYRICS_ID)) {
-                    // Get Lyrics
-                    getLyrics(returnIntent, mediaUri, propertyMap);
-                }
+            if (extras != null && extras.keySet().contains(EXECUTE_GET_LYRICS_ID)) {
+                   // Get Lyrics
+                   downloadLyrics(returnIntent, mediaUri, propertyMap);
+            } else {
+                sendLyricsResult(returnIntent, null);
             }
         } else {
             // Event
-            if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
-                // Media Open
-                getLyrics(returnIntent, mediaUri, propertyMap);
-            } else {
-                sendLyricsResult(returnIntent, null);
-                return;
-            }
+             downloadLyrics(returnIntent, mediaUri, propertyMap);
         }
     }
 
@@ -163,7 +157,7 @@ public class PluginReceiver extends BroadcastReceiver {
      * @param mediaUri URI。
      * @param requestPropertyMap プロパティ情報。
      */
-    private void getLyrics(final Intent returnIntent, final Uri mediaUri, final HashMap<String, String> requestPropertyMap) {
+    private void downloadLyrics(final Intent returnIntent, final Uri mediaUri, final HashMap<String, String> requestPropertyMap) {
         // 歌詞取得
         LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap);
         obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
@@ -220,27 +214,15 @@ public class PluginReceiver extends BroadcastReceiver {
      * @param returnIntent 戻りインテント。
      * @param lyricsUri 歌詞データのURI。取得失敗の場合はnull。
      */
-    private void sendLyricsResult(Intent returnIntent, Uri lyricsUri) {
-        //Intent intent = new Intent(ActionPluginParam.PLUGIN_ACTION); // プラグインアクション
-        //intent.setData(lyricsUri);
-        //intent.setPackage(ActionPluginParam.MEDOLY_PACKAGE); // パッケージ名
-        //resultIntent.addCategory(ActionPluginParam.PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
-        //resultIntent.putExtra(ActionPluginParam.PLUGIN_ACTION_ID, actionId); // アクションID
-        //resultIntent.setData(lyricsUri);
-        //resultIntent.putExtra(Intent.EXTRA_STREAM, lyricsUri);
-        //resultIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
+    private void sendLyricsResult(@NonNull Intent returnIntent, Uri lyricsUri) {
         returnIntent.setPackage(ActionPluginParam.MEDOLY_PACKAGE);
         returnIntent.addCategory(ActionPluginParam.PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
-        //resultIntent.putExtra(ActionPluginParam.PLUGIN_ACTION_ID, actionId); // アクションID
-        returnIntent.setData(lyricsUri);
+        //returnIntent.setData(lyricsUri);
         returnIntent.putExtra(Intent.EXTRA_STREAM, lyricsUri);
         returnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        context.grantUriPermission(returnIntent.getPackage(), lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        //context.grantUriPermission(null, lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-
-
+        if (lyricsUri != null) {
+            context.grantUriPermission(returnIntent.getPackage(), lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
         context.sendBroadcast(returnIntent);
     }
 
