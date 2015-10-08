@@ -65,14 +65,14 @@ public class PluginReceiver extends BroadcastReceiver {
         // カテゴリ取得
         Set<String> categories = intent.getCategories();
         if (categories == null || categories.size() == 0) {
-            sendLyricsResult(returnIntent, null);
+            sendLyricsResult(returnIntent, Uri.EMPTY);
             return;
         }
 
         // 自動実行がOFFの場合は終了
         if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_MEDIA_OPEN.getCategoryValue()) &&
-                !sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
-            sendLyricsResult(returnIntent, null);
+            !sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
+            sendLyricsResult(returnIntent, Uri.EMPTY);
             return;
         }
 
@@ -90,7 +90,7 @@ public class PluginReceiver extends BroadcastReceiver {
         // 音楽データ無し
         if (mediaUri == null) {
             AppUtils.showToast(context, R.string.message_no_media);
-            sendLyricsResult(returnIntent, null);
+            sendLyricsResult(returnIntent, Uri.EMPTY);
             return;
         }
 
@@ -212,12 +212,11 @@ public class PluginReceiver extends BroadcastReceiver {
     /**
      * 歌詞を送り返す。
      * @param returnIntent 戻りインテント。
-     * @param lyricsUri 歌詞データのURI。取得失敗の場合はnull。
+     * @param lyricsUri 歌詞データのURI。取得できない場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
      */
     private void sendLyricsResult(@NonNull Intent returnIntent, Uri lyricsUri) {
         returnIntent.setPackage(ActionPluginParam.MEDOLY_PACKAGE);
         returnIntent.addCategory(ActionPluginParam.PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
-        //returnIntent.setData(lyricsUri);
         returnIntent.putExtra(Intent.EXTRA_STREAM, lyricsUri);
         returnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (lyricsUri != null) {
