@@ -68,6 +68,7 @@ public class LyricsObtainClient {
     private int currentState = STATE_SEARCH;
 
 
+
     /**
      * コンストラクタ。
      * @param context コンテキスト。
@@ -89,7 +90,7 @@ public class LyricsObtainClient {
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Ajax処理待ちの遅延
-                new Handler().postDelayed(loadPage, 3000);
+                handler.postDelayed(loadPage, 3000);
             }
 
             // ページ取得

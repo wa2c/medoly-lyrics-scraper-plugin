@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wa2c.android.medoly.plugin.action.lyricsscraper">
+    package="com.wa2c.android.medoly.plugin.action.lyricsscraper" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -11,25 +11,25 @@
         android:description="@string/app_description"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity
-            android:name="com.wa2c.android.medoly.plugin.action.lyricsscraper.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
         <receiver
-            android:name="com.wa2c.android.medoly.plugin.action.lyricsscraper.PluginReceiver"
-            android:label="@string/class_receiver_label">
-
+            android:name=".PluginReceiver"
+            android:label="@string/class_receiver_label" >
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 
@@ -38,11 +38,18 @@
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN" />
             </intent-filter>
 
-
-            <meta-data android:name="execute_id_get_lyrics" android:value="0" />
-            <meta-data android:name="execute_label_get_lyrics" android:resource="@string/label_execute_get_lyrics" />
-            <meta-data android:name="execute_icon_get_lyrics" android:resource="@drawable/ic_action_love" />
-            <meta-data android:name="execute_type_get_lyrics" android:value="TYPE_GET_LYRICS" />
+            <meta-data
+                android:name="execute_id_get_lyrics"
+                android:value="0" />
+            <meta-data
+                android:name="execute_label_get_lyrics"
+                android:resource="@string/label_execute_get_lyrics" />
+            <meta-data
+                android:name="execute_icon_get_lyrics"
+                android:resource="@drawable/ic_action_love" />
+            <meta-data
+                android:name="execute_type_get_lyrics"
+                android:value="TYPE_GET_LYRICS" />
 
             <!--
              <meta-data android:name="execute_id_unlove" android:value="1" />
@@ -59,12 +66,17 @@
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <service
+            android:name=".ScraperIntentService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
