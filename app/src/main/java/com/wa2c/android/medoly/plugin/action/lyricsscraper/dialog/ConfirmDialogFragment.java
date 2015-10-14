@@ -9,7 +9,7 @@ import android.text.TextUtils;
 /**
  * 確認ダイアログを表示する。
  */
-public class ConfirmDialogFragment extends AbstractDialogFragment {
+public class ConfirmDialogFragment extends com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.AbstractDialogFragment {
 
 	/** タイトルキー。 */
 	private final static String ARG_TITLE = "TITLE";

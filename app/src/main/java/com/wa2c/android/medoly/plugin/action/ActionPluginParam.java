@@ -245,7 +245,10 @@ public class ActionPluginParam {
 		/** データサイズ。 */
 		DATA_SIZE                    ( R.string.data_size                          ),
 		/** 更新日時。 */
-		LAST_MODIFIED                ( R.string.last_modified                      );
+		LAST_MODIFIED                ( R.string.last_modified                      ),
+
+		/**URI*/
+		DATA_URI                     ( R.string.data_uri                           );
 
 
 		/** 名称のID。 */
@@ -287,7 +290,10 @@ public class ActionPluginParam {
 		/** データサイズ。 */
 		DATA_SIZE     ( R.string.data_size               ),
 		/** 更新日時。 */
-		LAST_MODIFIED ( R.string.last_modified           );
+		LAST_MODIFIED ( R.string.last_modified           ),
+
+		/**URI*/
+		DATA_URI      ( R.string.data_uri                );
 
 		/** 名称のID。 */
 		private int nameId;
@@ -337,7 +343,10 @@ public class ActionPluginParam {
 		/** データサイズ。 */
 		DATA_SIZE          ( R.string.data_size                 ),
 		/** 更新日時。 */
-		LAST_MODIFIED      ( R.string.last_modified             );
+		LAST_MODIFIED      ( R.string.last_modified             ),
+
+		/**URI*/
+		DATA_URI           ( R.string.data_uri                  );
 
 		/** 名称のID。 */
 		private int nameId;

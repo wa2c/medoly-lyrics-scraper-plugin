@@ -2,9 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 
 import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
@@ -20,11 +18,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
 		// Site List
 		findViewById(R.id.siteListButton).setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 
@@ -35,7 +30,7 @@ public class MainActivity extends Activity {
 		findViewById(R.id.settingsButton).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+				startActivity(new Intent(MainActivity.this, com.wa2c.android.medoly.plugin.action.lyricsscraper.SettingsActivity.class));
 			}
 		});
 

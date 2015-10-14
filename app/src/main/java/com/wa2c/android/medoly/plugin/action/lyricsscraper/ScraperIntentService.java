@@ -1,8 +1,8 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.app.IntentService;
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -159,6 +161,45 @@ public class ScraperIntentService extends IntentService {
         }
     }
 
+    /**
+     * 歌詞取得パラメータリストを取得する。
+     * @return 歌詞取得パラメータリスト。
+     */
+    private List<LyricsObtainParam> getParamList() {
+        List<LyricsObtainParam> list = new ArrayList<>();
+
+        LyricsObtainParam param1 = new LyricsObtainParam();
+        param1.SiteName = "歌詞タイム";
+        param1.SiteUri = "http://www.kasi-time.com/";
+        param1.SearchURI = "http://www.kasi-time.com/allsearch.php?q=item+%s+%s";
+        param1.SearchAnchorExpression = "//a[@class='gs-title']";
+        param1.SearchAnchorParseType = LyricsObtainParam.ParseTypeXPath;
+        param1.SearchLyricsExpression = "//div[@id='lyrics']";
+        param1.SearchLyricsParseType = LyricsObtainParam.ParseTypeXPath;
+        param1.SearchParamKeyList = new ArrayList<String>() {{
+            add(ActionPluginParam.MediaProperty.TITLE.getKeyName());
+            add(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
+        }};
+        list.add(param1);
+
+        LyricsObtainParam param2 = new LyricsObtainParam();
+        param2.SiteName = "J-Lyric.net";
+        param2.SiteUri = "http://j-lyric.net/";
+        param2.SearchURI = "http://search.j-lyric.net/index.php?kt=%s&ct=0&ka=%s&ca=0";
+//        param2.SearchAnchorExpression = "//*[@id=\"lyricList\"]/div[2]/div[2]/a";
+//        param2.SearchLyricsExpression = "//*[@id=\"lyricBody\"]";
+        param2.SearchAnchorExpression = "<div class=\"title\"><a href=\"(.*?)\".*?</div>";
+        param2.SearchAnchorParseType = LyricsObtainParam.ParseTypeRegexp;
+        param2.SearchLyricsExpression = "<p id=\"lyricBody\">(.*?)</p>";
+        param2.SearchLyricsParseType = LyricsObtainParam.ParseTypeRegexp;
+        param2.SearchParamKeyList = new ArrayList<String>() {{
+            add(ActionPluginParam.MediaProperty.TITLE.getKeyName());
+            add(ActionPluginParam.MediaProperty.ARTIST.getKeyName());
+        }};
+        list.add(param2);
+
+        return list;
+    }
 
 
     /**
@@ -168,28 +209,30 @@ public class ScraperIntentService extends IntentService {
      * @param requestPropertyMap プロパティ情報。
      */
     private void downloadLyrics(final Intent returnIntent, final Uri mediaUri, final HashMap<String, String> requestPropertyMap) {
-        (new Handler()).post(
-            new Runnable() {
-                public void run() {
-                    try {
-                        // 歌詞取得
-                        LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap);
-                        obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
-                            @Override
-                            public void onLyricsObtain(String lyrics) {
-                                // 送信
-                                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
-                                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
+        final List<LyricsObtainParam> list = getParamList();
 
-                                // 送信
-                                sendLyricsResult(returnIntent, getLyricsUri(lyrics));
-                            }
-                        });
-                    } catch (Exception e) {
-                        sendLyricsResult(returnIntent, null);
+        (new Handler()).post(
+                new Runnable() {
+                    public void run() {
+                        try {
+                            // 歌詞取得
+                            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, list.get(1));
+                            obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
+                                @Override
+                                public void onLyricsObtain(String lyrics) {
+                                    // 送信
+                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
+                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
+
+                                    // 送信１
+                                    sendLyricsResult(returnIntent, getLyricsUri(lyrics));
+                                }
+                            });
+                        } catch (Exception e) {
+                            sendLyricsResult(returnIntent, null);
+                        }
                     }
                 }
-            }
         );
     }
 

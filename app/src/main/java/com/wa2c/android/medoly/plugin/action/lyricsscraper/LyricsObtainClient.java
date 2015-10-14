@@ -6,8 +6,6 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 /** 検索URI。 */
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,7 +14,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
 import com.wa2c.android.medoly.plugin.action.Logger;
 
 import org.jsoup.Jsoup;
@@ -26,11 +23,14 @@ import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import us.codecraft.xsoup.Xsoup;
-
 
 
 public class LyricsObtainClient {
@@ -42,13 +42,6 @@ public class LyricsObtainClient {
     /** 歌詞ページ取得スクリプト。 */
     private static final String LYRICS_PAGE_GET_SCRIPT = "javascript:window." + JAVASCRIPT_INTERFACE + ".getLyrics(document.getElementsByTagName('html')[0].outerHTML);";
 
-    /** 検索URL */
-    private static final String SEARCH_URL = "http://www.kasi-time.com/allsearch.php?q=%s";
-    /** 検索結果アンカーのXPATH。 */
-    private static final String SEARCH_ANCHOR_XPATH = "//a[@class='gs-title']";
-    /** 歌詞のXPATH */
-    private static final String LYRICS_XPATH = "//div[@id='lyrics']";
-
     /** 検索ページ取得中。 */
     private static final int STATE_SEARCH = 0;
     /** 歌詞ページ取得中。  */
@@ -57,13 +50,12 @@ public class LyricsObtainClient {
     private static final int STATE_COMPLETE = 2;
 
 
-
     /** 要求プロパティ。 */
     private HashMap<String, String> requestPropertyMap;
-
+    /** 取得パラメータ。 */
+    private LyricsObtainParam lyricsObtainParam;
     /** Webページ表示用WebView。 */
     private WebView webView;
-
     /** 現在の状態 */
     private int currentState = STATE_SEARCH;
 
@@ -74,8 +66,9 @@ public class LyricsObtainClient {
      * @param context コンテキスト。
      * @param propertyMap 要求元プロパティマップ。
      */
-    public LyricsObtainClient(Context context, HashMap<String, String> propertyMap) {
+    public LyricsObtainClient(Context context, HashMap<String, String> propertyMap, LyricsObtainParam param) {
         this.requestPropertyMap = propertyMap;
+        this.lyricsObtainParam = param;
 
         this.webView = new WebView(context);
         this.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -90,7 +83,7 @@ public class LyricsObtainClient {
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Ajax処理待ちの遅延
-                handler.postDelayed(loadPage, 3000);
+                handler.postDelayed(loadPage, lyricsObtainParam.DelayMilliseconds);
             }
 
             // ページ取得
@@ -129,6 +122,8 @@ public class LyricsObtainClient {
      */
     final private class JavaScriptInterface {
 
+        String url;
+
         /**
          * 歌詞の検索結果から歌詞ページを取得。
          * @param html HTMLソース。
@@ -136,17 +131,30 @@ public class LyricsObtainClient {
         @JavascriptInterface
         @SuppressWarnings("unused")
         public void getSearchResult(String html) {
+
             try {
-                Document doc = Jsoup.parse(html);
-                Elements e = Xsoup.compile(SEARCH_ANCHOR_XPATH).evaluate(doc).getElements();
-                if (e == null || e.size() == 0) {
-                    returnLyrics(null);
-                    return;
+                url = null;
+
+                if (lyricsObtainParam.SearchAnchorParseType == LyricsObtainParam.ParseTypeXPath) {
+                    // XPath
+                    Document doc = Jsoup.parse(html);
+                    Elements e = Xsoup.compile(lyricsObtainParam.SearchAnchorExpression).evaluate(doc).getElements();
+                    if (e == null || e.size() == 0) {
+                        returnLyrics(null);
+                        return;
+                    }
+
+                    // 歌詞ページのURLを取得
+                    Element anchor = e.get(0);
+                    url = anchor.attr("href");
+                } else if (lyricsObtainParam.SearchAnchorParseType == LyricsObtainParam.ParseTypeRegexp) {
+                    Pattern p = Pattern.compile(lyricsObtainParam.SearchAnchorExpression, Pattern.CASE_INSENSITIVE);
+                    Matcher m = p.matcher(html);
+                    if (m.find()) {
+                        url = m.group(1);
+                    }
                 }
 
-                // 歌詞ページのURLを取得
-                Element anchor = e.get(0);
-                final String url = anchor.attr("href");
                 if (TextUtils.isEmpty(url)) {
                     returnLyrics(null);
                     return;
@@ -161,11 +169,156 @@ public class LyricsObtainClient {
                     }
                 });
 
+
+
+
+//            String outputHtml = "";
+//
+//            // cleanerの生成
+//            HtmlCleaner cleaner = new HtmlCleaner();
+//            CleanerProperties props = cleaner.getProperties();
+//            try {
+//
+//                // Cleanerの実行
+//                TagNode node = cleaner.clean( html );
+//
+//                // XMLに変換してStringWriterに
+//                XmlSerializer serializer = new PrettyXmlSerializer( props );
+//                StringWriter writer = new StringWriter();
+//                serializer.write(node, writer, "utf-8");
+//
+//                // コンソールに出力
+//                outputHtml = writer.getBuffer().toString();
+//                System.out.println( outputHtml );
+//                writer.close();
+//
+//            } catch(IOException e) {
+//
+//            }
+//
+//
+//            try {
+//
+//
+//
+////                HtmlDocumentBuilder builder = new HtmlDocumentBuilder();
+////                StringReader reader = new StringReader(html);
+////                Object obj = builder.parse(new InputSource(reader));
+////                org.w3c.dom.Document w3cDoc = builder.parse(new InputSource(reader));
+//
+////                XPathFactory factory = XPathFactory.newInstance();
+////                XPath xpath = factory.newXPath();
+////                String str = xpath.evaluate(lyricsObtainParam.SearchAnchorExpression, w3cDoc);
+//
+////obtain Document somehow, doesn't matter how
+//
+//                    final XMLReader parser = new Parser();
+//
+//                    final HTMLSchema schema = new HTMLSchema();
+//                    parser.setProperty(Parser.schemaProperty, schema);
+//
+//                    final StringWriter output = new StringWriter();
+//
+//                    final XMLWriter serializer = new XMLWriter(output);
+//                parser.setContentHandler(serializer);
+//
+////                    // TODO 確認した時点では、これが期待通りには機能せず。
+//                     parser.setDTDHandler(serializer);
+////                    // 仕方が無いので、以下の記述により DOCTYPE を強制的に出力させる。(html用)
+////                    serializer.setOutputProperty(XMLWriter.DOCTYPE_PUBLIC,
+////                            "-//W3C//DTD HTML 4.01 Transitional//EN");
+//
+//                    // <html> に名前空間をあらわす属性が付かないようにする。
+//                    parser.setFeature(Parser.namespacesFeature, false);
+//
+//
+//                    final InputSource input = new InputSource();
+//                    input.setCharacterStream(new StringReader(html));
+//
+////                    // 出力を (xhtmlではなく) html にセットします。
+////                    serializer.setOutputProperty(XMLWriter.METHOD, "html");
+////
+//                    // XML宣言の出力を抑制します。
+//                    serializer.setOutputProperty(XMLWriter.OMIT_XML_DECLARATION, "yes");
+////
+////                    // 属性へのデフォルト付与を抑制させます。
+////                    parser.setFeature(Parser.defaultAttributesFeature, false);
+//                Parser.
+////
+//                    // 出力先の文字エンコーディングを指定します。
+//                    serializer.setOutputProperty(XMLWriter.ENCODING, "UTF-8");
+//
+//                    // 知らない名前の要素について寛大に処理します。(jsp対策において必要と想定)
+//                    //parser.setFeature(Parser.ignoreBogonsFeature, false);
+//
+//
+//                    // パースを実施。
+//                    parser.parse(input);
+                //outputHtml = output.toString();
+
+//                DocumentBuilderFactory fac =  DocumentBuilderFactory.newInstance();
+//                DocumentBuilder build = fac.newDocumentBuilder();
+//                StringReader reader = new StringReader(outputHtml);
+//                org.w3c.dom.Document doc2 = build.parse(new InputSource(reader));
+
+//                HtmlDocumentBuilder builder = new HtmlDocumentBuilder();
+//                StringReader reader = new StringReader(outputHtml);
+//                org.w3c.dom.Document doc2 = builder.parse(new InputSource(reader));
+
+
+//                Parser parser = new Parser();
+//                DefaultHandler  handler = new DefaultHandler();
+//                parser.setContentHandler(handler);
+//                parser.parse
+//                if ( contentHandler != null ) {
+//                    parser.setContentHandler(contentHandler);
+//                }
+//                parser.setFeature(Parser.ignoreBogonsFeature, false);
+//                parser.setProperty(Parser.schemaProperty, HtmlParser.schema);
+//
+//                parser.parse(new InputSource(new InputStreamReader(ins)));
+
+//                Element bodyElement = doc.body();
+//                String bodyStr = Jsoup.clean(bodyElement.html(), Whitelist.none());
+//                org.w3c.dom.Document doc2 = DOMBuilder.jsoup2DOM(doc);
+//
+//                XPathFactory factory = XPathFactory.newInstance();
+//                XPath xpath = factory.newXPath();
+//                String aaa = xpath.evaluate(lyricsObtainParam.SearchAnchorExpression, doc2);
+
+//                XPathEvaluator ev = Xsoup.compile(lyricsObtainParam.SearchAnchorExpression);
+//                Document doc = Jsoup.parse(outputHtml);
+//                Elements e = Xsoup.compile(lyricsObtainParam.SearchAnchorExpression).evaluate(doc).getElements();
+//                if (e == null || e.size() == 0) {
+//                    returnLyrics(null);
+//                    return;
+//                }
+//
+//
+//                // 歌詞ページのURLを取得
+//                Element anchor = e.get(0);
+//                final String url = anchor.attr("href");
+//                if (TextUtils.isEmpty(url)) {
+//                    returnLyrics(null);
+//                    return;
+//                }
+//
+//                // 歌詞取得
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        currentState = STATE_PAGE;
+//                        webView.loadUrl(url);
+//                    }
+//                });
+
             } catch (Exception e) {
                 Logger.e(e);
                 returnLyrics(null);
             }
         }
+
+        String lyrics;
 
         /**
          * 歌詞ページから歌詞を取得。
@@ -175,19 +328,28 @@ public class LyricsObtainClient {
         @SuppressWarnings("unused")
         public void getLyrics(String html) {
             try {
-                Document doc = Jsoup.parse(html);
-                Elements e = Xsoup.compile(LYRICS_XPATH).evaluate(doc).getElements();
-                if (e == null || e.size() == 0) {
-                    returnLyrics(null);
-                    return;
+                if (lyricsObtainParam.SearchLyricsParseType == LyricsObtainParam.ParseTypeXPath) {
+                    // XPath
+                    Document doc = Jsoup.parse(html);
+                    Elements e = Xsoup.compile(lyricsObtainParam.SearchLyricsExpression).evaluate(doc).getElements();
+                    if (e == null || e.size() == 0) {
+                        returnLyrics(null);
+                        return;
+                    }
+
+                    Element elem = e.get(0);
+                    lyrics = elem.html();
+                } else if (lyricsObtainParam.SearchLyricsParseType == LyricsObtainParam.ParseTypeRegexp) {
+                    // 正規表現
+                    Pattern p = Pattern.compile(lyricsObtainParam.SearchLyricsExpression, Pattern.CASE_INSENSITIVE|Pattern.MULTILINE|Pattern.DOTALL);
+                    Matcher m = p.matcher(html);
+                    if (m.find()) {
+                        lyrics = m.group(1);
+                    }
                 }
 
-                Element elem = e.get(0);
-
-                String lyrics = elem.html();
+                // 調整
                 lyrics = AppUtils.adjustLyrics(lyrics);
-                //lyrics = elem.html();
-                //lyrics = elem.outerHtml();
 
                 // 歌詞を返す
                 currentState = STATE_COMPLETE;
@@ -220,24 +382,20 @@ public class LyricsObtainClient {
             throw new IllegalArgumentException();
         }
 
-        // 検索ワード
-        String title = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.TITLE.getKeyName()));
-        String artist = AppUtils.normalizeText(requestPropertyMap.get(ActionPluginParam.MediaProperty.ARTIST.getKeyName()));
-        String searchWord = ( title + " " + artist );
-
-        if (TextUtils.isEmpty(searchWord)) {
-            return;
-        }
-
-        String searchUrl;
+        List<String> encodedWordList = new ArrayList<>( lyricsObtainParam.SearchParamKeyList.size());
         try {
-            searchUrl = String.format(SEARCH_URL, URLEncoder.encode(searchWord + " item", "utf-8")); // アーティスト結果がヒットしないよう、itemを追加
+
+            for (String key : lyricsObtainParam.SearchParamKeyList) {
+                String w = AppUtils.normalizeText(requestPropertyMap.get(key));
+                encodedWordList.add(URLEncoder.encode(w, lyricsObtainParam.URIEncoding));
+            }
         } catch (UnsupportedEncodingException e) {
             Logger.e(e);
             return;
         }
 
         // 歌詞検索
+        String searchUrl = String.format(lyricsObtainParam.SearchURI, encodedWordList.toArray());
         this.lyricsObtainListener = listener;
         this.webView.loadUrl(searchUrl);
     }

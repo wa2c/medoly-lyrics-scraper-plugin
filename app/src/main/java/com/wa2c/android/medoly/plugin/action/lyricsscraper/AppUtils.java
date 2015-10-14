@@ -29,7 +29,7 @@ public class AppUtils {
      */
     public static String adjustLyrics(String text) {
         if (TextUtils.isEmpty(text))
-            return "";
+            return null;
 
         // 改行
         //if (sourceConversion.brNewline) {
