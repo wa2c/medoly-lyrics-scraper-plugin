@@ -1,8 +1,14 @@
 package com.wa2c.android.medoly.plugin.action;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
+
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -407,5 +413,9 @@ public class ActionPluginParam {
 			this.keyName = "QUEUE_" + this.name();
 		}
 	}
+
+
+
+
 
 }

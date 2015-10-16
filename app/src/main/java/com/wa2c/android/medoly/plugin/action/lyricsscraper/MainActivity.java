@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
 		findViewById(R.id.siteListButton).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				startActivity(new Intent(MainActivity.this, SiteActivity.class));
 			}
 		});
 
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
 		findViewById(R.id.settingsButton).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(MainActivity.this, com.wa2c.android.medoly.plugin.action.lyricsscraper.SettingsActivity.class));
+				startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 			}
 		});
 

@@ -1,6 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.content.Context;
+import android.text.Html;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -20,8 +21,6 @@ public class AppUtils {
         Toast.makeText(context, stringId, Toast.LENGTH_SHORT).show();
     }
 
-
-
     /**
      * 歌詞を調整する。
      * @param text 歌詞テキスト。
@@ -31,31 +30,12 @@ public class AppUtils {
         if (TextUtils.isEmpty(text))
             return null;
 
-        // 改行
-        //if (sourceConversion.brNewline) {
-        //    text = text.replaceAll("(?i)<br[^>]*>", "\r\n");
-        //}
-
         // タグ除去
-            text = text.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");
-            //text = text.replaceAll("<[^>]*>", "");
+        text = Html.fromHtml(text).toString();
+        //text = text.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");
 
         // トリミング
-        //if (sourceConversion.trimSpace) {
-            text = trim(text);
-        //}
-
-        // 削除
-//        if (!StringUtils.isEmpty(sourceConversion.removeRegexp)) {
-//            textStream = textStream.map(e -> e.replaceAll(sourceConversion.removeRegexp, ""));
-//        }
-
-        // 置換
-//        if (!StringUtils.isEmpty(sourceConversion.replaceRegexp)) {
-//            textStream = textStream.map(e -> e.replaceAll(sourceConversion.replaceRegexp, sourceConversion.replaceOutput == null ? "" : sourceConversion.replaceOutput));
-//        }
-
-        //return textList;
+        text = trimLines(text);
 
         return text;
     }
@@ -65,11 +45,11 @@ public class AppUtils {
      * @param text 元テキスト。
      * @return トリミングテキスト。
      */
-    public static String trim(String text) {
+    public static String trimLines(String text) {
         if (TextUtils.isEmpty(text))
             return "";
 
-        return text.replaceAll("^[\\s　]*", "").replaceAll("[\\s　]*$", "");
+        return text.replaceAll("(?m)^[\\t 　]*", "").replaceAll("(?m)[\\t 　]*$", "").trim();
     }
 
 
@@ -84,7 +64,7 @@ public class AppUtils {
             return "";
 
         // 正規化
-        String output = trim(removeParentheses(Normalizer.normalize(text, Normalizer.Form.NFKC)).toLowerCase());
+        String output = trimLines(removeParentheses(Normalizer.normalize(text, Normalizer.Form.NFKC)).toLowerCase());
         // 特殊文字正規化
         return output
                 .replace("゠", "=")

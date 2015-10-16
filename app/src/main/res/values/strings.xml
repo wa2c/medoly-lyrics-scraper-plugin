@@ -7,6 +7,7 @@
 
     <!-- Activity -->
     <string name="title_activity_settings">Setting</string>
+    <string name="title_activity_site">Sites</string>
 
     <!-- Twitter -->
     <string name="message_no_media">The media is not selected.</string>

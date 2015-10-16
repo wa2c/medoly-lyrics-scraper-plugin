@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
+
+    <string name="site_name">サイト名</string>
+    <string name="site_uri">サイトURI</string>
+    <string name="search_param_key_list">検索URI</string>
+    <string name="search_anchor_parse_text">検索結果アンカーパース文字列</string>
+    <string name="search_anchor_parse_type">検索結果アンカーパース種別</string>
+    <string name="search_lyrics_parse_text">歌詞パース文字列</string>
+    <string name="search_lyrics_parse_type">歌詞パース種別</string>
+    <string name="uri_encoding">URI文字コード</string>
+    <string name="page_encoding">ページ文字コード</string>
+    <string name="timeout_milliseconds">読み込みタイムアウト (ms)</string>
+    <string name="delay_milliseconds">読み込みお遅延 (ms)</string>
+
+    <string name="regular_expression">正規表現</string>
+    <string name="xpath">XPath</string>
+
     <!-- Package -->
     <string name="app_description">外部サイトから歌詞を取得します。</string>
     <string name="class_receiver_label">歌詞取得アクション</string>
@@ -7,6 +25,7 @@
 
     <!-- Activity -->
     <string name="title_activity_settings">設定</string>
+    <string name="title_activity_site">サイト</string>
 
     <!-- Post -->
     <string name="message_no_media">メディアが選択されていません。</string>
@@ -36,7 +55,6 @@
     <string name="pref_summary_application_details">アプリ情報を表示します。</string>
     <string name="pref_title_about">About</string>
     <string name="pref_summary_about">About</string>
-
 
     <!-- System -->
     <string name="error_dialog_dismissed">ダイアログ操作に失敗しました。再度ダイアログを開いてください。</string>

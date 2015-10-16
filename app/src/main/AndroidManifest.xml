@@ -77,6 +77,11 @@
             android:name=".ScraperIntentService"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".SiteActivity"
+            android:label="@string/title_activity_site" >
+        </activity>
     </application>
 
 </manifest>
