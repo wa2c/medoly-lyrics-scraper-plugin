@@ -98,6 +98,7 @@ public class LyricsObtainParam {
         param2.SearchAnchorParseText = "<div class=\"title\"><a href=\"(.*?)\".*?</div>";
         param2.SearchLyricsParseType = LyricsObtainParam.ParseTypeRegexp;
         param2.SearchLyricsParseText = "<p id=\"lyricBody\">(.*?)</p>";
+        param1.DelayMilliseconds = 2000;
         map.put(param2.Id, param2);
 
         return map;
