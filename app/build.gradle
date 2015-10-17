@@ -8,7 +8,7 @@ android {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 0
+        versionCode 1
         versionName "1.0.0"
     }
     buildTypes {
@@ -16,7 +16,7 @@ android {
             versionNameSuffix 'd'
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

@@ -17,5 +17,3 @@
 #}
 
 -keepattributes *Annotation*
--keep class de.umass.** { *; }
--dontwarn de.umass.**

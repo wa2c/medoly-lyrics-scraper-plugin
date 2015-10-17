@@ -12,6 +12,7 @@
 	<string name="file_name">ファイル名</string>
 	<string name="data_size">データサイズ</string>
 	<string name="last_modified">更新日時</string>
+	<string name="data_uri">URI</string>
 
 	<!-- Media Property -->
 	<string name="media_title">タイトル</string>
