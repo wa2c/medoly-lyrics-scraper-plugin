@@ -10,10 +10,19 @@
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/siteListScrollView"
+        android:id="@+id/siteParamListScrollView"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true" >
+
+        <org.maripo.android.widget.DeepRadioGroup
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/siteParamGroupLayout"
+            android:divider="@drawable/divider"
+            android:dividerPadding="0dp"
+            android:showDividers="middle|beginning|end" />
+    </ScrollView>
 </RelativeLayout>

@@ -46,21 +46,10 @@
                 android:resource="@string/label_execute_get_lyrics" />
             <meta-data
                 android:name="execute_icon_get_lyrics"
-                android:resource="@drawable/ic_action_love" />
+                android:resource="@drawable/ic_action_download" />
             <meta-data
                 android:name="execute_type_get_lyrics"
                 android:value="TYPE_GET_LYRICS" />
-
-            <!--
-             <meta-data android:name="execute_id_unlove" android:value="1" />
-            <meta-data android:name="execute_label_unlove" android:resource="@string/label_execute_unlove" />
-            <meta-data android:name="execute_icon_unlove" android:resource="@drawable/ic_action_unlove" />
-
-            <meta-data android:name="execute_id_site" android:value="2" />
-            <meta-data android:name="execute_label_site" android:resource="@string/label_execute_site" />
-            <meta-data android:name="execute_icon_site" android:resource="@drawable/ic_action_lastfm" />
-            -->
-
         </receiver>
 
         <provider

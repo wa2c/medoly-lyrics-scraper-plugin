@@ -20,9 +20,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -169,30 +168,35 @@ public class ScraperIntentService extends IntentService {
      * @param requestPropertyMap プロパティ情報。
      */
     private void downloadLyrics(final Intent returnIntent, final Uri mediaUri, final HashMap<String, String> requestPropertyMap) {
-        final List<LyricsObtainParam> list = LyricsObtainParam.getParamList();
+        final Map<Integer, LyricsObtainParam> map = LyricsObtainParam.getParamMap();
+        int id = sharedPreferences.getInt(getString(R.string.prefkey_selected_id), 0);
+        LyricsObtainParam param = map.get(id);
+        if (param == null)
+            param = map.get(0);
 
+        final LyricsObtainParam targetParam = param;
         (new Handler()).post(
-                new Runnable() {
-                    public void run() {
-                        try {
-                            // 歌詞取得
-                            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, list.get(0));
-                            obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
-                                @Override
-                                public void onLyricsObtain(String lyrics) {
-                                    // 送信
-                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
-                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
+            new Runnable() {
+                public void run() {
+                    try {
+                        // 歌詞取得
+                        LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, targetParam);
+                        obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
+                            @Override
+                            public void onLyricsObtain(String lyrics) {
+                                // 送信
+                                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
+                                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
 
-                                    // 送信１
-                                    sendLyricsResult(returnIntent, getLyricsUri(lyrics));
-                                }
-                            });
-                        } catch (Exception e) {
-                            sendLyricsResult(returnIntent, null);
-                        }
+                                // 送信１
+                                sendLyricsResult(returnIntent, getLyricsUri(lyrics));
+                            }
+                        });
+                    } catch (Exception e) {
+                        sendLyricsResult(returnIntent, null);
                     }
                 }
+            }
         );
     }
 

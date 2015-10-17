@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wa2c on 2015/10/15.
@@ -14,6 +16,9 @@ public class LyricsObtainParam {
     public static int ParseTypeXPath = 0;
     /** パース種別:正規表現 */
     public static int ParseTypeRegexp = 1;
+
+    /** ID。 */
+    public int Id;
 
     /** サイト名。 */
     public String SiteName;
@@ -51,7 +56,7 @@ public class LyricsObtainParam {
         List<Pair<Integer, String>> list = new ArrayList<>();
         list.add(new Pair<>(R.string.site_name, SiteName));
         list.add(new Pair<>(R.string.site_uri, SiteUri));
-        list.add(new Pair<>(R.string.site_uri, SearchURI));
+        list.add(new Pair<>(R.string.search_uri, SearchURI));
         if (SearchAnchorParseType == ParseTypeXPath) list.add(new Pair<>(R.string.search_anchor_parse_type, context.getString(R.string.xpath)));
         else if (SearchAnchorParseType == ParseTypeRegexp) list.add(new Pair<>(R.string.search_anchor_parse_type, context.getString(R.string.regular_expression)));
         list.add(new Pair<>(R.string.search_anchor_parse_text, SearchAnchorParseText));
@@ -68,10 +73,11 @@ public class LyricsObtainParam {
 
 
     // TODO 仮置き
-    public static List<LyricsObtainParam> getParamList() {
-        List<LyricsObtainParam> list = new ArrayList<>();
+    public static Map<Integer, LyricsObtainParam> getParamMap() {
+        LinkedHashMap<Integer, LyricsObtainParam> map = new LinkedHashMap<>();
 
         LyricsObtainParam param1 = new LyricsObtainParam();
+        param1.Id = 0;
         param1.SiteName = "歌詞タイム";
         param1.SiteUri = "http://www.kasi-time.com/";
         //param1.SearchURI = "http://www.kasi-time.com/allsearch.php?q=item+%s+%s";
@@ -81,9 +87,10 @@ public class LyricsObtainParam {
         param1.SearchLyricsParseType = LyricsObtainParam.ParseTypeXPath;
         param1.SearchLyricsParseText = "//div[@id='lyrics']";
         param1.DelayMilliseconds = 2000;
-        list.add(param1);
+        map.put(param1.Id, param1);
 
         LyricsObtainParam param2 = new LyricsObtainParam();
+        param2.Id = 1;
         param2.SiteName = "J-Lyric.net";
         param2.SiteUri = "http://j-lyric.net/";
         param2.SearchURI = "http://search.j-lyric.net/index.php?kt=%MEDIA_TITLE%&ct=0&ka=%MEDIA_ARTIST%&ca=0";
@@ -91,9 +98,9 @@ public class LyricsObtainParam {
         param2.SearchAnchorParseText = "<div class=\"title\"><a href=\"(.*?)\".*?</div>";
         param2.SearchLyricsParseType = LyricsObtainParam.ParseTypeRegexp;
         param2.SearchLyricsParseText = "<p id=\"lyricBody\">(.*?)</p>";
-        list.add(param2);
+        map.put(param2.Id, param2);
 
-        return list;
+        return map;
     }
 
 

@@ -17,10 +17,18 @@
     <!-- Site info -->
 
     <!-- Library  -->
-    <string-array name="about_library_names"></string-array>
-    <string-array name="about_library_urls"></string-array>
+    <string-array name="about_library_names">
+       <item>jsoup</item>
+        <item>xsoup</item>
+    </string-array>
+    <string-array name="about_library_urls">
+        <item>http://jsoup.org/</item>
+        <item>https://github.com/code4craft/xsoup</item>
+    </string-array>
 
     <!-- Preferences -->
+    <string name="prefkey_selected_id">selected_id</string>
+
     <string name="prefkey_operation_media_open_enabled">operation_media_open_enabled</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
     <string name="prefkey_tweet_success_message_show">success_message_show</string>

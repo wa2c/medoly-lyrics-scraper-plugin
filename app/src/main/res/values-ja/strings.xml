@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-
     <string name="site_name">サイト名</string>
     <string name="site_uri">サイトURI</string>
-    <string name="search_param_key_list">検索URI</string>
-    <string name="search_anchor_parse_text">検索結果アンカーパース文字列</string>
-    <string name="search_anchor_parse_type">検索結果アンカーパース種別</string>
+    <string name="search_uri">検索URI</string>
+    <string name="search_anchor_parse_text">検索アンカーパース文字列</string>
+    <string name="search_anchor_parse_type">検索アンカーパース種別</string>
     <string name="search_lyrics_parse_text">歌詞パース文字列</string>
     <string name="search_lyrics_parse_type">歌詞パース種別</string>
     <string name="uri_encoding">URI文字コード</string>
     <string name="page_encoding">ページ文字コード</string>
     <string name="timeout_milliseconds">読み込みタイムアウト (ms)</string>
-    <string name="delay_milliseconds">読み込みお遅延 (ms)</string>
+    <string name="delay_milliseconds">読み込み遅延 (ms)</string>
 
     <string name="regular_expression">正規表現</string>
     <string name="xpath">XPath</string>
