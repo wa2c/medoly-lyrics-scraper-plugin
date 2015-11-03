@@ -30,7 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.wa2c.android.medoly.plugin.action.Logger;
+import com.wa2c.android.medoly.utils.Logger;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

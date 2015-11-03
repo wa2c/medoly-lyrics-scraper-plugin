@@ -14,8 +14,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
-import com.wa2c.android.medoly.plugin.action.Logger;
+import com.wa2c.android.medoly.library.MediaProperty;
+import com.wa2c.android.medoly.utils.Logger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -41,12 +41,14 @@ public class LyricsObtainClient {
     /** 歌詞ページ取得スクリプト。 */
     private static final String LYRICS_PAGE_GET_SCRIPT = "javascript:window." + JAVASCRIPT_INTERFACE + ".getLyrics(document.getElementsByTagName('html')[0].outerHTML);";
 
+    /** 初期状態。 */
+    private static final int STATE_INIT = 0;
     /** 検索ページ取得中。 */
-    private static final int STATE_SEARCH = 0;
+    private static final int STATE_SEARCH = 1;
     /** 歌詞ページ取得中。  */
-    private static final int STATE_PAGE = 1;
+    private static final int STATE_PAGE = 2;
     /** 完了済み。 */
-    private static final int STATE_COMPLETE = 2;
+    private static final int STATE_COMPLETE = 3;
 
 
     /** 要求プロパティ。 */
@@ -56,7 +58,7 @@ public class LyricsObtainClient {
     /** Webページ表示用WebView。 */
     private WebView webView;
     /** 現在の状態 */
-    private int currentState = STATE_SEARCH;
+    private int currentState = STATE_INIT;
 
 
 
@@ -83,32 +85,40 @@ public class LyricsObtainClient {
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Ajax処理待ちの遅延
-                handler.postDelayed(loadPage, lyricsObtainParam.DelayMilliseconds);
+                handler.postDelayed(executeScript, lyricsObtainParam.DelayMilliseconds);
             }
-
-            // ページ取得
-            private final Runnable loadPage = new Runnable() {
-                @Override
-                public void run() {
-                    if (currentState == STATE_SEARCH) {
-                        // 歌詞検索結果の取得
-                        webView.loadUrl(SEARCH_PAGE_GET_SCRIPT);
-                    } else if (currentState == STATE_PAGE) {
-                        // 歌詞ページの取得
-                        webView.loadUrl(LYRICS_PAGE_GET_SCRIPT);
-                    } else {
-                        returnLyrics(null);
-                    }
-                }
-            };
 
             // エラー
             @Override
             public void onReceivedError (WebView view, int errorCode, String description, String failingUrl) {
                 returnLyrics(null);
             }
+
+            // 同じビューで再読込
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
+
+            // スクリプトを実行してページを取得
+            private final Runnable executeScript = new Runnable() {
+                @Override
+                public void run() {
+                    if (currentState == STATE_SEARCH) {
+                        // 歌詞検索結果の取得スクリプト実行
+                        webView.loadUrl(SEARCH_PAGE_GET_SCRIPT);
+                    } else if (currentState == STATE_PAGE) {
+                        // 歌詞ページの取得スクリプト実行
+                        webView.loadUrl(LYRICS_PAGE_GET_SCRIPT);
+                    } else {
+                        returnLyrics(null);
+                    }
+                }
+            };
         });
     }
+
+
 
 
 
@@ -121,10 +131,16 @@ public class LyricsObtainClient {
             throw new IllegalArgumentException();
         }
 
-        String searchUri = replaceUriTag(lyricsObtainParam.SearchURI);
-        this.lyricsObtainListener = listener;
-        this.webView.loadUrl(searchUri);
-    }
+        lyricsObtainListener = listener;
+        final String searchUri = replaceUriTag(lyricsObtainParam.SearchURI);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                currentState = STATE_SEARCH;
+                webView.loadUrl(searchUri);
+            }
+        });
+   }
 
     /**
      * URIのタグを置換える。
@@ -135,7 +151,7 @@ public class LyricsObtainClient {
         // 正規表現作成
         StringBuilder regexpBuilder = new StringBuilder();
         boolean isFirst = true;
-        for (ActionPluginParam.MediaProperty p : ActionPluginParam.MediaProperty.values()) {
+        for (MediaProperty p : MediaProperty.values()) {
             if (!isFirst) regexpBuilder.append("|");
             else isFirst = false;
             regexpBuilder.append("%").append(p.getKeyName()).append("%");
@@ -188,7 +204,7 @@ public class LyricsObtainClient {
         public void getSearchResult(String html) {
 
             try {
-                url = null;
+                 url = null;
 
                 if (lyricsObtainParam.SearchAnchorParseType == LyricsObtainParam.ParseTypeXPath) {
                     // XPath

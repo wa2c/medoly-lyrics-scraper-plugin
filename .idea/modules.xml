@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MedolyLyricsScraperPlugin.iml" filepath="$PROJECT_DIR$/MedolyLyricsScraperPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/medolylibrary/medolylibrary.iml" filepath="$PROJECT_DIR$/medolylibrary/medolylibrary.iml" />
     </modules>
   </component>
 </project>

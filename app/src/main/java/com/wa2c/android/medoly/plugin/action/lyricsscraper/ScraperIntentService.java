@@ -7,13 +7,19 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
-import com.wa2c.android.medoly.plugin.action.ActionPluginParam;
-import com.wa2c.android.medoly.plugin.action.Logger;
+import com.wa2c.android.medoly.library.MediaProperty;
+import com.wa2c.android.medoly.library.MedolyParam;
+import com.wa2c.android.medoly.library.PluginAction;
+import com.wa2c.android.medoly.library.PluginOperationCategory;
+import com.wa2c.android.medoly.library.PluginTypeCategory;
+import com.wa2c.android.medoly.utils.Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -51,25 +57,44 @@ public class ScraperIntentService extends IntentService {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
-        super.onStart(intent, startId);
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
 
-        // MEMO: onStartイベントのみ、UIスレッドが実行可能
+        // onStartCommand でUIスレッドが実行可能
+        startScraping(intent);
+
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+
+    /**
+     * 歌詞の取得を開始。
+     * @param intent インテント。
+     */
+    private synchronized void startScraping(Intent intent) {
+        if (intent == null)
+            return;
 
         this.context = this;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         // アクションIDを取得
-        String actionId = intent.getStringExtra(ActionPluginParam.PLUGIN_ACTION_ID);
-        String srcPackage = intent.getStringExtra(ActionPluginParam.PLUGIN_SRC_PACKAGE);
+        String actionId = intent.getStringExtra(MedolyParam.PLUGIN_ACTION_ID);
+        String srcPackage = intent.getStringExtra(MedolyParam.PLUGIN_SRC_PACKAGE);
         if (TextUtils.isEmpty(actionId) || TextUtils.isEmpty(srcPackage)) {
             return;
         }
 
         // 戻り先インテント
-        Intent returnIntent = new Intent(ActionPluginParam.PLUGIN_ACTION);
+        Intent returnIntent = new Intent(PluginAction.ACTION_MEDIA.getActionValue());
         returnIntent.setPackage(srcPackage);
-        returnIntent.putExtra(ActionPluginParam.PLUGIN_ACTION_ID, actionId);
+        returnIntent.putExtra(MedolyParam.PLUGIN_ACTION_ID, actionId);
 
         // カテゴリ取得
         Set<String> categories = intent.getCategories();
@@ -79,7 +104,7 @@ public class ScraperIntentService extends IntentService {
         }
 
         // 自動実行がOFFの場合は終了
-        if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_MEDIA_OPEN.getCategoryValue()) &&
+        if (categories.contains(PluginOperationCategory.OPERATION_MEDIA_OPEN.getCategoryValue()) &&
                 !sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
             sendLyricsResult(returnIntent, Uri.EMPTY);
             return;
@@ -117,8 +142,8 @@ public class ScraperIntentService extends IntentService {
         // 値を取得
         HashMap<String, String> propertyMap = null;
         try {
-            if (intent.hasExtra(ActionPluginParam.PLUGIN_VALUE_KEY)) {
-                Serializable serializable = intent.getSerializableExtra(ActionPluginParam.PLUGIN_VALUE_KEY);
+            if (intent.hasExtra(MedolyParam.PLUGIN_VALUE_KEY)) {
+                Serializable serializable = intent.getSerializableExtra(MedolyParam.PLUGIN_VALUE_KEY);
                 if (serializable != null) {
                     propertyMap = (HashMap<String, String>) serializable;
                 }
@@ -129,8 +154,8 @@ public class ScraperIntentService extends IntentService {
             }
 
             // 情報無し
-            if (!propertyMap.containsKey(ActionPluginParam.MediaProperty.TITLE.getKeyName()) &&
-                    !propertyMap.containsKey(ActionPluginParam.MediaProperty.ARTIST.getKeyName())) {
+            if (!propertyMap.containsKey(MediaProperty.TITLE.getKeyName()) &&
+                    !propertyMap.containsKey(MediaProperty.ARTIST.getKeyName())) {
                 sendLyricsResult(returnIntent, null);
                 return;
             }
@@ -140,7 +165,7 @@ public class ScraperIntentService extends IntentService {
             return;
         }
 
-        if (categories.contains(ActionPluginParam.PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
+        if (categories.contains(PluginOperationCategory.OPERATION_EXECUTE.getCategoryValue())) {
             // Execute
             final String EXECUTE_GET_LYRICS_ID = "execute_id_get_lyrics";
 
@@ -160,7 +185,6 @@ public class ScraperIntentService extends IntentService {
         }
     }
 
-
     /**
      * 歌詞取得。
      * @param returnIntent  戻りインテント。
@@ -176,27 +200,28 @@ public class ScraperIntentService extends IntentService {
 
         final LyricsObtainParam targetParam = param;
         (new Handler()).post(
-            new Runnable() {
-                public void run() {
-                    try {
-                        // 歌詞取得
-                        LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, targetParam);
-                        obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
-                            @Override
-                            public void onLyricsObtain(String lyrics) {
-                                // 送信
-                                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
-                                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
+                new Runnable() {
+                    public void run() {
+                        try {
+                            // 歌詞取得
+                            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, targetParam);
+                            obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
+                                @Override
+                                public void onLyricsObtain(String lyrics) {
+                                    // 送信
+                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
+                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
 
-                                // 送信１
-                                sendLyricsResult(returnIntent, getLyricsUri(lyrics));
-                            }
-                        });
-                    } catch (Exception e) {
-                        sendLyricsResult(returnIntent, null);
+                                    // 送信１
+                                    sendLyricsResult(returnIntent, getLyricsUri(lyrics));
+                                }
+                            });
+                        } catch (Exception e) {
+                            Logger.e(e);
+                            sendLyricsResult(returnIntent, null);
+                        }
                     }
                 }
-            }
         );
     }
 
@@ -237,8 +262,8 @@ public class ScraperIntentService extends IntentService {
      * @param returnIntent 戻りインテント。
      * @param lyricsUri 歌詞データのURI。取得できない場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
      */
-    public void sendLyricsResult(@NonNull Intent returnIntent, Uri lyricsUri) {
-        returnIntent.addCategory(ActionPluginParam.PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
+    private void sendLyricsResult(@NonNull Intent returnIntent, Uri lyricsUri) {
+        returnIntent.addCategory(PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
         returnIntent.putExtra(Intent.EXTRA_STREAM, lyricsUri);
         returnIntent.putExtra(Intent.EXTRA_TITLE, ""); // TODO
         returnIntent.putExtra(Intent.EXTRA_ORIGINATING_URI, ""); // TODO
