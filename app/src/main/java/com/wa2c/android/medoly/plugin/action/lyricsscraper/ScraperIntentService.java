@@ -43,6 +43,7 @@ public class ScraperIntentService extends IntentService {
     /** 設定。 */
     private SharedPreferences sharedPreferences;
 
+    private static boolean processing = false;
 
 
     /**
@@ -54,16 +55,26 @@ public class ScraperIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+//        // ダウンロード処理中は抜けない
+//        while (processing) {
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        processing = false;
+
+        startScraping(intent); // onStartCommand でUIスレッドが実行可能
+
         super.onStartCommand(intent, flags, startId);
-
-        // onStartCommand でUIスレッドが実行可能
-        startScraping(intent);
-
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Nullable
@@ -80,6 +91,7 @@ public class ScraperIntentService extends IntentService {
     private synchronized void startScraping(Intent intent) {
         if (intent == null)
             return;
+
 
         this.context = this;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -198,31 +210,53 @@ public class ScraperIntentService extends IntentService {
         if (param == null)
             param = map.get(0);
 
+        processing = true;
         final LyricsObtainParam targetParam = param;
-        (new Handler()).post(
-                new Runnable() {
-                    public void run() {
-                        try {
-                            // 歌詞取得
-                            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, targetParam);
-                            obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
-                                @Override
-                                public void onLyricsObtain(String lyrics) {
-                                    // 送信
-                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
-                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
+        try {
+            // 歌詞取得
+            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, param);
+            obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
+                @Override
+                public void onLyricsObtain(String lyrics) {
+                    // 送信
+                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
+                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
 
-                                    // 送信１
-                                    sendLyricsResult(returnIntent, getLyricsUri(lyrics));
-                                }
-                            });
-                        } catch (Exception e) {
-                            Logger.e(e);
-                            sendLyricsResult(returnIntent, null);
-                        }
-                    }
+                    // 送信１
+                    sendLyricsResult(returnIntent, getLyricsUri(lyrics));
                 }
-        );
+            });
+        } catch (Exception e) {
+            Logger.e(e);
+            sendLyricsResult(returnIntent, null);
+        }
+
+        //                            final LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, targetParam);
+
+//        (new Handler()).postDelayed(
+//                new Runnable() {
+//                    public void run() {
+//                        try {
+//                            // 歌詞取得
+////                            final LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, targetParam);
+//                            obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
+//                                @Override
+//                                public void onLyricsObtain(String lyrics) {
+//                                    // 送信
+//                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, mediaUri.toString()).apply();
+//                                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
+//
+//                                    // 送信１
+//                                    sendLyricsResult(returnIntent, getLyricsUri(lyrics));
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            Logger.e(e);
+//                            sendLyricsResult(returnIntent, null);
+//                        }
+//                    }
+//                }, 1000
+//        );
     }
 
     /**
@@ -272,5 +306,6 @@ public class ScraperIntentService extends IntentService {
             context.grantUriPermission(returnIntent.getPackage(), lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         context.sendBroadcast(returnIntent);
+        processing = false;
     }
 }

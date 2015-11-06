@@ -1,10 +1,5 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
-/**
- * Created by wa2c on 2015/08/18.
- */
-/** 検索URI。 */
-
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -133,14 +128,24 @@ public class LyricsObtainClient {
 
         lyricsObtainListener = listener;
         final String searchUri = replaceUriTag(lyricsObtainParam.SearchURI);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                currentState = STATE_SEARCH;
-                webView.loadUrl(searchUri);
-            }
-        });
-   }
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                currentState = STATE_SEARCH;
+//                webView.loadUrl(searchUri);
+//            }
+//        }, 1000);
+
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        currentState = STATE_SEARCH;
+        webView.loadUrl(searchUri);
+
+    }
 
     /**
      * URIのタグを置換える。
