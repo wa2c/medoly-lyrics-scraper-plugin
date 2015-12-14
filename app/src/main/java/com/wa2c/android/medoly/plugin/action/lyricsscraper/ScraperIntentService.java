@@ -211,7 +211,6 @@ public class ScraperIntentService extends IntentService {
             param = map.get(0);
 
         processing = true;
-        final LyricsObtainParam targetParam = param;
         try {
             // 歌詞取得
             LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, param);
@@ -227,6 +226,7 @@ public class ScraperIntentService extends IntentService {
                 }
             });
         } catch (Exception e) {
+
             Logger.e(e);
             sendLyricsResult(returnIntent, null);
         }

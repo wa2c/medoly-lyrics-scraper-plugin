@@ -50,6 +50,10 @@
                 android:value="TYPE_GET_LYRICS" />
         </receiver>
 
+        <receiver
+            android:name=".ToastReceiver"
+            android:exported="false" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper"

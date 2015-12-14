@@ -14,11 +14,13 @@ import java.text.Normalizer;
 public class AppUtils {
 
     public static void showToast(Context context, String text) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+        ToastReceiver.showToast(context, text);
     }
 
     public static void showToast(Context context, int stringId) {
-        Toast.makeText(context, stringId, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, stringId, Toast.LENGTH_SHORT).show();
+        ToastReceiver.showToast(context, stringId);
     }
 
     /**

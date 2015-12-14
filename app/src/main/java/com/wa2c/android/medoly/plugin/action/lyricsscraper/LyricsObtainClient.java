@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -67,13 +68,14 @@ public class LyricsObtainClient {
         this.lyricsObtainParam = param;
 
         this.webView = new WebView(context);
-        this.webView.getSettings().setAppCacheEnabled(false);
+        this.webView.getSettings().setAppCacheEnabled(true);
         this.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         this.webView.getSettings().setLoadsImagesAutomatically(false);
         this.webView.getSettings().setJavaScriptEnabled(true);
         this.webView.getSettings().setUserAgentString(context.getString(R.string.app_user_agent));
         this.webView.setVisibility(View.INVISIBLE);
         this.webView.addJavascriptInterface(new JavaScriptInterface(), JAVASCRIPT_INTERFACE);
+        this.webView.setWebChromeClient(new WebChromeClient());
         this.webView.setWebViewClient(new WebViewClient() {
 
             // ページ読み込み完了
@@ -128,23 +130,14 @@ public class LyricsObtainClient {
 
         lyricsObtainListener = listener;
         final String searchUri = replaceUriTag(lyricsObtainParam.SearchURI);
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                currentState = STATE_SEARCH;
-//                webView.loadUrl(searchUri);
-//            }
-//        }, 1000);
 
-//        try {
-//            Thread.sleep(1000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-        currentState = STATE_SEARCH;
-        webView.loadUrl(searchUri);
-
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currentState = STATE_SEARCH;
+                webView.loadUrl(searchUri);
+            }
+        }, 1000);
     }
 
     /**
@@ -300,6 +293,14 @@ public class LyricsObtainClient {
     private void returnLyrics(String lyrics) {
         if (lyricsObtainListener != null) {
             lyricsObtainListener.onLyricsObtain(lyrics);
+        }
+
+        if(webView != null){
+            webView.stopLoading();
+            webView.setWebChromeClient(null);
+            webView.setWebViewClient(null);
+            webView.destroy();
+            webView = null;
         }
     }
 
