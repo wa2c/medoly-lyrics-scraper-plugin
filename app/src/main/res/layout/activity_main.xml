@@ -26,6 +26,14 @@
                 android:layout_margin="@dimen/main_button_margin" />
 
             <Button
+                android:id="@+id/updateSiteButton"
+                android:layout_width="@dimen/main_button_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/main_button_margin"
+                android:text="@string/label_button_update_site" />
+
+            <Button
                 android:id="@+id/settingsButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="wrap_content"

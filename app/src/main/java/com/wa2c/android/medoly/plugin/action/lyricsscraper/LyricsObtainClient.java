@@ -85,11 +85,11 @@ public class LyricsObtainClient {
                 handler.postDelayed(executeScript, lyricsObtainParam.DelayMilliseconds);
             }
 
-            // エラー
-            @Override
-            public void onReceivedError (WebView view, int errorCode, String description, String failingUrl) {
-                returnLyrics(null);
-            }
+//            // エラー
+//            @Override
+//            public void onReceivedError (WebView view, int errorCode, String description, String failingUrl) {
+//                returnLyrics(null);
+//            }
 
             // 同じビューで再読込
             @Override
@@ -230,13 +230,22 @@ public class LyricsObtainClient {
                 }
 
                 // 歌詞取得
-                handler.post(new Runnable() {
+                handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         currentState = STATE_PAGE;
                         webView.loadUrl(url);
                     }
-                });
+                }, 1000);
+                // 歌詞再取得 (初回起動時に応答が返ってこない場合があるため)
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 未完了の場合は再実行
+                        if (currentState != STATE_COMPLETE)
+                            webView.loadUrl(url);
+                    }
+                }, 8000);
             } catch (Exception e) {
                 Logger.e(e);
                 returnLyrics(null);
@@ -277,9 +286,9 @@ public class LyricsObtainClient {
                 lyrics = AppUtils.adjustLyrics(lyrics);
 
                 // 歌詞を返す
-                currentState = STATE_COMPLETE;
                 returnLyrics(lyrics);
             } catch (Exception e) {
+                currentState = STATE_COMPLETE;
                 Logger.e(e);
                 returnLyrics(null);
             }

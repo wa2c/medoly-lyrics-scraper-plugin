@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
+
     buildTypes {
         debug {
             versionNameSuffix 'd'
@@ -26,6 +27,11 @@ android {
             options.compilerArgs << "-Xlint:deprecation"
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
+
 }
 
 
@@ -35,6 +41,8 @@ dependencies {
     compile 'com.android.support:support-v4:23.1.0'
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'us.codecraft:xsoup:0.3.0'
+    compile 'com.google.gdata:core:1.47.1'
+    compile 'com.google.code.gson:gson:2.5'
 
     //compile 'nu.validator.htmlparser:htmlparser:1.4'
     //compile 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'

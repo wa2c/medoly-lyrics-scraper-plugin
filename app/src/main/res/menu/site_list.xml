@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<item
+		android:id="@+id/menu_update_list"
+		android:icon="@android:drawable/stat_notify_sync"
+		android:orderInCategory="100"
+		android:showAsAction="ifRoom"
+		android:title="@string/menu_update_list"
+		android:visible="true" />
+
+	<item
+		android:id="@+id/menu_open_sheet"
+		android:icon="@android:drawable/ic_dialog_info"
+		android:orderInCategory="100"
+		android:showAsAction="ifRoom"
+		android:title="@string/menu_open_list"
+		android:visible="true" />
+
+</menu>

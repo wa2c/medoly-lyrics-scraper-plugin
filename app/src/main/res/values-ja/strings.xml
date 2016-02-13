@@ -24,12 +24,15 @@
     <!-- Activity -->
     <string name="title_activity_settings">設定</string>
     <string name="title_activity_site">サイト</string>
+    <string name="menu_update_list">リスト更新</string>
+    <string name="menu_open_list">リストを開く</string>
 
     <!-- Post -->
     <string name="message_no_media">メディアが選択されていません。</string>
 
     <!-- Main Activity -->
     <string name="label_button_site_list">サイト一覧</string>
+    <string name="label_button_update_site">サイト更新</string>
     <string name="label_button_settings">設定</string>
     <string name="label_button_launch_medoly">Medoly 起動</string>
     <string name="message_no_medoly">Medolyをインストールしてください。</string>

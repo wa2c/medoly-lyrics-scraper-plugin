@@ -1,7 +1,10 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Pair;
+
+import com.wa2c.android.medoly.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -45,6 +48,11 @@ public class LyricsObtainParam {
     public long TimeoutMilliseconds = 10000;
     /** 処理遅延。 */
     public long DelayMilliseconds = 0;
+
+
+    public LyricsObtainParam() {
+
+    }
 
 
     /**

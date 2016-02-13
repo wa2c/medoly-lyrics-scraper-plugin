@@ -69,11 +69,11 @@ public class ScraperIntentService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        processing = false;
+        super.onStartCommand(intent, flags, startId);
 
+        processing = false;
         startScraping(intent); // onStartCommand でUIスレッドが実行可能
 
-        super.onStartCommand(intent, flags, startId);
         return START_NOT_STICKY;
     }
 
