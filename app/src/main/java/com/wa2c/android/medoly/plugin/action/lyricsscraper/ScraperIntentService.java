@@ -203,16 +203,10 @@ public class ScraperIntentService extends IntentService {
      * @param requestPropertyMap プロパティ情報。
      */
     private void downloadLyrics(final Intent returnIntent, final Uri mediaUri, final HashMap<String, String> requestPropertyMap) {
-        final Map<Integer, LyricsObtainParam> map = LyricsObtainParam.getParamMap();
-        int id = sharedPreferences.getInt(getString(R.string.prefkey_selected_id), 0);
-        LyricsObtainParam param = map.get(id);
-        if (param == null)
-            param = map.get(0);
-
         processing = true;
         try {
             // 歌詞取得
-            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap, param);
+            LyricsObtainClient obtainClient = new LyricsObtainClient(context, requestPropertyMap);
             obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
                 @Override
                 public void onLyricsObtain(String lyrics) {

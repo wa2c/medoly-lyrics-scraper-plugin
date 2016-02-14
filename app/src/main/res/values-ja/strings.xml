@@ -32,13 +32,15 @@
 
     <!-- Main Activity -->
     <string name="label_button_site_list">サイト一覧</string>
-    <string name="label_button_update_site">サイト更新</string>
     <string name="label_button_settings">設定</string>
     <string name="label_button_launch_medoly">Medoly 起動</string>
     <string name="message_no_medoly">Medolyをインストールしてください。</string>
     <string name="message_account_auth">アカウントの認証が完了しています。</string>
     <string name="message_account_not_auth">アカウントが認証されていません。</string>
     <string name="message_account_clear">アカウント情報をクリアしました。</string>
+
+    <!-- Site Activity -->
+    <string name="label"></string>
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>

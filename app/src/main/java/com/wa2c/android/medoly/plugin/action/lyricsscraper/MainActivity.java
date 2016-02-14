@@ -2,15 +2,10 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.wa2c.android.medoly.library.MedolyParam;
-import com.wa2c.android.medoly.utils.Logger;
-
-import java.util.HashSet;
 
 /**
  * メイン画面のアクティビティ。
@@ -27,14 +22,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, SiteActivity.class));
-            }
-        });
-
-        // Update Site
-        findViewById(R.id.updateSiteButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, GroupActivity.class));
             }
         });
 

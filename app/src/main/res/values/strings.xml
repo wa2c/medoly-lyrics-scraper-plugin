@@ -32,7 +32,6 @@
 
     <!-- Main Activity -->
     <string name="label_button_site_list">Site List</string>
-    <string name="label_button_update_site">Update Site</string>
     <string name="label_button_settings">Settings</string>
     <string name="label_button_launch_medoly">Launch Medoly</string>
     <string name="message_no_medoly">Please install Medoly.</string>
@@ -59,6 +58,5 @@
 
     <!-- System -->
     <string name="error_dialog_dismissed">Open the dialog again.</string>
-    <string name="title_activity_group">GroupActivity</string>
 
 </resources>

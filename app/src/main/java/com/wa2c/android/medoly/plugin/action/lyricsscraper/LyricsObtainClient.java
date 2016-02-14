@@ -68,7 +68,7 @@ public class LyricsObtainClient {
      * @param context コンテキスト。
      * @param propertyMap 要求元プロパティマップ。
      */
-    public LyricsObtainClient(Context context, HashMap<String, String> propertyMap, LyricsObtainParam param) {
+    public LyricsObtainClient(Context context, HashMap<String, String> propertyMap) {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String siteId = preferences.getString(context.getString(R.string.prefkey_selected_site_id), "1");
