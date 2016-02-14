@@ -31,6 +31,7 @@
 
     <!-- Preferences -->
     <string name="prefkey_selected_id">selected_id</string>
+    <string name="prefkey_selected_site_id">selected_site_id</string>
 
     <string name="prefkey_operation_media_open_enabled">operation_media_open_enabled</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>

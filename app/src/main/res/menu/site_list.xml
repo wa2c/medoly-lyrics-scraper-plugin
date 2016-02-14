@@ -2,7 +2,7 @@
 
 	<item
 		android:id="@+id/menu_update_list"
-		android:icon="@android:drawable/stat_notify_sync"
+		android:icon="@drawable/ic_action_renew"
 		android:orderInCategory="100"
 		android:showAsAction="ifRoom"
 		android:title="@string/menu_update_list"
@@ -10,7 +10,7 @@
 
 	<item
 		android:id="@+id/menu_open_sheet"
-		android:icon="@android:drawable/ic_dialog_info"
+		android:icon="@drawable/ic_action_launch"
 		android:orderInCategory="100"
 		android:showAsAction="ifRoom"
 		android:title="@string/menu_open_list"

@@ -6,24 +6,28 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.wa2c.android.medoly.utils.Logger;
 
-import java.net.URISyntaxException;
-import java.security.acl.Group;
 
 public class GroupActivity extends Activity {
 
@@ -38,8 +42,8 @@ public class GroupActivity extends Activity {
     /** Group ID. */
     private static final String GROUP_ID = "group_id";
 
-    /** List view. */
-    private ListView listView;
+    /** Preferences. */
+    private SharedPreferences preference;
     /** Cursor Adapter. */
     private SheetCursorAdapter cursorAdapter;
     /** Loader manager. */
@@ -49,6 +53,7 @@ public class GroupActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.preference = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_group);
 
         // action bar
@@ -60,21 +65,24 @@ public class GroupActivity extends Activity {
 
         // create loader manager
         Bundle bundle = new Bundle();
-        bundle.putInt("group_id", 1);
         bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_GROUP);
 
         // create view
         cursorAdapter = new SheetCursorAdapter(this, CURSOR_TYPE_GROUP);
-        listView = (ListView) findViewById(R.id.groupListView);
+        ListView listView = (ListView) findViewById(R.id.groupListView);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                SheetCursorAdapter.ListViewHolder holder = (SheetCursorAdapter.ListViewHolder) view.getTag();
                 if (cursorAdapter.getCursorType() == CURSOR_TYPE_GROUP) {
-                    SheetCursorAdapter.ListViewHolder holder = (SheetCursorAdapter.ListViewHolder) view.getTag();
                     openSiteList(holder.GroupId);
+                } else if (cursorAdapter.getCursorType() == CURSOR_TYPE_SITE) {
+                    preference.edit().putString(getString(R.string.prefkey_selected_site_id), holder.SiteId).apply();
+                    cursorAdapter.notifyDataSetChanged();
                 }
             }
         });
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         listView.setAdapter(cursorAdapter);
 
         // create load manager
@@ -143,11 +151,11 @@ public class GroupActivity extends Activity {
      * Open site list.
      * @param groupId Group ID.
      */
-    private void openSiteList(int groupId) {
+    private void openSiteList(String groupId) {
         cursorAdapter.setCursorType(CURSOR_TYPE_SITE);
         Bundle bundle = new Bundle();
         bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_SITE);
-        bundle.putInt(GROUP_ID, groupId);
+        bundle.putString(GROUP_ID, groupId);
         loaderManager.restartLoader(CURSOR_LOADER_ID, bundle, cursorLoaderCallbacks);
     }
 
@@ -180,13 +188,13 @@ public class GroupActivity extends Activity {
                             null,
                             GroupColumn.NAME.getColumnKey());
                 } else if (type == CURSOR_TYPE_SITE) {
-                    int groupId = args.getInt(GROUP_ID, -1);
+                    String groupId = args.getString(GROUP_ID, "-1");
                     return new CursorLoader(
                             GroupActivity.this,
                             SiteProvider.SITE_URI,
                             null,
                             SiteColumn.GROUP_ID.getColumnKey() + "=?",
-                            new String[] { String.valueOf(groupId) },
+                            new String[] { groupId },
                             SiteColumn.SITE_NAME.getColumnKey());
                 }
             }
@@ -212,39 +220,93 @@ public class GroupActivity extends Activity {
      */
     private static class SheetCursorAdapter extends CursorAdapter {
 
+        /** Cursor type. */
         private int cursorType;
+        /** Set cursor type. */
         public void setCursorType(int cursorType) {
             this.cursorType = cursorType;
         }
+        /** Get cursor type. */
         public int getCursorType() {
             return this.cursorType;
         }
 
+        private SharedPreferences preference;
+
         public SheetCursorAdapter(Activity context, int cursorType) {
             super(context, null, true);
             this.cursorType = cursorType;
+            this.preference = PreferenceManager.getDefaultSharedPreferences(context);
         }
 
         @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            final View view = View.inflate(context, android.R.layout.simple_list_item_1, null);
+        public View newView(final Context context, final Cursor cursor, final ViewGroup parent) {
+            final View view = View.inflate(context, R.layout.layout_site_item, null);
             final ListViewHolder holder = new ListViewHolder();
-            holder.TitleTextView = (TextView)view.findViewById(android.R.id.text1);
+            holder.SelectRadioButton = (RadioButton)view.findViewById(R.id.siteSelectRadioButton);
+            holder.TitleTextView = (TextView)view.findViewById(R.id.siteParamTitleTextView);
+            holder.LaunchImageButton = (ImageButton)view.findViewById(R.id.siteLaunchImageButton);
             view.setTag(holder);
             return view;
         }
 
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
+        public void bindView(final View view, final Context context, final Cursor cursor) {
             final ListViewHolder holder = (ListViewHolder) view.getTag();
             if (cursorType == CURSOR_TYPE_GROUP) {
-                final String title = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.NAME.getColumnKey()));
-                holder.GroupId = cursor.getInt(cursor.getColumnIndexOrThrow(GroupColumn.GROUP_ID.getColumnKey()));
+                holder.SelectRadioButton.setVisibility(View.GONE);
+                holder.LaunchImageButton.setVisibility(View.GONE);
+
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.NAME.getColumnKey()));
+                holder.GroupId = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.GROUP_ID.getColumnKey()));
                 holder.TitleTextView.setText(title);
+
             } else {
-                final String title = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_NAME.getColumnKey()));
-                holder.GroupId = cursor.getInt(cursor.getColumnIndexOrThrow(SiteColumn.GROUP_ID.getColumnKey()));
+                // ID
+                holder.GroupId = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.GROUP_ID.getColumnKey()));
+                holder.SiteId = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_ID.getColumnKey()));
+
+                // select
+                holder.SelectRadioButton.setVisibility(View.VISIBLE);
+                if (holder.SiteId.equals(preference.getString(context.getString(R.string.prefkey_selected_site_id), "-1"))) {
+                    holder.SelectRadioButton.setChecked(true);
+                } else {
+                    holder.SelectRadioButton.setChecked(false);
+                }
+                holder.SelectRadioButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return view.onTouchEvent(event);
+                    }
+                });
+
+                // title
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_NAME.getColumnKey()));
                 holder.TitleTextView.setText(title);
+                holder.TitleTextView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        return view.onTouchEvent(event);
+                    }
+                });
+
+                // uri
+                String uri = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_URI.getColumnKey()));
+                holder.LaunchImageButton.setTag(uri);
+                holder.LaunchImageButton.setVisibility(View.VISIBLE);
+                if (!TextUtils.isEmpty(uri)) {
+                    holder.LaunchImageButton.setEnabled(true);
+                    holder.LaunchImageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Uri sheetUri = Uri.parse((String) v.getTag());
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, sheetUri);
+                            context.startActivity(browserIntent);
+                        }
+                    });
+                } else {
+                    holder.LaunchImageButton.setEnabled(false);
+                }
             }
         }
 
@@ -252,9 +314,12 @@ public class GroupActivity extends Activity {
          * ViewHolder for QueueListView.
          */
         private static class ListViewHolder {
-            public int GroupId;
+            public String GroupId;
+            public String SiteId;
 
+            public RadioButton SelectRadioButton;
             public TextView TitleTextView;
+            public ImageButton LaunchImageButton;
         }
     }
 

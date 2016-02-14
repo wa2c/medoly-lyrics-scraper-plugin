@@ -92,7 +92,6 @@ public class ScraperIntentService extends IntentService {
         if (intent == null)
             return;
 
-
         this.context = this;
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 

@@ -85,8 +85,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="google-oauth-client-1.11.0-beta" level="project" />
     <orderEntry type="library" exported="" name="google-http-client-1.11.0-beta" level="project" />
-    <orderEntry type="library" exported="" name="jsoup-1.8.3" level="project" />
     <orderEntry type="library" exported="" name="jetty-util-6.1.26" level="project" />
+    <orderEntry type="library" exported="" name="jsoup-1.8.3" level="project" />
     <orderEntry type="library" exported="" name="gson-2.5" level="project" />
     <orderEntry type="library" exported="" name="assertj-core-1.5.0" level="project" />
     <orderEntry type="library" exported="" name="activation-1.1" level="project" />
@@ -97,8 +97,8 @@
     <orderEntry type="library" exported="" name="google-oauth-client-java6-1.11.0-beta" level="project" />
     <orderEntry type="library" exported="" name="servlet-api-2.5-20081211" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.1.0" level="project" />
-    <orderEntry type="library" exported="" name="guava-13.0.1" level="project" />
     <orderEntry type="library" exported="" name="xsoup-0.3.0" level="project" />
+    <orderEntry type="library" exported="" name="guava-13.0.1" level="project" />
     <orderEntry type="library" exported="" name="core-1.47.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.1.0" level="project" />
     <orderEntry type="module" module-name="medolylibrary" exported="" />
