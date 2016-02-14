@@ -40,7 +40,8 @@
     <string name="message_account_clear">アカウント情報をクリアしました。</string>
 
     <!-- Site Activity -->
-    <string name="label"></string>
+    <string name="message_renew_list_succeeded">サイト情報の更新を完了しました。</string>
+    <string name="message_renew_list_failed">サイト情報の更新に失敗しました。</string>
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>

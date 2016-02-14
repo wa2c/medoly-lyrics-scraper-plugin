@@ -147,13 +147,15 @@ public class SiteProvider extends ContentProvider {
     public ContentProviderResult[] applyBatch(@NonNull ArrayList<ContentProviderOperation> operations) throws OperationApplicationException {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
+        ContentProviderResult[] result = new ContentProviderResult[0];
         try {
-            ContentProviderResult[] result = super.applyBatch(operations);
+            result = super.applyBatch(operations);
             db.setTransactionSuccessful();
-            return result;
-        } finally {
-            db.endTransaction();
+        } catch (Exception e) {
+            Logger.e(e);
         }
+        db.endTransaction();
+        return result;
     }
 
     @Override

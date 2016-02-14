@@ -117,7 +117,9 @@ public class SiteActivity extends Activity {
                     public void onListUpdated(boolean isSucceeded) {
                         if (isSucceeded) {
                             openGroupList();
-                            AppUtils.showToast(getApplicationContext(), "書き込みかんりょー");
+                            AppUtils.showToast(getApplicationContext(), R.string.message_renew_list_succeeded);
+                        } else {
+                            AppUtils.showToast(getApplicationContext(), R.string.message_renew_list_failed);
                         }
                     }
                 });
@@ -245,6 +247,7 @@ public class SiteActivity extends Activity {
             final ListViewHolder holder = new ListViewHolder();
             holder.SelectRadioButton = (RadioButton)view.findViewById(R.id.siteSelectRadioButton);
             holder.TitleTextView = (TextView)view.findViewById(R.id.siteParamTitleTextView);
+            holder.UriTextView = (TextView)view.findViewById(R.id.siteParamUriTextView);
             holder.LaunchImageButton = (ImageButton)view.findViewById(R.id.siteLaunchImageButton);
             view.setTag(holder);
             return view;
@@ -260,6 +263,7 @@ public class SiteActivity extends Activity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.NAME.getColumnKey()));
                 holder.GroupId = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.GROUP_ID.getColumnKey()));
                 holder.TitleTextView.setText(title);
+                holder.UriTextView.setVisibility(View.GONE);
 
             } else {
                 // ID
@@ -292,6 +296,8 @@ public class SiteActivity extends Activity {
 
                 // uri
                 String uri = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_URI.getColumnKey()));
+                holder.UriTextView.setVisibility(View.VISIBLE);
+                holder.UriTextView.setText(uri);
                 holder.LaunchImageButton.setTag(uri);
                 holder.LaunchImageButton.setVisibility(View.VISIBLE);
                 if (!TextUtils.isEmpty(uri)) {
@@ -319,6 +325,7 @@ public class SiteActivity extends Activity {
 
             public RadioButton SelectRadioButton;
             public TextView TitleTextView;
+            public TextView UriTextView;
             public ImageButton LaunchImageButton;
         }
     }

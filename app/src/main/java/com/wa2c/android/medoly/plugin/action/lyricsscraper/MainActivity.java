@@ -48,8 +48,6 @@ public class MainActivity extends Activity {
             findViewById(R.id.launchMedolyButton).setVisibility(View.VISIBLE);
             findViewById(R.id.noMedolyTextView).setVisibility(View.GONE);
         }
-
-
     }
 
 }

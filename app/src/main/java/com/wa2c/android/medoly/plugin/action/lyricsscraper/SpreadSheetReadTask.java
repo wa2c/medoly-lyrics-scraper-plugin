@@ -1,5 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -49,18 +51,23 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
             WorksheetFeed feed = service.getFeed(feedURL, WorksheetFeed.class);
             List<WorksheetEntry> worksheetList = feed.getEntries();
 
+            int result = 1;
             for (WorksheetEntry entry : worksheetList) {
                 ListQuery query = new ListQuery(entry.getListFeedUrl());
                 ListFeed listFeed = service.query(query, ListFeed.class);
 
                 String title = entry.getTitle().getPlainText();
                 if (title.equals(SITE_SHEET_NAME)) {
-                    writeSiteTable(listFeed);
+                    result *= writeSiteTable(listFeed);
                 } else if (title.equals(GROUP_SHEET_NAME)) {
-                    writeGroupTable(listFeed);
+                    result *= writeGroupTable(listFeed);
                 }
             }
-            return true;
+
+            if (result > 0)
+                return true;
+            else
+                return false;
         } catch (Exception e) {
             Logger.e(e);
             return false;
@@ -71,16 +78,14 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
 
     private int writeSiteTable(ListFeed listFeed) {
         try {
+			ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
 
-//				ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
-//				operationList.add(ContentProviderOperation.newDelete(SiteProvider.SITE_URI).build());
+            // delete
+			operationList.add(ContentProviderOperation
+                    .newDelete(SiteProvider.SITE_URI)
+                    .build());
 
-            // TODO deleteとinsertをapplyBatchする
-
-            resolver.delete(SiteProvider.SITE_URI, null, null);
-
-            // 書込み
-            ArrayList<ContentValues> contentValuesList = new ArrayList<>() ;
+            // insert
             List<ListEntry> list = listFeed.getEntries();
             for (ListEntry row : list) {
                 ContentValues values = new ContentValues();
@@ -89,11 +94,15 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
                     String val = row.getCustomElements().getValue(col.getColumnKey());
                     values.put(col.getColumnKey(), val);
                 }
-                contentValuesList.add(values);
+                operationList.add(ContentProviderOperation
+                        .newInsert(SiteProvider.SITE_URI)
+                        .withValues(values)
+                        .build());
             }
 
-            // データ挿入
-            return resolver.bulkInsert(SiteProvider.SITE_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
+            // apply
+            ContentProviderResult[] results = resolver.applyBatch(SiteProvider.SITE_URI.getAuthority(), operationList);
+            return results.length;
         } catch (Exception e) {
             Logger.e(e);
             return -1;
@@ -102,10 +111,14 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
 
     private int writeGroupTable(ListFeed listFeed) {
         try {
-            resolver.delete(SiteProvider.GROUP_URI, null, null);
+            ArrayList<ContentProviderOperation> operationList = new ArrayList<>();
 
-            // 書込み
-            ArrayList<ContentValues> contentValuesList = new ArrayList<>() ;
+            // delete
+            operationList.add(ContentProviderOperation
+                    .newDelete(SiteProvider.GROUP_URI)
+                    .build());
+
+            // insert
             List<ListEntry> list = listFeed.getEntries();
             for (ListEntry row : list) {
                 ContentValues values = new ContentValues();
@@ -114,10 +127,15 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
                     String val = row.getCustomElements().getValue(col.getColumnKey());
                     values.put(col.getColumnKey(), val);
                 }
-                contentValuesList.add(values);
+                operationList.add(ContentProviderOperation
+                        .newInsert(SiteProvider.GROUP_URI)
+                        .withValues(values)
+                        .build());
             }
-            // データ挿入
-            return resolver.bulkInsert(SiteProvider.GROUP_URI, contentValuesList.toArray(new ContentValues[contentValuesList.size()]));
+
+            // apply
+            ContentProviderResult[] results = resolver.applyBatch(SiteProvider.GROUP_URI.getAuthority(), operationList);
+            return results.length;
         } catch (Exception e) {
             Logger.e(e);
             return -1;
