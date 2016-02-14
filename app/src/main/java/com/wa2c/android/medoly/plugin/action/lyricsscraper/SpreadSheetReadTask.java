@@ -85,7 +85,7 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
             for (ListEntry row : list) {
                 ContentValues values = new ContentValues();
 
-                for (SiteProvider.SiteColumn col : SiteProvider.SiteColumn.values()) {
+                for (SiteColumn col : SiteColumn.values()) {
                     String val = row.getCustomElements().getValue(col.getColumnKey());
                     values.put(col.getColumnKey(), val);
                 }
@@ -110,7 +110,7 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
             for (ListEntry row : list) {
                 ContentValues values = new ContentValues();
 
-                for (SiteProvider.GroupColumn col : SiteProvider.GroupColumn.values()) {
+                for (GroupColumn col : GroupColumn.values()) {
                     String val = row.getCustomElements().getValue(col.getColumnKey());
                     values.put(col.getColumnKey(), val);
                 }

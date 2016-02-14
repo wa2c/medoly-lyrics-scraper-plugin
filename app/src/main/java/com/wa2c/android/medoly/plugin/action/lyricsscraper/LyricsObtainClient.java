@@ -1,7 +1,10 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
@@ -20,6 +23,7 @@ import org.jsoup.select.Elements;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.EnumMap;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -49,12 +53,13 @@ public class LyricsObtainClient {
 
     /** 要求プロパティ。 */
     private HashMap<String, String> requestPropertyMap;
-    /** 取得パラメータ。 */
-    private LyricsObtainParam lyricsObtainParam;
     /** Webページ表示用WebView。 */
     private WebView webView;
     /** 現在の状態 */
     private int currentState = STATE_INIT;
+
+    /** サイト情報。 */
+    private EnumMap<SiteColumn, String> siteParam;
 
 
 
@@ -64,8 +69,33 @@ public class LyricsObtainClient {
      * @param propertyMap 要求元プロパティマップ。
      */
     public LyricsObtainClient(Context context, HashMap<String, String> propertyMap, LyricsObtainParam param) {
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String siteId = preferences.getString(context.getString(R.string.prefkey_selected_site_id), "1");
+
+        siteParam = new EnumMap<>(SiteColumn.class);
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(
+                    SiteProvider.SITE_URI,
+                    null,
+                    SiteColumn.SITE_ID.getColumnKey() + "=?",
+                    new String[] { siteId },
+                    null
+            );
+            if (cursor == null || cursor.getCount() == 0 || !cursor.moveToFirst())
+                throw new IndexOutOfBoundsException();
+
+            for (SiteColumn col : SiteColumn.values()) {
+                siteParam.put(col, cursor.getString(cursor.getColumnIndexOrThrow(col.getColumnKey())));
+            }
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
         this.requestPropertyMap = propertyMap;
-        this.lyricsObtainParam = param;
 
         this.webView = new WebView(context);
         this.webView.getSettings().setAppCacheEnabled(true);
@@ -82,7 +112,13 @@ public class LyricsObtainClient {
             @Override
             public void onPageFinished(WebView view, String url) {
                 // Ajax処理待ちの遅延
-                handler.postDelayed(executeScript, lyricsObtainParam.DelayMilliseconds);
+                long delay = 0;
+                try {
+                    delay = Long.valueOf(siteParam.get(SiteColumn.DELAY));
+                } catch (NumberFormatException | NullPointerException e) {
+                    Logger.e(e);
+                }
+                handler.postDelayed(executeScript, delay);
             }
 
 //            // エラー
@@ -129,7 +165,7 @@ public class LyricsObtainClient {
         }
 
         lyricsObtainListener = listener;
-        final String searchUri = replaceUriTag(lyricsObtainParam.SearchURI);
+        final String searchUri = replaceUriTag(siteParam.get(SiteColumn.SEARCH_URI));
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -168,7 +204,8 @@ public class LyricsObtainClient {
             String val = requestPropertyMap.get(key); // プロパティ値
             if (!TextUtils.isEmpty(val)) {
                 try {
-                    outputBuffer.append(URLEncoder.encode(AppUtils.normalizeText(val), lyricsObtainParam.URIEncoding));
+//                    outputBuffer.append(URLEncoder.encode(AppUtils.normalizeText(val), lyricsObtainParam.URIEncoding));
+                    outputBuffer.append(URLEncoder.encode(AppUtils.normalizeText(val), siteParam.get(SiteColumn.RESULT_PAGE_URI_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
                     Logger.e(e);
                 }
@@ -204,10 +241,10 @@ public class LyricsObtainClient {
             try {
                  url = null;
 
-                if (lyricsObtainParam.SearchAnchorParseType == LyricsObtainParam.ParseTypeXPath) {
+                if (siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TYPE).equals(SiteColumn.PARSE_TYPE_XPATH)) {
                     // XPath
                     Document doc = Jsoup.parse(html);
-                    Elements e = Xsoup.compile(lyricsObtainParam.SearchAnchorParseText).evaluate(doc).getElements();
+                    Elements e = Xsoup.compile(siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TEXT)).evaluate(doc).getElements();
                     if (e == null || e.size() == 0) {
                         returnLyrics(null);
                         return;
@@ -216,8 +253,8 @@ public class LyricsObtainClient {
                     // 歌詞ページのURLを取得
                     Element anchor = e.get(0);
                     url = anchor.attr("href");
-                } else if (lyricsObtainParam.SearchAnchorParseType == LyricsObtainParam.ParseTypeRegexp) {
-                    Pattern p = Pattern.compile(lyricsObtainParam.SearchAnchorParseText, Pattern.CASE_INSENSITIVE);
+                } else if (siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TYPE).equals(SiteColumn.PARSE_TYPE_REGEXP)) {
+                    Pattern p = Pattern.compile(siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TEXT), Pattern.CASE_INSENSITIVE);
                     Matcher m = p.matcher(html);
                     if (m.find()) {
                         url = m.group(1);
@@ -262,10 +299,10 @@ public class LyricsObtainClient {
         @SuppressWarnings("unused")
         public void getLyrics(String html) {
             try {
-                if (lyricsObtainParam.SearchLyricsParseType == LyricsObtainParam.ParseTypeXPath) {
+                if (siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TYPE).equals(SiteColumn.PARSE_TYPE_XPATH)) {
                     // XPath
                     Document doc = Jsoup.parse(html);
-                    Elements e = Xsoup.compile(lyricsObtainParam.SearchLyricsParseText).evaluate(doc).getElements();
+                    Elements e = Xsoup.compile(siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TEXT)).evaluate(doc).getElements();
                     if (e == null || e.size() == 0) {
                         returnLyrics(null);
                         return;
@@ -273,9 +310,9 @@ public class LyricsObtainClient {
 
                     Element elem = e.get(0);
                     lyrics = elem.html();
-                } else if (lyricsObtainParam.SearchLyricsParseType == LyricsObtainParam.ParseTypeRegexp) {
+                } else if (siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TYPE).equals(SiteColumn.PARSE_TYPE_REGEXP)) {
                     // 正規表現
-                    Pattern p = Pattern.compile(lyricsObtainParam.SearchLyricsParseText, Pattern.CASE_INSENSITIVE|Pattern.MULTILINE|Pattern.DOTALL);
+                    Pattern p = Pattern.compile(siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TEXT), Pattern.CASE_INSENSITIVE|Pattern.MULTILINE|Pattern.DOTALL);
                     Matcher m = p.matcher(html);
                     if (m.find()) {
                         lyrics = m.group(1);

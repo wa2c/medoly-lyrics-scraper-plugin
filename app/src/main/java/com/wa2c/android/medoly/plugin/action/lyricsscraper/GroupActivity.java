@@ -178,16 +178,16 @@ public class GroupActivity extends Activity {
                             null,
                             null,
                             null,
-                            SiteProvider.GroupColumn.NAME.getColumnKey());
+                            GroupColumn.NAME.getColumnKey());
                 } else if (type == CURSOR_TYPE_SITE) {
                     int groupId = args.getInt(GROUP_ID, -1);
                     return new CursorLoader(
                             GroupActivity.this,
                             SiteProvider.SITE_URI,
                             null,
-                            SiteProvider.SiteColumn.GROUP_ID.getColumnKey() + "=?",
+                            SiteColumn.GROUP_ID.getColumnKey() + "=?",
                             new String[] { String.valueOf(groupId) },
-                            SiteProvider.SiteColumn.SITE_NAME.getColumnKey());
+                            SiteColumn.SITE_NAME.getColumnKey());
                 }
             }
             return null;
@@ -238,12 +238,12 @@ public class GroupActivity extends Activity {
         public void bindView(View view, Context context, Cursor cursor) {
             final ListViewHolder holder = (ListViewHolder) view.getTag();
             if (cursorType == CURSOR_TYPE_GROUP) {
-                final String title = cursor.getString(cursor.getColumnIndexOrThrow(SiteProvider.GroupColumn.NAME.getColumnKey()));
-                holder.GroupId = cursor.getInt(cursor.getColumnIndexOrThrow(SiteProvider.GroupColumn.GROUP_ID.getColumnKey()));
+                final String title = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.NAME.getColumnKey()));
+                holder.GroupId = cursor.getInt(cursor.getColumnIndexOrThrow(GroupColumn.GROUP_ID.getColumnKey()));
                 holder.TitleTextView.setText(title);
             } else {
-                final String title = cursor.getString(cursor.getColumnIndexOrThrow(SiteProvider.SiteColumn.SITE_NAME.getColumnKey()));
-                holder.GroupId = cursor.getInt(cursor.getColumnIndexOrThrow(SiteProvider.SiteColumn.GROUP_ID.getColumnKey()));
+                final String title = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_NAME.getColumnKey()));
+                holder.GroupId = cursor.getInt(cursor.getColumnIndexOrThrow(SiteColumn.GROUP_ID.getColumnKey()));
                 holder.TitleTextView.setText(title);
             }
         }
