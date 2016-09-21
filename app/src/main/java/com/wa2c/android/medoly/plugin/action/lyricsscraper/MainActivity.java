@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.wa2c.android.medoly.library.MedolyParam;
+import com.wa2c.android.medoly.library.MedolyEnvironment;
 
 /**
  * メイン画面のアクティビティ。
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
         });
 
         // Launch Medoly
-        final Intent launchIntent = getPackageManager().getLaunchIntentForPackage(MedolyParam.MEDOLY_PACKAGE);
+        final Intent launchIntent = getPackageManager().getLaunchIntentForPackage(MedolyEnvironment.MEDOLY_PACKAGE);
         findViewById(R.id.launchMedolyButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

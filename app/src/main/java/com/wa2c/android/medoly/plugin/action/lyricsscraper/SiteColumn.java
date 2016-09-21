@@ -7,7 +7,7 @@ enum SiteColumn {
     /** ID. */
     _ID                      ( "_ID"                      , "_id"                  , "INTEGER PRIMARY KEY AUTOINCREMENT" ),
     /** Site ID. */
-    SITE_ID                  ( "SITE_ID"                  , "siteid"               , "INTEGER NUT NULL"                  ),
+    SITE_ID                  ( "SITE_ID"                  , "siteid"               , "INTEGER NOT NULL"                  ),
     /** Group ID. */
     GROUP_ID                 ( "GROUP_ID"                 , "groupid"              , "INTEGER NOT NULL"                  ),
     /** Site name. */

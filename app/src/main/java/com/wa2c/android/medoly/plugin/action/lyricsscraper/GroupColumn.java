@@ -7,7 +7,7 @@ public enum GroupColumn {
     /** ID. */
     _ID      ( "_ID"     , "_id"     , "INTEGER PRIMARY KEY AUTOINCREMENT" ),
     /** Group ID */
-    GROUP_ID ("GROUP_ID" , "groupid" , "INTEGER NUT NULL" ),
+    GROUP_ID ("GROUP_ID" , "groupid" , "INTEGER NOT NULL" ),
     /** Group Name */
     NAME     ("NAME"     , "name"    , "TEXT NOT NULL" ),
     /** Group Name (ja) */

@@ -14,23 +14,17 @@ public class ToastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        //if (intent.getAction().equals(ACTION_TOAST)) {
-            Toast.makeText(context, intent.getStringExtra(MESSAGE_TOAST), Toast.LENGTH_SHORT).show();
-        //}
+        Toast.makeText(context, intent.getStringExtra(MESSAGE_TOAST), Toast.LENGTH_SHORT).show();
     }
 
     public static void showToast(Context context, int stringId) {
-        //Intent intent = new Intent(ACTION_TOAST);
         Intent intent = new Intent(context, ToastReceiver.class);
-        //intent.setClass(context, ToastReceiver.class);
         intent.putExtra(MESSAGE_TOAST, context.getString(stringId));
         context.sendBroadcast(intent);
     }
 
     public static void showToast(Context context, String text) {
-        //Intent intent = new Intent(ACTION_TOAST);
         Intent intent = new Intent(context, ToastReceiver.class);
-        //intent.setClass(context, ToastReceiver.class);
         intent.putExtra(MESSAGE_TOAST, text);
         context.sendBroadcast(intent);
     }

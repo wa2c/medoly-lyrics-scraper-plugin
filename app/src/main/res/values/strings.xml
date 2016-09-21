@@ -61,6 +61,7 @@
     <string name="pref_summary_about">About</string>
 
     <!-- System -->
+    <string name="error_app">The operation failed due to an error.</string>
     <string name="error_dialog_dismissed">Open the dialog again.</string>
 
 </resources>

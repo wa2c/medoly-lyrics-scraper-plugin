@@ -9,11 +9,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.wa2c.android.medoly.library.MediaProperty;
+import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.utils.Logger;
 
 import org.jsoup.Jsoup;
@@ -52,7 +55,7 @@ public class LyricsObtainClient {
 
 
     /** 要求プロパティ。 */
-    private HashMap<String, String> requestPropertyMap;
+    private PropertyData requestPropertyMap;
     /** Webページ表示用WebView。 */
     private WebView webView;
     /** 現在の状態 */
@@ -66,9 +69,10 @@ public class LyricsObtainClient {
     /**
      * コンストラクタ。
      * @param context コンテキスト。
-     * @param propertyMap 要求元プロパティマップ。
+     * @param propertyData 要求元プロパティマップ。
      */
-    public LyricsObtainClient(Context context, HashMap<String, String> propertyMap) {
+    public LyricsObtainClient(Context context, PropertyData propertyData) {
+        this.requestPropertyMap = propertyData;
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String siteId = preferences.getString(context.getString(R.string.prefkey_selected_site_id), "1");
@@ -95,8 +99,6 @@ public class LyricsObtainClient {
             }
         }
 
-        this.requestPropertyMap = propertyMap;
-
         this.webView = new WebView(context);
         this.webView.getSettings().setAppCacheEnabled(true);
         this.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -121,11 +123,18 @@ public class LyricsObtainClient {
                 handler.postDelayed(executeScript, delay);
             }
 
-//            // エラー
-//            @Override
-//            public void onReceivedError (WebView view, int errorCode, String description, String failingUrl) {
-//                returnLyrics(null);
-//            }
+            // エラー
+            @Override
+            public void onReceivedError (WebView view, int errorCode, String description, String failingUrl) {
+                returnLyrics(null);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                returnLyrics(null);
+            }
+
+
 
             // 同じビューで再読込
             @Override
@@ -201,10 +210,9 @@ public class LyricsObtainClient {
             outputBuffer.append(inputUri.substring(lastIndex, matcher.start()));
             String tag = matcher.group(); // タグ (%KEY%)
             String key = tag.substring(1, tag.length() - 1); // プロパティキー (KEY)
-            String val = requestPropertyMap.get(key); // プロパティ値
+            String val = requestPropertyMap.getFirst(key); // プロパティ値
             if (!TextUtils.isEmpty(val)) {
                 try {
-//                    outputBuffer.append(URLEncoder.encode(AppUtils.normalizeText(val), lyricsObtainParam.URIEncoding));
                     outputBuffer.append(URLEncoder.encode(AppUtils.normalizeText(val), siteParam.get(SiteColumn.RESULT_PAGE_URI_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
                     Logger.e(e);
@@ -341,13 +349,18 @@ public class LyricsObtainClient {
             lyricsObtainListener.onLyricsObtain(lyrics);
         }
 
-        if(webView != null){
-            webView.stopLoading();
-            webView.setWebChromeClient(null);
-            webView.setWebViewClient(null);
-            webView.destroy();
-            webView = null;
-        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (webView != null) {
+                    webView.stopLoading();
+                    webView.setWebChromeClient(null);
+                    webView.setWebViewClient(null);
+                    webView.destroy();
+                    webView = null;
+                }
+            }
+        });
     }
 
 
