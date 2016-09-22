@@ -55,7 +55,7 @@
                 android:value="TYPE_GET_LYRICS" />
         </receiver>
         <receiver
-            android:name=".ToastReceiver"
+            android:name=".util.ToastReceiver"
             android:exported="false" />
 
         <service

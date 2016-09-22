@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.2'
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
         minSdkVersion 17
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0.0"
     }
@@ -38,11 +38,11 @@ android {
 
 dependencies {
     compile project(':medolylibrary')
-    compile 'com.android.support:support-v4:23.1.0'
-    compile 'org.jsoup:jsoup:1.8.3'
-    compile 'us.codecraft:xsoup:0.3.0'
-    compile 'com.google.gdata:core:1.47.1'
-    compile 'com.google.code.gson:gson:2.5'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.9.2'
+    compile group: 'us.codecraft', name: 'xsoup', version: '0.3.1'
+    compile group: 'com.google.gdata', name: 'core', version: '1.47.1'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
 
     //compile 'nu.validator.htmlparser:htmlparser:1.4'
     //compile 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'

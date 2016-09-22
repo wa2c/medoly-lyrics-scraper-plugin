@@ -15,7 +15,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.wa2c.android.medoly.utils.Logger;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 
 import java.util.ArrayList;
 

@@ -13,7 +13,8 @@ import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.MedolyIntentParam;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
 import com.wa2c.android.medoly.library.PluginTypeCategory;
-import com.wa2c.android.medoly.utils.Logger;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;

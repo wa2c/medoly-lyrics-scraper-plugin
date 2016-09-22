@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.widget.Toast;
 
 /**
- * Created by wa2c on 2015/11/18.
+ * Toast出力用Receiver。
  */
 public class ToastReceiver extends BroadcastReceiver {
-   // public static final String ACTION_TOAST = "com.wa2c.android.medoly.plugin.action.lyricsscraper.TOAST";
     public static final String MESSAGE_TOAST = "message";
 
     @Override
@@ -29,11 +28,4 @@ public class ToastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
-
-
-//    public static Intent createIntent(Context context, int message) {
-//        Intent intent = new Intent(ACTION_TOAST);
-//        intent.putExtra(MESSAGE_TOAST, context.getString(message));
-//        return intent;
-//    }
 }

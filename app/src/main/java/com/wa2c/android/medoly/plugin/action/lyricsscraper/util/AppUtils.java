@@ -1,9 +1,8 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.util;
 
 import android.content.Context;
 import android.text.Html;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.text.Normalizer;
 
@@ -32,7 +31,6 @@ public class AppUtils {
 
         // タグ除去
         text = Html.fromHtml(text).toString();
-        //text = text.replaceAll("<(\"[^\"]*\"|'[^']*'|[^'\">])*>", "");
 
         // トリミング
         text = trimLines(text);

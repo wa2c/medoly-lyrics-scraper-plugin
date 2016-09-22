@@ -1,6 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -10,7 +11,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 
 
 public class SiteActivity extends Activity {
