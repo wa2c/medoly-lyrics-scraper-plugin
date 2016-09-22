@@ -31,6 +31,8 @@
     <string name="message_no_media">メディアが選択されていません。</string>
     <string name="message_no_site">サイト情報が取得されていません。サイト情報を更新してください。</string>
     <string name="message_no_select_site">サイトを選択してください。</string>
+    <string name="message_lyrics_success">歌詞を取得しました。</string>
+    <string name="message_lyrics_failure">歌詞の取得に失敗しました。</string>
 
     <!-- Main Activity -->
     <string name="label_button_site_list">サイト一覧</string>

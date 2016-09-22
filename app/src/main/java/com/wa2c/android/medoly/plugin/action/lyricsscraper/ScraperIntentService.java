@@ -31,6 +31,10 @@ public class ScraperIntentService extends IntentService {
     private static final String PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri";
     /** 前回の歌詞テキスト設定キー。 */
     private static final String PREFKEY_PREVIOUS_LYRICS_TEXT = "previous_lyrics_text";
+    /** 前回のサイトタイトル設定キー。 */
+    private static final String PREFKEY_PREVIOUS_SITE_TITLE = "previous_site_text";
+    /** 前回のサイトURI設定キー。 */
+    private static final String PREFKEY_PREVIOUS_SITE_URI = "previous_site_uri";
 
 
 
@@ -86,10 +90,10 @@ public class ScraperIntentService extends IntentService {
                     return;
                }
             }
-            sendLyricsResult(Uri.EMPTY, param);
+            sendLyricsResult(param, Uri.EMPTY);
         } catch (Exception e) {
             AppUtils.showToast(this, R.string.error_app);
-            sendLyricsResult(null, param);
+            sendLyricsResult(param, null);
         }
     }
 
@@ -102,7 +106,7 @@ public class ScraperIntentService extends IntentService {
         // 音楽データ無し
         if (param.getMediaUri() == null) {
             AppUtils.showToast(getApplicationContext(), R.string.message_no_media);
-            sendLyricsResult(Uri.EMPTY, param);
+            sendLyricsResult(param, Uri.EMPTY);
             return;
         }
 
@@ -110,7 +114,7 @@ public class ScraperIntentService extends IntentService {
         if (param.getPropertyData() == null ||
             param.getPropertyData().isEmpty(MediaProperty.TITLE) ||
             param.getPropertyData().isEmpty(MediaProperty.ARTIST)) {
-            sendLyricsResult(null, param);
+            sendLyricsResult(param, null);
             return;
         }
 
@@ -121,7 +125,9 @@ public class ScraperIntentService extends IntentService {
         if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText.equals(previousMediaUri)) {
             // 前回と同じメディアは保存データを返す
             String lyrics = sharedPreferences.getString(PREFKEY_PREVIOUS_LYRICS_TEXT, null);
-            sendLyricsResult(getLyricsUri(lyrics), param);
+            String title = sharedPreferences.getString(PREFKEY_PREVIOUS_SITE_TITLE, null);
+            String uri = sharedPreferences.getString(PREFKEY_PREVIOUS_SITE_URI, null);
+            sendLyricsResult(param, getLyricsUri(lyrics), title, uri);
             return;
         }
 
@@ -130,13 +136,13 @@ public class ScraperIntentService extends IntentService {
             LyricsObtainClient obtainClient = new LyricsObtainClient(getApplicationContext(), param.getPropertyData());
             obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
                 @Override
-                public void onLyricsObtain(String lyrics) {
+                public void onLyricsObtain(String lyrics, String title, String uri) {
                     // 送信
                     sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, param.getMediaUri().toString()).apply();
                     sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
-
-                    // 送信１
-                    sendLyricsResult(getLyricsUri(lyrics), param);
+                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_TITLE, title).apply();
+                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_URI, uri).apply();
+                    sendLyricsResult(param, getLyricsUri(lyrics), title, uri);
                 }
             });
         } catch (SiteNotSelectException e) {
@@ -153,7 +159,7 @@ public class ScraperIntentService extends IntentService {
             AppUtils.showToast(this, R.string.message_no_site);
         } catch (Exception e) {
             Logger.e(e);
-            sendLyricsResult(null, param);
+            sendLyricsResult(param, null);
         }
 
     }
@@ -171,6 +177,7 @@ public class ScraperIntentService extends IntentService {
         // フォルダ作成
         File lyricsDir = new File(getExternalCacheDir(), "lyrics");
         if (!lyricsDir.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             lyricsDir.mkdir();
         }
 
@@ -190,23 +197,49 @@ public class ScraperIntentService extends IntentService {
         }
     }
 
+
+
     /**
      * 歌詞を送り返す。
      * @param lyricsUri 歌詞データのURI。取得できない場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
+     * @param param 送信元パラメータ。
      */
-    private void sendLyricsResult(Uri lyricsUri, MedolyIntentParam param) {
+    private void sendLyricsResult(MedolyIntentParam param, Uri lyricsUri) {
+        sendLyricsResult(param, lyricsUri, null, null);
+    }
+
+    /**
+     * 歌詞を送り返す。
+     * @param param 送信元パラメータ。
+     * @param lyricsUri 歌詞データのURI。無視の場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
+     * @param siteTitle サイトのタイトル。
+     * @param siteUri  サイトのURI。
+     */
+    private void sendLyricsResult(MedolyIntentParam param, Uri lyricsUri, String siteTitle, String siteUri) {
         if (param == null)
             return;
 
         Intent returnIntent = param.createReturnIntent();
         returnIntent.addCategory(PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
         returnIntent.putExtra(Intent.EXTRA_STREAM, lyricsUri);
-        returnIntent.putExtra(Intent.EXTRA_TITLE, ""); // TODO
-        returnIntent.putExtra(Intent.EXTRA_ORIGINATING_URI, ""); // TODO
+        returnIntent.putExtra(Intent.EXTRA_TITLE, siteTitle);
+        returnIntent.putExtra(Intent.EXTRA_ORIGINATING_URI, siteUri);
         returnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (lyricsUri != null) {
             getApplicationContext().grantUriPermission(returnIntent.getPackage(), lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
-        getApplicationContext().sendBroadcast(returnIntent);
+        sendBroadcast(returnIntent);
+
+        // Message
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (lyricsUri != null) {
+            if (pref.getBoolean(getString(R.string.prefkey_success_message_show), false)) {
+                AppUtils.showToast(this, R.string.message_lyrics_success);
+            }
+        } else if (lyricsUri != Uri.EMPTY) {
+            if (pref.getBoolean(getString(R.string.prefkey_failure_message_show), false)) {
+                AppUtils.showToast(this, R.string.message_lyrics_failure);
+            }
+        }
     }
 }

@@ -119,9 +119,11 @@ public class LyricsObtainClient {
         this.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         this.webView.getSettings().setLoadsImagesAutomatically(false);
         this.webView.getSettings().setJavaScriptEnabled(true);
+        this.webView.getSettings().setDomStorageEnabled(true);
+        this.webView.getSettings().setDatabaseEnabled(true);
         this.webView.getSettings().setUserAgentString(context.getString(R.string.app_user_agent));
         this.webView.setVisibility(View.INVISIBLE);
-        this.webView.addJavascriptInterface(new JavaScriptInterface(), JAVASCRIPT_INTERFACE);
+        this.webView.addJavascriptInterface(new JavaScriptInterface(siteParam), JAVASCRIPT_INTERFACE);
         this.webView.setWebViewClient(new WebViewClient() {
 
             // ページ読み込み完了
@@ -134,7 +136,7 @@ public class LyricsObtainClient {
             // エラー
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                returnLyrics(null);
+                returnLyrics();
             }
 
             // 同じビューで再読込
@@ -154,7 +156,7 @@ public class LyricsObtainClient {
                         // 歌詞ページの取得スクリプト実行
                         webView.loadUrl(LYRICS_PAGE_GET_SCRIPT);
                     } else {
-                        returnLyrics(null);
+                        returnLyrics();
                     }
                 }
             };
@@ -182,7 +184,7 @@ public class LyricsObtainClient {
             Logger.e(e);
         }
 
-
+        // 歌詞取得開始
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -191,17 +193,6 @@ public class LyricsObtainClient {
                 webView.loadUrl(searchUri);
             }
         }, delay);
-
-//        // 歌詞再取得 (初回起動時に応答が返ってこない場合があるため)
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                // 未完了の場合は再実行
-//                if (currentState == STATE_SEARCH)
-//                    webView.stopLoading();
-//                    webView.loadUrl(searchUri);
-//            }
-//        }, 10000);
     }
 
 
@@ -215,7 +206,12 @@ public class LyricsObtainClient {
      */
     final private class JavaScriptInterface {
 
-        String url;
+        private String url;
+        private EnumMap<SiteColumn, String> siteParam;
+
+        JavaScriptInterface(EnumMap<SiteColumn, String> siteParam) {
+            this.siteParam = siteParam;
+        }
 
 
 
@@ -236,7 +232,7 @@ public class LyricsObtainClient {
                     // XPath
                     Elements e = Xsoup.compile(siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TEXT)).evaluate(doc).getElements();
                     if (e == null || e.size() == 0) {
-                        returnLyrics(null);
+                        returnLyrics();
                         return;
                     }
 
@@ -254,7 +250,7 @@ public class LyricsObtainClient {
                 }
 
                 if (TextUtils.isEmpty(url)) {
-                    returnLyrics(null);
+                    returnLyrics();
                     return;
                 }
                 Logger.d("Lyrics Path: " + url);
@@ -283,7 +279,7 @@ public class LyricsObtainClient {
                 }, delay);
             } catch (Exception e) {
                 Logger.e(e);
-                returnLyrics(null);
+                returnLyrics();
             }
         }
 
@@ -305,7 +301,7 @@ public class LyricsObtainClient {
                     Document doc = Jsoup.parse(html);
                     Elements e = Xsoup.compile(siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TEXT)).evaluate(doc).getElements();
                     if (e == null || e.size() == 0) {
-                        returnLyrics(null);
+                        returnLyrics();
                         return;
                     }
 
@@ -327,22 +323,30 @@ public class LyricsObtainClient {
                 Logger.d("Lyrics: " + lyrics);
 
                 // 歌詞を返す
-                returnLyrics(lyrics);
+                returnLyrics(lyrics, siteParam.get(SiteColumn.SITE_NAME), currentBaseUrl.toString());
             } catch (Exception e) {
                 currentState = STATE_COMPLETE;
                 Logger.e(e);
-                returnLyrics(null);
+                returnLyrics();
             }
         }
+    }
+
+
+    /**
+     * 歌詞取得失敗。
+     */
+    private void returnLyrics() {
+        returnLyrics(null, null, null);
     }
 
     /**
      * 取得した歌詞をイベントハンドラに渡して呼び出し元に返す。
      * @param lyrics 歌詞テキスト。
      */
-    private void returnLyrics(String lyrics) {
+    private void returnLyrics(String lyrics, String title, String uri) {
         if (lyricsObtainListener != null) {
-            lyricsObtainListener.onLyricsObtain(lyrics);
+            lyricsObtainListener.onLyricsObtain(lyrics, title, uri);
         }
 
         handler.post(new Runnable() {
@@ -425,7 +429,7 @@ public class LyricsObtainClient {
          * 取得イベント。
          * @param lyrics 歌詞。取得に失敗した場合はnull。
          */
-        void onLyricsObtain(String lyrics);
+        void onLyricsObtain(String lyrics, String title, String uri);
     }
 
 }

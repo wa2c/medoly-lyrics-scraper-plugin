@@ -36,8 +36,8 @@
 
     <string name="prefkey_operation_media_open_enabled">operation_media_open_enabled</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
-    <string name="prefkey_tweet_success_message_show">success_message_show</string>
-    <string name="prefkey_tweet_failure_message_show">failure_message_show</string>
+    <string name="prefkey_success_message_show">success_message_show</string>
+    <string name="prefkey_failure_message_show">failure_message_show</string>
     <string name="prefkey_application_details">application_details</string>
     <string name="prefkey_about">about</string>
 

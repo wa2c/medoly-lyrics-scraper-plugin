@@ -14,13 +14,13 @@
 
 	<CheckBoxPreference
 		android:defaultValue="false"
-		android:key="@string/prefkey_tweet_success_message_show"
+		android:key="@string/prefkey_success_message_show"
 		android:summary="@string/pref_summary_post_success_message_show"
 		android:title="@string/pref_title_post_success_message_show" />
 
 	<CheckBoxPreference
 		android:defaultValue="true"
-		android:key="@string/prefkey_tweet_failure_message_show"
+		android:key="@string/prefkey_failure_message_show"
 		android:summary="@string/pref_summary_post_failure_message_show"
 		android:title="@string/pref_title_post_failure_message_show" />
 

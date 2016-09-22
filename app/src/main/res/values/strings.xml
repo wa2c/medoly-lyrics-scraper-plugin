@@ -27,10 +27,12 @@
     <string name="menu_update_list">Update</string>
     <string name="menu_open_list">Open</string>
 
-    <!--  -->
+    <!-- Post -->
     <string name="message_no_media">The media is not selected.</string>
     <string name="message_no_site">Site information has not been acquired. Update site information.</string>
     <string name="message_no_select_site">Select site.</string>
+    <string name="message_lyrics_success">Succeeded to get lyrics.</string>
+    <string name="message_lyrics_failure">Failed to get lyrics.</string>
 
     <!-- Main Activity -->
     <string name="label_button_site_list">Site List</string>

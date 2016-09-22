@@ -16,7 +16,11 @@ public class PluginReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
-        // MEMO: BroadcastReceiverは10秒以上でスレッドが中断される場合があるので、処理をIntentServiceに委譲する
+        // 既存のサービス強制停止
+        Intent stopIntent = new Intent(context, ScraperIntentService.class);
+        context.stopService(stopIntent);
+
+        // IntentService起動
         Intent serviceIntent = new Intent(intent);
         serviceIntent.setClassName(ScraperIntentService.class.getPackage().getName(), ScraperIntentService.class.getName());
         context.startService(serviceIntent);
