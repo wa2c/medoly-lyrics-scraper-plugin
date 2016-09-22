@@ -1,5 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
+import java.util.Locale;
+
 /**
  * Group Column.
  */
@@ -39,4 +41,15 @@ public enum GroupColumn {
     public String getConstraint() {
         return columnKey + " " + constraint;
     }
+
+    public static GroupColumn findLocaleColumn(Locale locale) {
+        String colName = "NAME_" + locale.getLanguage().toUpperCase();
+        for (GroupColumn c : GroupColumn.values()) {
+            if (c.getColumnName().equals(colName)) {
+                return c;
+            }
+        }
+        return NAME;
+    }
+
 }

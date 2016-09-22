@@ -3,7 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.util;
 import android.os.Debug;
 import android.util.Log;
 
-import com.wa2c.android.medoly.library.BuildConfig;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -29,6 +29,8 @@ import android.widget.TextView;
 
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 
+import java.util.Locale;
+
 
 public class SiteActivity extends Activity {
 
@@ -50,15 +52,24 @@ public class SiteActivity extends Activity {
     /** Loader manager. */
     private LoaderManager loaderManager;
 
+    private ViewGroup listLayout;
+
+    private ViewGroup loadingLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.preference = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_group);
+        listLayout = (ViewGroup)findViewById(R.id.groupListView);
+        loadingLayout = (ViewGroup)findViewById(R.id.loadingLayout);
+        listLayout.setVisibility(View.VISIBLE);
+        loadingLayout.setVisibility(View.INVISIBLE);
 
         // action bar
         ActionBar actionBar = getActionBar();
+
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -122,8 +133,16 @@ public class SiteActivity extends Activity {
                         } else {
                             AppUtils.showToast(getApplicationContext(), R.string.message_renew_list_failed);
                         }
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_GROUP);
+                        loaderManager.restartLoader(CURSOR_LOADER_ID, bundle, cursorLoaderCallbacks);
+                        listLayout.setVisibility(View.VISIBLE);
+                        loadingLayout.setVisibility(View.INVISIBLE);
                     }
                 });
+                listLayout.setVisibility(View.INVISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
+                loaderManager.destroyLoader(CURSOR_LOADER_ID);
                 task.execute();
                 return true;
             case R.id.menu_open_sheet:
@@ -226,20 +245,23 @@ public class SiteActivity extends Activity {
         /** Cursor type. */
         private int cursorType;
         /** Set cursor type. */
-        public void setCursorType(int cursorType) {
+        void setCursorType(int cursorType) {
             this.cursorType = cursorType;
         }
         /** Get cursor type. */
-        public int getCursorType() {
+        int getCursorType() {
             return this.cursorType;
         }
 
         private SharedPreferences preference;
 
-        public SheetCursorAdapter(Activity context, int cursorType) {
+        private GroupColumn localeGroupNameCol;
+
+        SheetCursorAdapter(Activity context, int cursorType) {
             super(context, null, true);
             this.cursorType = cursorType;
             this.preference = PreferenceManager.getDefaultSharedPreferences(context);
+            this.localeGroupNameCol = GroupColumn.findLocaleColumn(Locale.getDefault());
         }
 
         @Override
@@ -261,7 +283,7 @@ public class SiteActivity extends Activity {
                 holder.SelectRadioButton.setVisibility(View.GONE);
                 holder.LaunchImageButton.setVisibility(View.GONE);
 
-                String title = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.NAME.getColumnKey()));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(localeGroupNameCol.getColumnKey()));
                 holder.GroupId = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.GROUP_ID.getColumnKey()));
                 holder.TitleTextView.setText(title);
                 holder.UriTextView.setVisibility(View.GONE);
@@ -278,10 +300,11 @@ public class SiteActivity extends Activity {
                 } else {
                     holder.SelectRadioButton.setChecked(false);
                 }
-                holder.SelectRadioButton.setOnTouchListener(new View.OnTouchListener() {
+                holder.SelectRadioButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        return view.onTouchEvent(event);
+                    public void onClick(View view) {
+                        preference.edit().putString(context.getString(R.string.prefkey_selected_site_id), holder.SiteId).apply();
+                        notifyDataSetChanged();
                     }
                 });
 
@@ -321,13 +344,13 @@ public class SiteActivity extends Activity {
          * ViewHolder for QueueListView.
          */
         private static class ListViewHolder {
-            public String GroupId;
-            public String SiteId;
+            String GroupId;
+            String SiteId;
 
-            public RadioButton SelectRadioButton;
-            public TextView TitleTextView;
-            public TextView UriTextView;
-            public ImageButton LaunchImageButton;
+            RadioButton SelectRadioButton;
+            TextView TitleTextView;
+            TextView UriTextView;
+            ImageButton LaunchImageButton;
         }
     }
 

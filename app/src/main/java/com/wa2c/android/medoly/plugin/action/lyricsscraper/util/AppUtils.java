@@ -129,4 +129,5 @@ public class AppUtils {
 
         return text.replaceAll("(\\s|　)", insertSpace ? " " : "");
     }
+
 }

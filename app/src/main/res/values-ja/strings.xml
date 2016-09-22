@@ -29,6 +29,8 @@
 
     <!-- Post -->
     <string name="message_no_media">メディアが選択されていません。</string>
+    <string name="message_no_site">サイト情報が取得されていません。サイト情報を更新してください。</string>
+    <string name="message_no_select_site">サイトを選択してください。</string>
 
     <!-- Main Activity -->
     <string name="label_button_site_list">サイト一覧</string>
@@ -42,6 +44,7 @@
     <!-- Site Activity -->
     <string name="message_renew_list_succeeded">サイト情報の更新を完了しました。</string>
     <string name="message_renew_list_failed">サイト情報の更新に失敗しました。</string>
+    <string name="loading">Loading...</string>
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>
