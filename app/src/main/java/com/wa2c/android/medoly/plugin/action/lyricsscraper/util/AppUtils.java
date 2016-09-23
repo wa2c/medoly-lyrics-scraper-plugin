@@ -1,6 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.util;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 
@@ -30,7 +31,11 @@ public class AppUtils {
             return null;
 
         // タグ除去
-        text = Html.fromHtml(text).toString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            text = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY).toString();
+        } else {
+            text = Html.fromHtml(text).toString();
+        }
 
         // トリミング
         text = trimLines(text);

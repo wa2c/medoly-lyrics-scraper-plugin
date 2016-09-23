@@ -9,10 +9,13 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.wa2c.android.medoly.library.LyricsProperty;
 import com.wa2c.android.medoly.library.MediaProperty;
+import com.wa2c.android.medoly.library.MedolyEnvironment;
 import com.wa2c.android.medoly.library.MedolyIntentParam;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
 import com.wa2c.android.medoly.library.PluginTypeCategory;
+import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 
@@ -201,8 +204,8 @@ public class ScraperIntentService extends IntentService {
 
     /**
      * 歌詞を送り返す。
-     * @param lyricsUri 歌詞データのURI。取得できない場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
      * @param param 送信元パラメータ。
+     * @param lyricsUri 歌詞データのURI。取得できない場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
      */
     private void sendLyricsResult(MedolyIntentParam param, Uri lyricsUri) {
         sendLyricsResult(param, lyricsUri, null, null);
@@ -219,24 +222,26 @@ public class ScraperIntentService extends IntentService {
         if (param == null)
             return;
 
+        PropertyData propertyData = new PropertyData();
+        propertyData.put(LyricsProperty.DATA_URI, (lyricsUri == null) ? null : lyricsUri.toString());
+        propertyData.put(LyricsProperty.SOURCE_TITLE, siteTitle);
+        propertyData.put(LyricsProperty.SOURCE_URI, siteUri);
+
         Intent returnIntent = param.createReturnIntent();
         returnIntent.addCategory(PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
-        returnIntent.putExtra(Intent.EXTRA_STREAM, lyricsUri);
-        returnIntent.putExtra(Intent.EXTRA_TITLE, siteTitle);
-        returnIntent.putExtra(Intent.EXTRA_ORIGINATING_URI, siteUri);
+        returnIntent.putExtra(MedolyEnvironment.PLUGIN_VALUE_KEY, propertyData);
         returnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        if (lyricsUri != null) {
-            getApplicationContext().grantUriPermission(returnIntent.getPackage(), lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
         sendBroadcast(returnIntent);
 
         // Message
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         if (lyricsUri != null) {
+            if (lyricsUri == Uri.EMPTY)
+                return; // EMPTYは無視
             if (pref.getBoolean(getString(R.string.prefkey_success_message_show), false)) {
                 AppUtils.showToast(this, R.string.message_lyrics_success);
             }
-        } else if (lyricsUri != Uri.EMPTY) {
+        } else {
             if (pref.getBoolean(getString(R.string.prefkey_failure_message_show), false)) {
                 AppUtils.showToast(this, R.string.message_lyrics_failure);
             }
