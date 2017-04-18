@@ -1,1 +1,1 @@
-include ':app', ':medolylibrary'
+include ':app'

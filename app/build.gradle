@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '24.0.2'
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
@@ -34,10 +34,14 @@ android {
 
 }
 
-
+repositories {
+    maven { url 'https://api.bitbucket.org/1.0/repositories/wa2c/medoly-library/raw/master/repository/' }
+}
 
 dependencies {
-    compile project(':medolylibrary')
+    // Medoly
+    compile 'com.wa2c.android:medolylibrary:1.0.4'
+
     compile 'com.android.support:support-v4:24.2.1'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.9.2'
     compile group: 'us.codecraft', name: 'xsoup', version: '0.3.1'
