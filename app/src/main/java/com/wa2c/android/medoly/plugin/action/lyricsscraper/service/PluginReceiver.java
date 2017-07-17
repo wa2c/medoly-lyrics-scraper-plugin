@@ -21,7 +21,7 @@ public class PluginReceiver extends BroadcastReceiver {
 
         // Launch intent service.
         Intent serviceIntent = new Intent(intent);
-        serviceIntent.setClassName(ScraperIntentService.class.getPackage().getName(), ScraperIntentService.class.getName());
+        serviceIntent.setClass(context, ScraperIntentService.class);
         context.startService(serviceIntent);
     }
 }
