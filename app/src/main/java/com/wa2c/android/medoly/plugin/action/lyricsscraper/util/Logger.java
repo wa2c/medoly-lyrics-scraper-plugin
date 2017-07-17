@@ -10,19 +10,16 @@ import java.io.StringWriter;
 
 
 /**
- * ログ処理用クラス。
+ * Log utilities.
  */
 public class Logger {
-    /**
-     * デバッグメッセージのタグ名。
-     */
-    public static final String TAG = "Medoly";
-
+    /** Tag name. */
+    private static final String TAG = "Medoly";
 
     /**
-     * デバッグメッセージを出力する。
+     * Output debug message.
      *
-     * @param msg メッセージ。
+     * @param msg message.
      */
     public static void d(Object msg) {
         if (!BuildConfig.DEBUG) return;
@@ -31,9 +28,9 @@ public class Logger {
     }
 
     /**
-     * エラーメッセージを出力する。
+     * Output error message.
      *
-     * @param msg メッセージ。
+     * @param msg message.
      */
     public static void e(Object msg) {
         if (!BuildConfig.DEBUG) return;
@@ -50,9 +47,9 @@ public class Logger {
     }
 
     /**
-     * 情報メッセージを出力する。
+     * Output information message.
      *
-     * @param msg メッセージ。
+     * @param msg message.
      */
     public static void i(Object msg) {
         if (!BuildConfig.DEBUG) return;
@@ -61,9 +58,9 @@ public class Logger {
     }
 
     /**
-     * 詳細メッセージを出力する。
+     * Output verbose message.
      *
-     * @param msg メッセージ。
+     * @param msg message.
      */
     public static void v(Object msg) {
         if (!BuildConfig.DEBUG) return;
@@ -72,9 +69,9 @@ public class Logger {
     }
 
     /**
-     * 警告メッセージを出力する。
+     * Output warning message.
      *
-     * @param msg メッセージ。
+     * @param msg message.
      */
     public static void w(Object msg) {
         if (!BuildConfig.DEBUG) return;
@@ -83,7 +80,7 @@ public class Logger {
     }
 
     /**
-     * デバッグメッセージを出力する。
+     * Output heap message.
      */
     public static void heap() {
         if (!BuildConfig.DEBUG) return;

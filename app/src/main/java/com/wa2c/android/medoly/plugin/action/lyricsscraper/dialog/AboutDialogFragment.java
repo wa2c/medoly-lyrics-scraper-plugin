@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 

@@ -30,10 +30,14 @@
     <string-array name="about_library_names">
        <item>jsoup</item>
         <item>xsoup</item>
+        <item>Gson</item>
+        <item>Google Data Java Client Library</item>
     </string-array>
     <string-array name="about_library_urls">
         <item>http://jsoup.org/</item>
         <item>https://github.com/code4craft/xsoup</item>
+        <item>http://code.google.com/p/google-gson/</item>
+        <item>https://github.com/google/gdata-java-client</item>
     </string-array>
 
     <!-- Preferences -->

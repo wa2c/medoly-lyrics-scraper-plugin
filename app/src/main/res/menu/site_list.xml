@@ -1,19 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<item
-		android:id="@+id/menu_update_list"
-		android:icon="@drawable/ic_action_renew"
-		android:orderInCategory="100"
-		android:showAsAction="ifRoom"
-		android:title="@string/menu_update_list"
-		android:visible="true" />
+    <item
+        android:id="@+id/menu_update_list"
+        android:icon="@drawable/ic_action_renew"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_update_list"
+        android:visible="true" />
 
-	<item
-		android:id="@+id/menu_open_sheet"
-		android:icon="@drawable/ic_action_launch"
-		android:orderInCategory="100"
-		android:showAsAction="ifRoom"
-		android:title="@string/menu_open_list"
-		android:visible="true" />
+    <item
+        android:id="@+id/menu_open_sheet"
+        android:icon="@drawable/ic_action_launch"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_open_list"
+        android:visible="true" />
 
 </menu>

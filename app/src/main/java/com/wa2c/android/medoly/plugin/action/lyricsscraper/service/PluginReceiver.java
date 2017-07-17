@@ -1,10 +1,8 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper.receiver;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.ScraperIntentService;
 
 /**
  * Plugin receiver.

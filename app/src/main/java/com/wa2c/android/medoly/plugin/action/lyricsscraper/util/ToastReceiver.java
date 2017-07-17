@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 /**
- * Toast出力用Receiver。
+ * Toast receiver.
  */
 public class ToastReceiver extends BroadcastReceiver {
     public static final String MESSAGE_TOAST = "message";

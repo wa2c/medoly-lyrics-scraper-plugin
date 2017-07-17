@@ -31,7 +31,7 @@
             android:launchMode="singleTask" />
 
         <receiver
-            android:name=".receiver.PluginReceiver"
+            android:name=".service.PluginReceiver"
             android:label="@string/class_receiver_label">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
