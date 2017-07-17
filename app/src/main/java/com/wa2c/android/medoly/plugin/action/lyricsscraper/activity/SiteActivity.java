@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -27,6 +27,11 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.GroupColumn;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteProvider;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.SpreadSheetReadTask;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 
 import java.util.Locale;

@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,16 +22,16 @@
         </activity>
 
         <activity
-            android:name=".SiteActivity"
+            android:name=".activity.SiteActivity"
             android:label="@string/title_activity_site"/>
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
         <receiver
-            android:name=".PluginReceiver"
+            android:name=".receiver.PluginReceiver"
             android:label="@string/class_receiver_label">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -59,11 +59,11 @@
             android:exported="false" />
 
         <service
-            android:name=".ScraperIntentService"
+            android:name=".service.ScraperIntentService"
             android:exported="false"/>
 
         <provider
-            android:name=".SiteProvider"
+            android:name=".db.SiteProvider"
             android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper.siteprovider"
             android:exported="false" />
 

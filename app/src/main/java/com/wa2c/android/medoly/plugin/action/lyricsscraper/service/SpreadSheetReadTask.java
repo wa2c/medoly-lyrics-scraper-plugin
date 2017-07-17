@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.service;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -14,6 +14,10 @@ import com.google.gdata.data.spreadsheet.ListEntry;
 import com.google.gdata.data.spreadsheet.ListFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.data.spreadsheet.WorksheetFeed;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.GroupColumn;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteProvider;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 
 import java.net.URL;

@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.wa2c.android.medoly.library.MedolyEnvironment;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 
 /**
  * メイン画面のアクティビティ。

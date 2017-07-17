@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.db;
 
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.GroupColumn;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 
 import java.util.ArrayList;

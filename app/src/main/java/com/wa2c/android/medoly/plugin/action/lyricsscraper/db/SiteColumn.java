@@ -1,9 +1,9 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.db;
 
 /**
  * Site Column.
  */
-enum SiteColumn {
+public enum SiteColumn {
     /** ID. */
     _ID                      ( "_ID"                      , "_id"                  , "INTEGER PRIMARY KEY AUTOINCREMENT" ),
     /** Site ID. */

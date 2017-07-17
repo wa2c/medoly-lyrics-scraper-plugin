@@ -26,6 +26,7 @@ public class AppUtils {
      * @param text 歌詞テキスト。
      * @return 調整後の歌詞テキスト。
      */
+    @SuppressWarnings("deprecation")
     public static String adjustLyrics(String text) {
         if (TextUtils.isEmpty(text))
             return null;

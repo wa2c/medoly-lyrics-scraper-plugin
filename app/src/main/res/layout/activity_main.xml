@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.wa2c.android.medoly.plugin.action.lyricsscraper.MainActivity"
+    tools:context="com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.MainActivity"
     tools:ignore="MergeRootFrame">
 
     <ScrollView

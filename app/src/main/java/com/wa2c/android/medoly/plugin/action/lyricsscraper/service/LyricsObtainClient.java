@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper;
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,6 +16,9 @@ import android.webkit.WebViewClient;
 
 import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.PropertyData;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteProvider;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
