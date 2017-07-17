@@ -32,7 +32,6 @@ proguard/
 .directory
 
 # App
-Token.java
 syntax: glob
 *.iml
 .idea/libraries

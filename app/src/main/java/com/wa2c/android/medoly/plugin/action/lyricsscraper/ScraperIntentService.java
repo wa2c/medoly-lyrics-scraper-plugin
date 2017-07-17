@@ -1,21 +1,20 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.wa2c.android.medoly.library.LyricsProperty;
+import com.wa2c.android.medoly.library.MediaPluginIntent;
 import com.wa2c.android.medoly.library.MediaProperty;
-import com.wa2c.android.medoly.library.MedolyEnvironment;
-import com.wa2c.android.medoly.library.MedolyIntentParam;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
-import com.wa2c.android.medoly.library.PluginTypeCategory;
 import com.wa2c.android.medoly.library.PropertyData;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 
@@ -50,7 +49,6 @@ public class ScraperIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
     }
 
     @Override
@@ -62,67 +60,81 @@ public class ScraperIntentService extends IntentService {
         return START_NOT_STICKY;
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+//    @Nullable
+//    @Override
+//    public IBinder onBind(Intent intent) {
+//        return null;
+//    }
 
+
+    /** Context. */
+    private Context context = null;
+    /** Preferences. */
+    private SharedPreferences sharedPreferences = null;
+    /** Plugin intent. */
+    private MediaPluginIntent pluginIntent;
+    /** Property data. */
+    private PropertyData propertyData;
 
     /**
-     * 歌詞の取得を開始。
-     * @param intent インテント。
+     * Start lyrics scraping.
+     * @param intent A plugin intent.
      */
     private synchronized void startScraping(final Intent intent) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        MedolyIntentParam param = null;
+        if (intent == null)
+            return;
 
         try {
-            param = new MedolyIntentParam(intent);
-            if (param.hasCategories(PluginOperationCategory.OPERATION_MEDIA_OPEN)) {
+            context = getApplicationContext();
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            pluginIntent = new MediaPluginIntent(intent);
+            propertyData = pluginIntent.getPropertyData();
+
+
+            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN)) {
                 // Open
-                if (!param.isEvent() || sharedPreferences.getBoolean(getApplicationContext().getString(R.string.prefkey_operation_media_open_enabled), false)) {
-                    downloadLyrics(param);
+                if (!pluginIntent.isAutomatically() || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
+                    downloadLyrics();
                     return;
                 }
-            } else if (param.hasCategories(PluginOperationCategory.OPERATION_EXECUTE)) {
+            } else if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
                // Execute
-                if (param.hasExecuteId("execute_id_get_lyrics")) {
+                if (pluginIntent.hasExecuteId("execute_id_get_lyrics")) {
                     // Get Lyrics
-                    downloadLyrics(param);
+                    downloadLyrics();
                     return;
                }
             }
-            sendLyricsResult(param, Uri.EMPTY);
+            sendLyricsResult(Uri.EMPTY);
         } catch (Exception e) {
             AppUtils.showToast(this, R.string.error_app);
-            sendLyricsResult(param, null);
+            sendLyricsResult(null);
         }
     }
 
     /**
      * 歌詞取得。
      */
-    private void downloadLyrics(final MedolyIntentParam param) {
+    private void downloadLyrics() {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         // 音楽データ無し
-        if (param.getMediaUri() == null) {
+        if (propertyData.getMediaUri() == null) {
             AppUtils.showToast(getApplicationContext(), R.string.message_no_media);
-            sendLyricsResult(param, Uri.EMPTY);
+            sendLyricsResult(Uri.EMPTY);
             return;
         }
 
         // 必須情報無し
-        if (param.getPropertyData() == null ||
-            param.getPropertyData().isEmpty(MediaProperty.TITLE) ||
-            param.getPropertyData().isEmpty(MediaProperty.ARTIST)) {
-            sendLyricsResult(param, null);
+        if (propertyData == null ||
+            propertyData.isEmpty(MediaProperty.TITLE) ||
+            propertyData.isEmpty(MediaProperty.ARTIST)) {
+            sendLyricsResult(null);
             return;
         }
 
         // 前回メディア確認
-        final String mediaUriText = param.getMediaUri().toString();
+        final String mediaUriText = propertyData.getMediaUri().toString();
         final String previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "");
         boolean previousMediaEnabled = sharedPreferences.getBoolean(getApplicationContext().getString(R.string.prefkey_previous_media_enabled), false);
         if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText.equals(previousMediaUri)) {
@@ -130,22 +142,22 @@ public class ScraperIntentService extends IntentService {
             String lyrics = sharedPreferences.getString(PREFKEY_PREVIOUS_LYRICS_TEXT, null);
             String title = sharedPreferences.getString(PREFKEY_PREVIOUS_SITE_TITLE, null);
             String uri = sharedPreferences.getString(PREFKEY_PREVIOUS_SITE_URI, null);
-            sendLyricsResult(param, getLyricsUri(lyrics), title, uri);
+            sendLyricsResult(getLyricsUri(lyrics), title, uri);
             return;
         }
 
         try {
             // 歌詞取得
-            LyricsObtainClient obtainClient = new LyricsObtainClient(getApplicationContext(), param.getPropertyData());
+            LyricsObtainClient obtainClient = new LyricsObtainClient(getApplicationContext(), propertyData);
             obtainClient.obtainLyrics(new LyricsObtainClient.LyricsObtainListener() {
                 @Override
                 public void onLyricsObtain(String lyrics, String title, String uri) {
                     // 送信
-                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, param.getMediaUri().toString()).apply();
+                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.getMediaUri().toString()).apply();
                     sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply();
                     sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_TITLE, title).apply();
                     sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_URI, uri).apply();
-                    sendLyricsResult(param, getLyricsUri(lyrics), title, uri);
+                    sendLyricsResult(getLyricsUri(lyrics), title, uri);
                 }
             });
         } catch (SiteNotSelectException e) {
@@ -162,7 +174,7 @@ public class ScraperIntentService extends IntentService {
             AppUtils.showToast(this, R.string.message_no_site);
         } catch (Exception e) {
             Logger.e(e);
-            sendLyricsResult(param, null);
+            sendLyricsResult(null);
         }
 
     }
@@ -204,33 +216,27 @@ public class ScraperIntentService extends IntentService {
 
     /**
      * 歌詞を送り返す。
-     * @param param 送信元パラメータ。
      * @param lyricsUri 歌詞データのURI。取得できない場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
      */
-    private void sendLyricsResult(MedolyIntentParam param, Uri lyricsUri) {
-        sendLyricsResult(param, lyricsUri, null, null);
+    private void sendLyricsResult(Uri lyricsUri) {
+        sendLyricsResult(lyricsUri, null, null);
     }
 
     /**
      * 歌詞を送り返す。
-     * @param param 送信元パラメータ。
      * @param lyricsUri 歌詞データのURI。無視の場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
      * @param siteTitle サイトのタイトル。
      * @param siteUri  サイトのURI。
      */
-    private void sendLyricsResult(MedolyIntentParam param, Uri lyricsUri, String siteTitle, String siteUri) {
-        if (param == null)
-            return;
+    private void sendLyricsResult(Uri lyricsUri, String siteTitle, String siteUri) {
+        PropertyData resultPropertyData = new PropertyData();
+        resultPropertyData.put(LyricsProperty.DATA_URI, (lyricsUri == null) ? null : lyricsUri.toString());
+        resultPropertyData.put(LyricsProperty.SOURCE_TITLE, siteTitle);
+        resultPropertyData.put(LyricsProperty.SOURCE_URI, siteUri);
 
-        PropertyData propertyData = new PropertyData();
-        propertyData.put(LyricsProperty.DATA_URI, (lyricsUri == null) ? null : lyricsUri.toString());
-        propertyData.put(LyricsProperty.SOURCE_TITLE, siteTitle);
-        propertyData.put(LyricsProperty.SOURCE_URI, siteUri);
-
-        Intent returnIntent = param.createReturnIntent();
-        returnIntent.addCategory(PluginTypeCategory.TYPE_PUT_LYRICS.getCategoryValue()); // カテゴリ
-        returnIntent.putExtra(MedolyEnvironment.PLUGIN_VALUE_KEY, propertyData);
-        returnIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        Intent returnIntent = pluginIntent.createResultIntent(resultPropertyData);
+        getApplicationContext().grantUriPermission(pluginIntent.getSrcPackage(), lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        returnIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         sendBroadcast(returnIntent);
 
         // Message

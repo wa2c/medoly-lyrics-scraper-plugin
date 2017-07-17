@@ -16,6 +16,8 @@ import android.webkit.WebViewClient;
 
 import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.PropertyData;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger;
 

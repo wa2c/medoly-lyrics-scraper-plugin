@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -179,7 +180,13 @@ public class SettingsActivity extends PreferenceActivity {
 					LinearLayout libraryLayout = (LinearLayout) layoutView.findViewById(R.id.abountLibraryLayout);
 					libTextView = new TextView(getActivity());
 					libTextView.setMovementMethod(LinkMovementMethod.getInstance());
-					libTextView.setText(Html.fromHtml("<a href=\"" + libraryUrls[i] + "\">" +  libraryNames[i] + "</a>"));
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+						libTextView.setText(Html.fromHtml("<a href=\"" + libraryUrls[i] + "\">" +  libraryNames[i] + "</a>", Html.FROM_HTML_MODE_LEGACY));
+					} else {
+						libTextView.setText(Html.fromHtml("<a href=\"" + libraryUrls[i] + "\">" +  libraryNames[i] + "</a>"));
+					}
+
+
 					libTextView.setGravity(Gravity.CENTER_HORIZONTAL);
 					libraryLayout.setPadding(2, 2, 2, 2);
 					libraryLayout.addView(libTextView);
