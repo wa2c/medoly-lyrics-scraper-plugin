@@ -1,5 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import com.wa2c.android.medoly.library.MedolyEnvironment;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 
 /**
- * メイン画面のアクティビティ。
+ * Main activity.
  */
 public class MainActivity extends Activity {
 
@@ -17,6 +18,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // ActionBar
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+        }
 
         // Site List
         findViewById(R.id.siteListButton).setOnClickListener(new View.OnClickListener() {

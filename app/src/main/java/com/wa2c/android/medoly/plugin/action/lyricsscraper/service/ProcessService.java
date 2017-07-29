@@ -14,6 +14,7 @@ import com.wa2c.android.medoly.library.LyricsProperty;
 import com.wa2c.android.medoly.library.MediaPluginIntent;
 import com.wa2c.android.medoly.library.MediaProperty;
 import com.wa2c.android.medoly.library.PluginOperationCategory;
+import com.wa2c.android.medoly.library.PluginTypeCategory;
 import com.wa2c.android.medoly.library.PropertyData;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SiteActivity;
@@ -32,7 +33,11 @@ import java.io.PrintWriter;
 /**
  *  歌詞取得サービス。
  */
-public class ScraperIntentService extends IntentService {
+public class ProcessService extends IntentService {
+
+    /** Received receiver class name. */
+    public static String RECEIVED_CLASS_NAME = "RECEIVED_CLASS_NAME";
+
     /** 前回のファイルパス設定キー。 */
     private static final String PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri";
     /** 前回の歌詞テキスト設定キー。 */
@@ -47,7 +52,7 @@ public class ScraperIntentService extends IntentService {
     /**
      * コンストラクタ。
      */
-    public ScraperIntentService() {
+    public ProcessService() {
         super(IntentService.class.getSimpleName());
     }
 
@@ -94,25 +99,35 @@ public class ScraperIntentService extends IntentService {
             pluginIntent = new MediaPluginIntent(intent);
             propertyData = pluginIntent.getPropertyData();
 
+            // Execute
 
-            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN)) {
-                // Open
-                if (!pluginIntent.isAutomatically() || sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
+            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
+                String receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME);
+                if (receivedClassName.equals(PluginReceiver.ExecuteGetLyricsReceiver.class.getName())) {
                     downloadLyrics();
-                    return;
                 }
-            } else if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
-               // Execute
-                if (pluginIntent.hasExecuteId("execute_id_get_lyrics")) {
-                    // Get Lyrics
-                    downloadLyrics();
-                    return;
-               }
+                return;
             }
-            sendLyricsResult(Uri.EMPTY);
+
+            // Event
+
+            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
+                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
+                    downloadLyrics();
+                } else {
+                    sendLyricsResult(Uri.EMPTY);
+                }
+            }
         } catch (Exception e) {
             AppUtils.showToast(this, R.string.error_app);
-            sendLyricsResult(null);
+
+            // Error
+            try {
+                if (pluginIntent != null &&  pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY))
+                    sendLyricsResult(null);
+            } catch (Exception e1) {
+                Logger.e(e1);
+            }
         }
     }
 
@@ -170,12 +185,14 @@ public class ScraperIntentService extends IntentService {
             siteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(siteIntent);
             AppUtils.showToast(this, R.string.message_no_select_site);
+            sendLyricsResult(null);
         } catch (SiteNotFoundException e) {
             // サイト情報未取得の場合はアクティビティ起動
             Intent siteIntent = new Intent(this, SiteActivity.class);
             siteIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(siteIntent);
             AppUtils.showToast(this, R.string.message_no_site);
+            sendLyricsResult(null);
         } catch (Exception e) {
             Logger.e(e);
             sendLyricsResult(null);

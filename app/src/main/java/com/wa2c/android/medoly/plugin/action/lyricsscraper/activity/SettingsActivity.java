@@ -27,7 +27,7 @@ import java.util.Set;
 
 
 /**
- * 設定画面のアクティビティ。
+ * Settings activity.
  */
 public class SettingsActivity extends PreferenceActivity {
 
@@ -39,7 +39,7 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
 
-        // アクションバー
+        // Action bar
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
@@ -66,11 +66,11 @@ public class SettingsActivity extends PreferenceActivity {
 
 
     /**
-     * 設定画面フラグメント。
+     * Settings fragment.
      */
     public static class SettingsFragment extends PreferenceFragment {
 
-        /** サマリの長さマップ。 */
+        /** Summary length. */
         private static final HashMap<Preference, Integer> summaryLengthMap = new LinkedHashMap<>();
 
         /**
@@ -81,7 +81,7 @@ public class SettingsActivity extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_settings);
 
-            // アプリ情報
+            // App info
             findPreference(getString(R.string.prefkey_application_details)).setOnPreferenceClickListener(applicationDetailsPreferenceClickListener);
             // About
             findPreference(getString(R.string.prefkey_about)).setOnPreferenceClickListener(aboutPreferenceClickListener);
@@ -109,7 +109,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 
         /**
-         * アプリ情報。
+         * App info.
          */
         private Preference.OnPreferenceClickListener applicationDetailsPreferenceClickListener = new Preference.OnPreferenceClickListener() {
             @Override
@@ -132,83 +132,15 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             }
         };
-//
-//        /**
-//         * About.
-//         */
-//        private Preference.OnPreferenceClickListener aboutPreferenceClickListener = new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                RelativeLayout layoutView = (RelativeLayout) View.inflate(getActivity(), R.layout.layout_about, null);
-//
-//                // Version
-//                try {
-//                    PackageInfo packageInfo = getActivity().getPackageManager().getPackageInfo( getActivity().getPackageName(), PackageManager.GET_ACTIVITIES);
-//                    ((TextView)layoutView.findViewById(R.id.aboutAppVersionTextView)).setText("Ver. " + packageInfo.versionName);
-//                } catch (NameNotFoundException e) {
-//                    Logger.e(e);
-//                }
-//
-//                // Developer
-//                ((TextView)layoutView.findViewById(R.id.aboutDeveloperNameTextView)).setText(getString(R.string.app_author));
-//
-//                // Link
-//                Linkify.TransformFilter filter = new Linkify.TransformFilter() {
-//                    @Override
-//                    public String transformUrl(Matcher match, String url) {
-//                        return getString(R.string.app_market_web);
-//                    }
-//                };
-//                Linkify.addLinks(
-//                        (TextView)layoutView.findViewById(R.id.aboutGooglePlayTextView),
-//                        Pattern.compile("Google Play"),
-//                        getString(R.string.app_market_web),
-//                        null,
-//                        filter);
-//
-//                // Contact
-//                ((TextView)layoutView.findViewById(R.id.aboutEmailTextView)).setText(getString(R.string.app_mail_name) + "@" + getString(R.string.app_mail_domain));
-//
-//                // Library
-//                String[] libraryNames = getResources().getStringArray(R.array.about_library_names);
-//                String[] libraryUrls = getResources().getStringArray(R.array.about_library_urls);
-//
-//                for (int i = 0; i < libraryNames.length; i++) {
-//                    TextView libTextView;
-//                    LinearLayout libraryLayout = (LinearLayout) layoutView.findViewById(R.id.abountLibraryLayout);
-//                    libTextView = new TextView(getActivity());
-//                    libTextView.setMovementMethod(LinkMovementMethod.getInstance());
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                        libTextView.setText(Html.fromHtml("<a href=\"" + libraryUrls[i] + "\">" +  libraryNames[i] + "</a>", Html.FROM_HTML_MODE_LEGACY));
-//                    } else {
-//                        libTextView.setText(Html.fromHtml("<a href=\"" + libraryUrls[i] + "\">" +  libraryNames[i] + "</a>"));
-//                    }
-//
-//
-//                    libTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-//                    libraryLayout.setPadding(2, 2, 2, 2);
-//                    libraryLayout.addView(libTextView);
-//                }
-//
-//                // ダイアログ作成
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                builder.setTitle(R.string.pref_title_about);
-//                builder.setView(layoutView);
-//                builder.setPositiveButton(android.R.string.ok, null);
-//                builder.create().show();
-//
-//                return true;
-//            }
-//        };
 
         /**
-         * サマリを初期化する。
-         * @param p 対象項目。
+         * Initialize summary.
+         * @param p Target preference.
          */
         private void initSummary(Preference p) {
             if (p == null) return;
 
-            // サマリの長さ取得
+            // Get summary length
             CharSequence summary = p.getSummary();
             if (summary != null && summary.length() > 0) {
                 if (summary.toString().lastIndexOf("\n") != 0) p.setSummary(summary + "\n"); // 改行追加
@@ -217,7 +149,7 @@ public class SettingsActivity extends PreferenceActivity {
                 summaryLengthMap.put(p, 0);
             }
 
-            // サマリ更新
+            // Update summary
             if (p instanceof PreferenceCategory) {
                 PreferenceCategory pCat = (PreferenceCategory) p;
                 for (int i = 0; i < pCat.getPreferenceCount(); i++) {
@@ -234,8 +166,8 @@ public class SettingsActivity extends PreferenceActivity {
         }
 
         /**
-         * サマリを更新する。
-         * @param p 対象項目。
+         * Update summary.
+         * @param p Target preference.
          */
         private void updatePrefSummary(Preference p) {
             if (p == null) return;
@@ -245,11 +177,11 @@ public class SettingsActivity extends PreferenceActivity {
             if (TextUtils.isEmpty(key)) return;
             if (TextUtils.isEmpty(summary)) summary = "";
 
-            // 種別毎
+            // preference type
             if (p instanceof ListPreference) {
                 // ListPreference
                 ListPreference pref = (ListPreference) p;
-                pref.setValue(p.getSharedPreferences().getString(pref.getKey(), "")); // 一度値を更新
+                pref.setValue(p.getSharedPreferences().getString(pref.getKey(), "")); // set value at once
                 p.setSummary(summary.subSequence(0, summaryLengthMap.get(p)) + getString(R.string.settings_summary_current_value, pref.getEntry()));
             } else if (p instanceof MultiSelectListPreference) {
                 // MultiSelectListPreference
@@ -257,7 +189,7 @@ public class SettingsActivity extends PreferenceActivity {
                 Set<String> stringSet = pref.getSharedPreferences().getStringSet(pref.getKey(), null);
                 String text = "";
                 if (stringSet != null && stringSet.size() > 0) {
-                    pref.setValues(stringSet); // 一度値を更新
+                    pref.setValues(stringSet); // set value at once
                     StringBuilder builder = new StringBuilder();
                     for (int i = 0; i < pref.getEntries().length; i++) {
                         if (stringSet.contains(pref.getEntryValues()[i])) {
@@ -265,28 +197,28 @@ public class SettingsActivity extends PreferenceActivity {
                         }
                     }
                     if (builder.length() > 0) {
-                        text = builder.substring(0, builder.length() - 1); // 末尾のカンマ削除
+                        text = builder.substring(0, builder.length() - 1); // delete end comma
                     }
                 }
                 p.setSummary(summary.subSequence(0, summaryLengthMap.get(p)) + getString(R.string.settings_summary_current_value, text));
             } else if (p instanceof EditTextPreference) {
                 // EditTextPreference
                 EditTextPreference pref = (EditTextPreference) p;
-                String text = p.getSharedPreferences().getString(pref.getKey(), ""); // 値が更新されない場合があるので、pref.getText() は使用しない
+                String text = p.getSharedPreferences().getString(pref.getKey(), ""); // don't use pref.getText() because of update failed.
 
-                // 数値型の補正
+                // adjust number
                 int inputType = pref.getEditText().getInputType();
                 try {
                     if ( (inputType & InputType.TYPE_CLASS_NUMBER) > 0) {
                         if ((inputType & InputType.TYPE_NUMBER_FLAG_DECIMAL) > 0) {
-                            // 小数
+                            // real number
                             float val = Float.valueOf(text);
                             if ((inputType & InputType.TYPE_NUMBER_FLAG_SIGNED) == 0 && val < 0) {
                                 val = 0;
                             }
                             text = String.valueOf(val);
                         } else {
-                            // 整数
+                            // digit number
                             int val = Integer.valueOf(text);
                             if ((inputType & InputType.TYPE_NUMBER_FLAG_SIGNED) == 0 && val < 0) {
                                 val = 0;
@@ -297,18 +229,18 @@ public class SettingsActivity extends PreferenceActivity {
                 } catch (NumberFormatException e) {
                     text = "0";
                 }
-                pref.setText(text); // 一度値を更新
+                pref.setText(text); // set value at once
                 p.setSummary(summary.subSequence(0, summaryLengthMap.get(p)) + getString(R.string.settings_summary_current_value, text));
             }
         }
 
         /**
-         * 設定更新時の処理。
+         * On Shared Preference Change Listener.
          */
         private SharedPreferences.OnSharedPreferenceChangeListener listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                // サマリ更新
+                // Update summary
                 updatePrefSummary(findPreference(key));
             }
         };

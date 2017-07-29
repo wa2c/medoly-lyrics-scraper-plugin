@@ -1,9 +1,12 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
+
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.ProcessService;
 
 import java.text.Normalizer;
 
@@ -30,6 +33,25 @@ public class AppUtils {
     public static void showToast(Context context, int stringId) {
         ToastReceiver.showToast(context, stringId);
     }
+
+    /**
+     * Start service.
+     * @param context A context.
+     * @param intent A received intent.
+     */
+    public static void startService(Context context, Intent intent) {
+        // Stop exists service
+        Intent stopIntent = new Intent(context, ProcessService.class);
+        context.stopService(stopIntent);
+
+        // Launch service
+        Intent serviceIntent = new Intent(intent);
+        serviceIntent.putExtra(ProcessService.RECEIVED_CLASS_NAME, intent.getComponent().getClassName());
+        serviceIntent.setClass(context, ProcessService.class);
+        context.startService(serviceIntent);
+    }
+
+
 
     /**
      * 歌詞を調整する。

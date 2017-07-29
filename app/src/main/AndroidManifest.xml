@@ -30,37 +30,45 @@
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
+        <service
+            android:name=".service.ProcessService"
+            android:exported="false"/>
+
+        <!-- Plugin event action -->
+
         <receiver
-            android:name=".service.PluginReceiver"
-            android:label="@string/class_receiver_label">
+            android:name=".service.PluginReceiver$EventAllReceiver"
+            android:exported="true">
+
+            <!-- Get lyrics -->
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_LYRICS" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START" />
             </intent-filter>
 
-            <meta-data
-                android:name="execute_id_get_lyrics"
-                android:value="0" />
-            <meta-data
-                android:name="execute_label_get_lyrics"
-                android:resource="@string/label_execute_get_lyrics" />
-            <meta-data
-                android:name="execute_icon_get_lyrics"
-                android:resource="@drawable/ic_action_download" />
-            <meta-data
-                android:name="execute_type_get_lyrics"
-                android:value="TYPE_GET_LYRICS" />
         </receiver>
+
+        <!-- Plugin execute action -->
+
+        <!-- Get lyrics -->
+        <receiver
+            android:name=".service.PluginReceiver$ExecuteGetLyricsReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_download"
+            android:label="@string/label_execute_get_lyrics">
+            <intent-filter>
+                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_LYRICS" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".util.ToastReceiver"
             android:exported="false" />
-
-        <service
-            android:name=".service.ScraperIntentService"
-            android:exported="false"/>
 
         <provider
             android:name=".db.SiteProvider"

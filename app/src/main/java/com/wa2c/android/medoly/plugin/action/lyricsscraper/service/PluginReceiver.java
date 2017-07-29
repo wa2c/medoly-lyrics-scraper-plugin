@@ -4,24 +4,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-/**
- * Plugin receiver.
- */
-public class PluginReceiver extends BroadcastReceiver {
-    /**
-     * Receive message.
-     * @param context A context.
-     * @param intent Received intent.
-     */
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        // Stop exists service.
-        Intent stopIntent = new Intent(context, ScraperIntentService.class);
-        context.stopService(stopIntent);
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils;
 
-        // Launch intent service.
-        Intent serviceIntent = new Intent(intent);
-        serviceIntent.setClass(context, ScraperIntentService.class);
-        context.startService(serviceIntent);
+/**
+ * Execute receiver.
+ */
+public class PluginReceiver {
+
+    public static class EventAllReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AppUtils.startService(context, intent);
+        }
     }
+
+    public static class ExecuteGetLyricsReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            AppUtils.startService(context, intent);
+        }
+    }
+
 }

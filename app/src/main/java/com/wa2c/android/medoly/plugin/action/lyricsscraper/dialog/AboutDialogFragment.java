@@ -116,7 +116,7 @@ public class AboutDialogFragment extends AbstractDialogFragment {
             libraryLayout.addView(libTextView);
         }
 
-        // ダイアログ作成
+        // create dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.pref_title_about);
         builder.setView(layoutView);
