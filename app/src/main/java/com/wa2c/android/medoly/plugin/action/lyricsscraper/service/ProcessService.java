@@ -103,7 +103,7 @@ public class ProcessService extends IntentService {
 
             if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
                 String receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME);
-                if (receivedClassName.equals(PluginReceiver.ExecuteGetLyricsReceiver.class.getName())) {
+                if (receivedClassName.equals(PluginReceivers.ExecuteGetLyricsReceiver.class.getName())) {
                     downloadLyrics();
                 }
                 return;

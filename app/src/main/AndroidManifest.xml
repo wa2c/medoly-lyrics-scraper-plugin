@@ -37,8 +37,10 @@
         <!-- Plugin event action -->
 
         <receiver
-            android:name=".service.PluginReceiver$EventAllReceiver"
-            android:exported="true">
+            android:name=".service.PluginReceivers$EventAllReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_download"
+            android:label="@string/label_execute_get_lyrics">
 
             <!-- Get lyrics -->
             <intent-filter>
@@ -55,7 +57,7 @@
 
         <!-- Get lyrics -->
         <receiver
-            android:name=".service.PluginReceiver$ExecuteGetLyricsReceiver"
+            android:name=".service.PluginReceivers$ExecuteGetLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_download"
             android:label="@string/label_execute_get_lyrics">

@@ -40,7 +40,7 @@ repositories {
 
 dependencies {
     // Medoly library
-    compile 'com.wa2c.android:medolylibrary:1.0.4q'
+    compile 'com.wa2c.android:medolylibrary:1.0.4t'
 
     // Support library
     compile 'com.android.support:appcompat-v7:25.3.1'
