@@ -62,8 +62,11 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
-    <string name="pref_title_operation_media_open_enabled">Run At Media Open</string>
-    <string name="pref_summary_operation_media_open_enabled">Get the lyrics at the time of media loading.</string>
+    <string name="title_preference_category_event">Event</string>
+    <string name="title_preference_category_info">Information</string>
+
+    <string name="pref_title_event_get_lyrics">Get Lyrics Event</string>
+    <string name="pref_summary_event_get_lyrics">Select the event to get lyrics.</string>
     <string name="pref_title_previous_media_enabled">Read Previous Media Lyrics</string>
     <string name="pref_summary_previous_media_enabled">Enable to get the lyrics for the same media that has got already last time.</string>
     <string name="pref_title_post_success_message_show">Show Success Message</string>
@@ -78,5 +81,16 @@
     <!-- System -->
     <string name="error_app">The operation failed due to an error.</string>
     <string name="error_dialog_dismissed">Open the dialog again.</string>
+
+
+
+    <!-- List -->
+
+    <!-- Plugin event -->
+    <string-array name="event_get_lyrics_entries">
+        <item>Invalid</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
 
 </resources>

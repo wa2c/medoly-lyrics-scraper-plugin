@@ -37,7 +37,7 @@
         <!-- Plugin event action -->
 
         <receiver
-            android:name=".service.PluginReceivers$EventAllReceiver"
+            android:name=".service.PluginReceivers$EventGetLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_download"
             android:label="@string/label_execute_get_lyrics">

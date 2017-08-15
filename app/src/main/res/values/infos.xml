@@ -44,7 +44,7 @@
     <string name="prefkey_selected_id">selected_id</string>
     <string name="prefkey_selected_site_id">selected_site_id</string>
 
-    <string name="prefkey_operation_media_open_enabled">operation_media_open_enabled</string>
+    <string name="prefkey_event_get_lyrics">event_get_lyrics</string>
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
     <string name="prefkey_success_message_show">success_message_show</string>
     <string name="prefkey_failure_message_show">failure_message_show</string>
@@ -53,4 +53,16 @@
 
     <string name="id_lyrics">Lyrics</string>
 
+
+    <!-- List -->
+
+    <string name="empty_value" />
+
+    <!-- Tweet event -->
+    <string name="event_get_lyrics_values_default" />
+    <string-array name="event_get_lyrics_values">
+        <item />
+        <item>OPERATION_MEDIA_OPEN</item>
+        <item>OPERATION_PLAY_START</item>
+    </string-array>
 </resources>

@@ -23,7 +23,7 @@ public class PluginReceivers {
 
     // Event
 
-    public static class EventAllReceiver extends AbstractPluginReceiver { }
+    public static class EventGetLyricsReceiver extends AbstractPluginReceiver { }
 
     // Execution
 

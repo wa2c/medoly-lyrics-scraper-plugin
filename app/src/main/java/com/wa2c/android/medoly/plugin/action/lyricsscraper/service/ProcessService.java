@@ -111,8 +111,10 @@ public class ProcessService extends IntentService {
 
             // Event
 
-            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_POST_MESSAGE)) {
-                if (sharedPreferences.getBoolean(context.getString(R.string.prefkey_operation_media_open_enabled), false)) {
+            if (pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_LYRICS)) {
+                String operation = sharedPreferences.getString(getString(R.string.prefkey_event_get_lyrics), getString(R.string.event_get_lyrics_values_default));
+                if ((pluginIntent.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name().equals(operation)) ||
+                    (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name().equals(operation))) {
                     downloadLyrics();
                 } else {
                     sendLyricsResult(Uri.EMPTY);

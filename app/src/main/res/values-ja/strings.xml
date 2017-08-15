@@ -62,8 +62,11 @@
     <string name="label_dialog_about_library">[Library]</string>
 
     <!-- Preferences -->
-    <string name="pref_title_operation_media_open_enabled">メディア開始イベント</string>
-    <string name="pref_summary_operation_media_open_enabled">メディアを開いた時に歌詞の取得を実行します。</string>
+    <string name="title_preference_category_event">イベント</string>
+    <string name="title_preference_category_info">情報</string>
+
+    <string name="pref_title_event_get_lyrics">歌詞取得イベント</string>
+    <string name="pref_summary_event_get_lyrics">歌詞を取得するイベントを選択します。</string>
     <string name="pref_title_previous_media_enabled">前回メディア実行</string>
     <string name="pref_summary_previous_media_enabled">前回歌詞取得済みの同一メディアに対しても、再取得を行います。</string>
     <string name="pref_title_post_success_message_show">成功メッセージ表示</string>
@@ -79,4 +82,14 @@
     <string name="error_app">エラーが発生したため、操作に失敗しました。</string>
     <string name="error_dialog_dismissed">ダイアログ操作に失敗しました。再度ダイアログを開いてください。</string>
 
+
+
+    <!-- List -->
+
+    <!-- Plugin event -->
+    <string-array name="event_get_lyrics_entries">
+        <item>イベント無効</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
 </resources>
