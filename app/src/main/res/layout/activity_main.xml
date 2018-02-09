@@ -14,24 +14,40 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <Button
-                android:layout_width="@dimen/main_button_width"
-                android:layout_height="wrap_content"
-                android:text="@string/label_button_site_list"
-                android:id="@+id/siteListButton"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/main_button_margin" />
-
-            <Button
-                android:id="@+id/settingsButton"
+                android:id="@+id/openSearchButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/label_button_settings" />
+                android:text="@string/title_activity_search" />
+
+            <Button
+                android:id="@+id/openCacheButton"
+                android:layout_width="@dimen/main_button_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/main_button_margin"
+                android:text="@string/title_activity_cache" />
+
+            <Button
+                android:id="@+id/openSitesButton"
+                android:layout_width="@dimen/main_button_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/main_button_margin"
+                android:text="@string/title_activity_site" />
+
+            <Button
+                android:id="@+id/openSettingsButton"
+                android:layout_width="@dimen/main_button_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/main_button_margin"
+                android:text="@string/title_activity_settings" />
 
             <Button
                 android:id="@+id/launchMedolyButton"
@@ -40,15 +56,6 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
                 android:text="@string/label_button_launch_medoly" />
-
-            <TextView
-                android:id="@+id/noMedolyTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/message_no_medoly"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_margin="@dimen/main_button_margin" />
 
         </LinearLayout>
     </ScrollView>

@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.GroupColumn;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn;
@@ -152,6 +153,8 @@ public class SiteActivity extends Activity {
                 return true;
             case R.id.menu_open_sheet:
                 String sheetUrl = getString(R.string.sheet_uri, getString(R.string.sheet_id));
+                //if (BuildConfig.DEBUG)
+                //    sheetUrl = getString(R.string.sheet_uri, getString(R.string.sheet_id_debug));
                 Uri sheetUri = Uri.parse(sheetUrl);
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, sheetUri);
                 startActivity(browserIntent);

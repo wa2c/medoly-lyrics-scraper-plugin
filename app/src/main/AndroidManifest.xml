@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:description="@string/app_description"
         android:icon="@drawable/ic_launcher"
@@ -20,6 +21,14 @@
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.SearchActivity"
+            android:label="@string/title_activity_search"/>
+
+        <activity
+            android:name=".activity.CacheActivity"
+            android:label="@string/title_activity_cache"/>
 
         <activity
             android:name=".activity.SiteActivity"

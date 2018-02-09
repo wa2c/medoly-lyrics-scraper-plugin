@@ -21,9 +21,25 @@
     <string name="class_receiver_label">歌詞取得アクション</string>
     <string name="label_execute_get_lyrics">歌詞取得</string>
 
+    <!-- Label -->
+    <string name="label_title">タイトル</string>
+    <string name="label_artist">アーティスト</string>
+    <string name="label_album">アルバム</string>
+    <string name="label_rate">レート</string>
+    <string name="label_uploader">From</string>
+    <string name="label_file_name">ファイル名</string>
+    <string name="label_lang">言語</string>
+    <string name="label_confirmation">確認</string>
+    <string name="label_edit">編集</string>
+
+    <string name="loading">Loading…</string>
+    <string name="label_close">閉じる</string>
+
     <!-- Activity -->
-    <string name="title_activity_settings">設定</string>
+    <string name="title_activity_search">検索</string>
+    <string name="title_activity_cache">キャッシュ</string>
     <string name="title_activity_site">サイト</string>
+    <string name="title_activity_settings">設定</string>
     <string name="menu_update_list">リスト更新</string>
     <string name="menu_open_list">リストを開く</string>
 
@@ -35,21 +51,58 @@
     <string name="message_lyrics_failure">歌詞の取得に失敗しました。</string>
 
     <!-- Main Activity -->
-    <string name="label_button_site_list">サイト一覧</string>
-    <string name="label_button_settings">設定</string>
     <string name="label_button_launch_medoly">Medoly 起動</string>
     <string name="message_no_medoly">Medolyをインストールしてください。</string>
-    <string name="message_account_auth">アカウントの認証が完了しています。</string>
-    <string name="message_account_not_auth">アカウントが認証されていません。</string>
-    <string name="message_account_clear">アカウント情報をクリアしました。</string>
+
+    <!-- Search Activity -->
+    <string name="menu_search_save_cache">キャッシュ保存</string>
+    <string name="menu_search_save_file">ファイル保存</string>
+    <string name="message_save_file">歌詞をファイルに保存しました。</string>
+    <string name="message_save_cache">検索結果をキャッシュに保存しました。</string>
+    <string name="message_lyrics_save_succeeded">歌詞の保存を完了しました。</string>
+    <string name="message_lyrics_save_failed">歌詞の保存に失敗しました。</string>
+    <string name="error_exists_lyrics">歌詞を選択してください。</string>
+    <string name="error_input_condition">検索条件を入力してください。</string>
+    <string name="label_search_item_separator"> / </string>
+    <string name="label_search_item_download">Download:%1$d</string>
+    <string name="label_search_item_rating">Rating:%1$.1f(%2$d)</string>
+    <string name="label_search_item_from">From:%1$s</string>
+
+    <!-- Cache Activity -->
+    <string name="menu_cache_delete">キャッシュ削除</string>
+    <string name="error_delete_cache_check">削除項目をチェックしてください。</string>
+    <string name="message_delete_cache">検索結果をキャッシュから削除しました。</string>
+    <string name="message_dialog_cache_delete">チェック項目をキャッシュから削除します。</string>
 
     <!-- Site Activity -->
     <string name="message_renew_list_succeeded">サイト情報の更新を完了しました。</string>
     <string name="message_renew_list_failed">サイト情報の更新に失敗しました。</string>
-    <string name="loading">Loading...</string>
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>
+
+
+
+    <!-- Confirm Dialog -->
+    <string name="message_dialog_confirm_save_cache">検索結果をキャッシュに保存します。</string>
+    <string name="label_dialog_confirm_save_cache">保存</string>
+
+    <!-- Normalize Dialog -->
+    <string name="title_dialog_normalize">クイック編集</string>
+    <string name="label_dialog_normalize_before_edit">変更前</string>
+    <string name="label_dialog_normalize_after_edit">変更後</string>
+    <string name="label_dialog_normalize_normalize">正規化</string>
+    <string name="label_dialog_normalize_remove_parentheses">括弧内を削除</string>
+    <string name="label_dialog_normalize_remove_dash">ダッシュ以降を削除</string>
+    <string name="label_dialog_normalize_remove_info">付属情報を削除(e.g., &quot;off vocal&quot;)</string>
+    <string name="label_dialog_normalize_reset">リセット</string>
+
+    <!-- Cache Dialog -->
+    <string name="label_dialog_cache_delete_lyrics">歌詞削除</string>
+    <string name="label_dialog_cache_delete_cache">キャッシュ削除</string>
+    <string name="label_dialog_cache_research">再検索</string>
+    <string name="label_dialog_cache_delete">削除</string>
+    <string name="message_dialog_cache_none">歌詞がありません。</string>
 
     <!-- About Dialog -->
     <string name="label_dialog_about_ver">Ver. %1$s</string>
@@ -60,6 +113,8 @@
     <string name="label_dialog_about_google_play">Google Play</string>
     <string name="label_dialog_about_link">Link</string>
     <string name="label_dialog_about_library">[Library]</string>
+
+
 
     <!-- Preferences -->
     <string name="title_preference_category_event">イベント</string>

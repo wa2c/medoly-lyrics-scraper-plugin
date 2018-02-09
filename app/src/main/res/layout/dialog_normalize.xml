@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/dialog_vertical_margin"
+    android:paddingTop="@dimen/dialog_vertical_margin"
+    android:paddingStart="@dimen/dialog_horizontal_margin"
+    android:paddingEnd="@dimen/dialog_horizontal_margin"
+    >
+
+    <TextView
+        android:text="@string/label_dialog_normalize_before_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeBeforeTitleTextView" />
+
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeBeforeTextView"
+        style="@android:style/TextAppearance.Holo.Medium"
+        android:layout_marginStart="8dp" />
+
+    <TextView
+        android:text="@string/label_dialog_normalize_after_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeAfterTitleTextView" />
+
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeAfterTextView"
+        style="@android:style/TextAppearance.Holo.Medium"
+        android:layout_marginStart="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/divider"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <CheckBox
+        android:text="@string/label_dialog_normalize_normalize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeCheckBox" />
+
+    <CheckBox
+        android:text="@string/label_dialog_normalize_remove_parentheses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeParenthesesCheckBox" />
+
+    <CheckBox
+        android:text="@string/label_dialog_normalize_remove_dash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeDashCheckBox" />
+
+    <CheckBox
+        android:text="@string/label_dialog_normalize_remove_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeInfoCheckBox" />
+
+    <Button
+        android:text="@string/label_dialog_normalize_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogNormalizeResetButton"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

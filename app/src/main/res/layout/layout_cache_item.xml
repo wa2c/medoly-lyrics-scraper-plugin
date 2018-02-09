@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical">
+
+
+    <CheckBox
+        android:id="@+id/cacheItemCheckBox"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/cacheItemTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/cacheItemCheckBox"
+        android:layout_toStartOf="@+id/cacheItemHasLyricsImageView"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="@string/label_cache_item_title" />
+
+    <TextView
+        android:id="@+id/cacheItemArtistTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cacheItemTitleTextView"
+        android:layout_toEndOf="@+id/cacheItemCheckBox"
+        android:layout_toStartOf="@+id/cacheItemHasLyricsImageView"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="@string/label_cache_item_artist" />
+
+    <TextView
+        android:id="@+id/cacheItemAlbumTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cacheItemArtistTextView"
+        android:layout_toEndOf="@+id/cacheItemCheckBox"
+        android:layout_toStartOf="@+id/cacheItemHasLyricsImageView"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="@string/label_cache_item_album" />
+
+    <ImageView
+        android:id="@+id/cacheItemHasLyricsImageView"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_action_file" />
+
+</RelativeLayout>

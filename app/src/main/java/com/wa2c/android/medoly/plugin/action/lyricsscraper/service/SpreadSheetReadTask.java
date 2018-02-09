@@ -14,6 +14,7 @@ import com.google.gdata.data.spreadsheet.ListEntry;
 import com.google.gdata.data.spreadsheet.ListFeed;
 import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.data.spreadsheet.WorksheetFeed;
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.GroupColumn;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn;
@@ -49,6 +50,9 @@ public class SpreadSheetReadTask extends AsyncTask<String, Void, Boolean> {
         try {
 
             String sheetId = context.getString(R.string.sheet_id);
+            //if (BuildConfig.DEBUG)
+            //    sheetId = context.getString(R.string.sheet_id_debug);
+
             URL feedURL = FeedURLFactory.getDefault().getWorksheetFeedUrl(sheetId, "public", "values");
             WorksheetFeed feed = service.getFeed(feedURL, WorksheetFeed.class);
             List<WorksheetEntry> worksheetList = feed.getEntries();

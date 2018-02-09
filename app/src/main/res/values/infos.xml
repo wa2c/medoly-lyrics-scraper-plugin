@@ -17,10 +17,19 @@
     <string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
 
     <string name="label_header_separator">:</string>
+    <string name="label_cache_item_title">Title:%1$s</string>
+    <string name="label_cache_item_artist">Artist:%1$s</string>
+    <string name="label_cache_item_album">Album:%1$s</string>
+    <!--
+    <string name="label_cache_item_from">From:%1$s</string>
+    <string name="label_cache_item_file">Name:%1$s</string>
+    <string name="label_cache_item_lang">Lang:%1$s</string>
+    -->
 
     <!--<string name="app_user_agent">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit (KHTML, like Gecko) Chrome Safari</string>-->
     <string name="app_user_agent">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.52 Safari/537.36</string>
 
+    <string name="sheet_id_debug">1VLhimcS6VbnWxasaUZSwWn1Le4uK_sdmsL7ItJxsgpo</string>
     <string name="sheet_id">1rAtZzpOmwkAigUJ4ENOCglaXPK5klmGfAhGasQrVg6U</string>
     <string name="sheet_uri">https://docs.google.com/spreadsheets/d/%1s</string>
 
@@ -48,6 +57,12 @@
     <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
     <string name="prefkey_success_message_show">success_message_show</string>
     <string name="prefkey_failure_message_show">failure_message_show</string>
+    <string name="pref_file_name_default">pref_file_name_default</string>
+    <string name="pref_file_name_separator">pref_file_name_separator</string>
+    <string name="pref_success_message_show">pref_success_message_show</string>
+    <string name="pref_failure_message_show">pref_failure_message_show</string>
+
+
     <string name="prefkey_application_details">application_details</string>
     <string name="prefkey_about">about</string>
 
@@ -65,4 +80,15 @@
         <item>OPERATION_MEDIA_OPEN</item>
         <item>OPERATION_PLAY_START</item>
     </string-array>
+
+
+    <!-- File name -->
+    <string name="file_name_default_default">ARTIST_TITLE</string>
+    <string-array name="file_name_default_values">
+        <item>TITLE</item>
+        <item>TITLE_ARTIST</item>
+        <item>ARTIST_TITLE</item>
+    </string-array>
+
+    <string name="file_name_separator_default">" - "</string>
 </resources>

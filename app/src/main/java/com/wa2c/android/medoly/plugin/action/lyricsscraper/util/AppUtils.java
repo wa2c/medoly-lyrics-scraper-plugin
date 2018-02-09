@@ -1,11 +1,16 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
 
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.R;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.ProcessService;
 
 import java.text.Normalizer;
@@ -32,6 +37,38 @@ public class AppUtils {
      */
     public static void showToast(Context context, int stringId) {
         ToastReceiver.showToast(context, stringId);
+    }
+
+
+
+    /**
+     * Get first non-null object.
+     * @param objects Objects.
+     * @return First non-null object. null as all null.
+     */
+    public static <T> T coalesce(T... objects) {
+        if (objects == null)
+            return null;
+        for (T obj : objects) {
+            if (obj != null)
+                return obj;
+        }
+        return null;
+    }
+
+    /**
+     * Get first non-null text.
+     * @param texts Texts.
+     * @return First non-null object. empty text as all null.
+     */
+    public static String coalesce(String... texts) {
+        if (texts == null)
+            return "";
+        for (String text : texts) {
+            if (!TextUtils.isEmpty(text))
+                return text;
+        }
+        return "";
     }
 
 
@@ -96,7 +133,7 @@ public class AppUtils {
      * @param text テキスト。
      * @return 括弧を取り除いたテキスト。
      */
-    private static String removeParentheses(String text) {
+    public static String removeParentheses(String text) {
         if (TextUtils.isEmpty(text))
             return "";
 
@@ -120,6 +157,47 @@ public class AppUtils {
                 .replaceAll("(^[^\\－]+)－.*?－", "$1")
                 .replaceAll(" (~|～|〜|〰).*", "");
 
+    }
+
+    /**
+     * Remove text after dash characters.
+     * @param text text.
+     * @return removed text.
+     */
+    public static String removeDash(String text) {
+        if (TextUtils.isEmpty(text))
+            return "";
+
+        return text
+                .replaceAll("\\s+(-|－|―|ー|ｰ|~|～|〜|〰|=|＝).*", "");
+    }
+
+    /**
+     * Remove attached info.
+     * @param text text.
+     * @return removed text.
+     */
+    public static String removeTextInfo(String text) {
+        if (TextUtils.isEmpty(text))
+            return "";
+
+        return text
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?off vocal.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?no vocal.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?less vocal.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?without.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?w/o.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?backtrack.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?backing track.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?karaoke.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?カラオケ.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?からおけ.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?歌無.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?vocal only.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?instrumental.*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?inst\\..*", "")
+                .replaceAll("(?i)[\\(\\<\\[\\{\\s]?インスト.*", "")
+                ;
     }
 
 
@@ -151,4 +229,53 @@ public class AppUtils {
         return text.replaceAll("(\\s|　)", insertSpace ? " " : "");
     }
 
+
+
+    /** Request code */
+    public static final int REQUEST_CODE_SAVE_FILE = 1;
+
+    /**
+     * Save file.
+     * @param activity A activity.
+     * @param title Title (searching text).
+     * @param artist Artist (searching text).
+     */
+    public static void saveFile(@NonNull Activity activity, String title, String artist) {
+        try {
+            if (title == null)
+                title = "";
+            if (artist == null)
+                artist = "";
+
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
+
+            String defaultNameKey = activity.getString(R.string.pref_file_name_default);
+            String defaultName = pref.getString(defaultNameKey, activity.getString(R.string.file_name_default_default));
+
+            String separatorKey = activity.getString(R.string.pref_file_name_separator);
+            String separator = pref.getString(separatorKey, activity.getString(R.string.file_name_separator_default));
+
+            String fileName;
+            switch (defaultName) {
+                case "TITLE_ARTIST":
+                    fileName = title + separator + artist;
+                    break;
+                case "ARTIST_TITLE":
+                    fileName = artist + separator + title;
+                    break;
+                default:
+                    fileName = title;
+                    break;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_TITLE, fileName + ".lrc");
+            activity.startActivityForResult(intent, REQUEST_CODE_SAVE_FILE);
+        } catch (Exception e) {
+            Logger.e(e);
+            showToast(activity, R.string.error_app);
+        }
+    }
 }
