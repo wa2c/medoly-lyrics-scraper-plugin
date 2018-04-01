@@ -1,7 +1,6 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.db;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.github.gfx.android.orma.annotation.Column;
 import com.github.gfx.android.orma.annotation.Index;
@@ -32,10 +31,20 @@ public class SearchCache implements Serializable {
     @Column(indexed = true)
     public String artist;
 
-    /** Search album. */
+    /** Search language. */
     @Nullable
-    @Column(indexed = true)
-    public String album;
+    @Column
+    public String language;
+
+    /** Search result uploader. */
+    @Nullable
+    @Column
+    public String from;
+
+    /** Search result file name. */
+    @Nullable
+    @Column
+    public String file_name;
 
     /** Search result has lyrics. */
     @Nullable
@@ -64,7 +73,7 @@ public class SearchCache implements Serializable {
      * @return result item.
      */
     public ResultItem makeResultItem() {
-        if (TextUtils.isEmpty(result))
+        if (result == null || result.isEmpty())
             return null;
         return (new Gson()).fromJson(result, ResultItem.class);
     }

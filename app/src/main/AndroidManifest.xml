@@ -40,13 +40,13 @@
             android:launchMode="singleTask" />
 
         <service
-            android:name=".service.ProcessService"
+            android:name=".service.PluginGetLyricsService"
             android:exported="false"/>
 
         <!-- Plugin event action -->
 
         <receiver
-            android:name=".service.PluginReceivers$EventGetLyricsReceiver"
+            android:name=".service.PluginReceiver$EventGetLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_download"
             android:label="@string/label_execute_get_lyrics">
@@ -66,7 +66,7 @@
 
         <!-- Get lyrics -->
         <receiver
-            android:name=".service.PluginReceivers$ExecuteGetLyricsReceiver"
+            android:name=".service.PluginReceiver$ExecuteGetLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_download"
             android:label="@string/label_execute_get_lyrics">

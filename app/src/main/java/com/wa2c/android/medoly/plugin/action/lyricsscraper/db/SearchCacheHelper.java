@@ -2,7 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.db;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem;
@@ -53,13 +53,12 @@ public class SearchCacheHelper {
      * Get ResultItem object from title and artist.
      * @param title Search title.
      * @param artist Search artist.
-     * @param album Search album.
      * @return Exists item, null if not exists.
      */
-    public SearchCache select(String title, String artist, String album) {
+    public SearchCache select(String title, String artist) {
         OrmaDatabase od = provideOrmaDatabase(context);
         return od.selectFromSearchCache()
-                .titleAndArtistEq(AppUtils.coalesce(title), AppUtils.coalesce(artist))
+                .titleAndArtistEq(AppUtils.INSTANCE.coalesce(title), AppUtils.INSTANCE.coalesce(artist))
                 .valueOrNull();
     }
 
@@ -69,18 +68,15 @@ public class SearchCacheHelper {
      * @param artist Search artist.
      * @return Exists item, null if not exists.
      */
-    public List<SearchCache> search(String title, String artist, String album) {
+    public List<SearchCache> search(String title, String artist) {
         OrmaDatabase od = provideOrmaDatabase(context);
         SearchCache_Selector selector = od.selectFromSearchCache();
         // title
-        if (!TextUtils.isEmpty(title))
+        if (title != null && !title.isEmpty())
             selector.where("title like ?", "%" + title + "%");
         // artist
-        if (!TextUtils.isEmpty(artist))
+        if (artist != null && !artist.isEmpty())
             selector.where("artist like ?", "%" + artist + "%");
-        // album
-        if (!TextUtils.isEmpty(album))
-            selector.where("album like ?", "%" + artist + "%");
 
         return selector.orderBytitleAndArtistAsc()
                 .toList();
@@ -90,25 +86,33 @@ public class SearchCacheHelper {
      * Insert or update cache.
      * @param title Search title.
      * @param artist Search artist.
-     * @param album Search album.
      * @param resultItem Result item.
      * @return true as succeeded.
      */
-    public boolean insertOrUpdate(@NonNull String title, String artist, String album, ResultItem resultItem) {
+    public boolean insertOrUpdate(@NonNull String title, String artist, @Nullable ResultItem resultItem) {
         OrmaDatabase od = provideOrmaDatabase(context);
 
+        String language = null;
+        String from = null;
+        String file_name = null;
         Boolean has_lyrics = false;
         String result = gson.toJson(resultItem);
         if (resultItem != null) {
+            //language = resultItem.getLanguage();
+            //from = resultItem.getLyricUploader();
+            //file_name = resultItem.getLyricURL().substring(resultItem.getLyricURL().lastIndexOf("/") + 1).replace(".lrc", "");
             has_lyrics = (resultItem.getLyrics() != null);
         }
 
-        title = AppUtils.coalesce(title);
-        artist = AppUtils.coalesce(artist);
+        title = AppUtils.INSTANCE.coalesce(title);
+        artist = AppUtils.INSTANCE.coalesce(artist);
 
-        SearchCache cache = select(title, artist, album);
+        SearchCache cache = select(title, artist);
         if (cache != null) {
             int count = od.updateSearchCache()._idEq(cache._id)
+                    //.language(language)
+                    //.from(from)
+                    //.file_name(file_name)
                     .has_lyrics(has_lyrics)
                     .result(result)
                     .execute();
@@ -118,7 +122,9 @@ public class SearchCacheHelper {
             cache = new SearchCache();
             cache.title = title;
             cache.artist = artist;
-            cache.album = album;
+            cache.language = language;
+            cache.from = from;
+            cache.file_name =  file_name;
             cache.has_lyrics = has_lyrics;
             cache.result = result;
             long id = od.insertIntoSearchCache(cache);
@@ -150,10 +156,5 @@ public class SearchCacheHelper {
 
         return true;
     }
-
-
-
-
-
 
 }
