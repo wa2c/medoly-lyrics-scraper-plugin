@@ -73,6 +73,7 @@
     <string name="error_delete_cache_check">削除項目をチェックしてください。</string>
     <string name="message_delete_cache">検索結果をキャッシュから削除しました。</string>
     <string name="message_dialog_cache_delete">チェック項目をキャッシュから削除します。</string>
+    <string name="message_dialog_cache_delete_error">削除中にエラーが発生しました。</string>
 
     <!-- Site Activity -->
     <string name="message_renew_list_succeeded">サイト情報の更新を完了しました。</string>

@@ -9,5 +9,5 @@
     <dimen name="main_button_margin">8dp</dimen>
     <dimen name="main_button_width">160dp</dimen>
 
-    <dimen name="search_result_height">200dp</dimen>
+    <dimen name="search_result_height">160dp</dimen>
 </resources>

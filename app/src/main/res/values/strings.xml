@@ -73,6 +73,7 @@
     <string name="error_delete_cache_check">Check the deletion items.</string>
     <string name="message_delete_cache">Deleted the checked caches.</string>
     <string name="message_dialog_cache_delete">Delete checked caches.</string>
+    <string name="message_dialog_cache_delete_error">An error occurred during deletion.</string>
 
     <!-- Site Activity -->
     <string name="message_renew_list_succeeded">Site information updated.</string>
@@ -100,7 +101,7 @@
     <!-- Cache Dialog -->
     <string name="label_dialog_cache_delete_lyrics">Delete Lyrics</string>
     <string name="label_dialog_cache_delete_cache">Delete Cache</string>
-    <string name="label_dialog_cache_research">Research</string>
+    <string name="label_dialog_cache_research">Re-search</string>
     <string name="label_dialog_cache_delete">Delete</string>
     <string name="message_dialog_cache_none">No lyrics.</string>
 

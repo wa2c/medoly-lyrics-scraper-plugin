@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.database.Cursor
 import android.os.Build
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.text.Html
 import android.text.TextUtils
@@ -15,6 +16,7 @@ import android.webkit.WebView
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteProvider
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
@@ -55,16 +57,18 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     private val siteParam = EnumMap<SiteColumn, String>(SiteColumn::class.java)
 
     private val lyricsWebClient: LyricsWebClient = LyricsWebClient(this)
-    private val searchResultItemList = ArrayList<ResultItem>()
+    //private val searchResultItemList = ArrayList<ResultItem>()
 
-    //private val handler = Handler()
+    //var handler: Handler? = null
 
     private var propertyData: PropertyData? = null
+    private var site: Site? = null
 
 
     /** Event handle listener。  */
     var handleListener: HandleListener? = null
 
+    val webHandler: Handler = Handler()
 
     init {
 
@@ -84,7 +88,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     private fun setParam() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val siteId = preferences.getString(context.getString(R.string.prefkey_selected_site_id), null)
-        if (TextUtils.isEmpty(siteId))
+        if (siteId.isNullOrEmpty())
             throw SiteNotSelectException()
         var cursor: Cursor? = null
         try {
@@ -113,6 +117,22 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
     }
 
+    fun search2(propertyData: PropertyData, site: Site) {
+        this.propertyData = propertyData
+        this.site = site
+
+        val searchUri = replaceProperty(siteParam[SiteColumn.SEARCH_URI]!!, true, false)
+        Logger.d("Search URL: $searchUri")
+
+        try {
+            lyricsWebClient.setState(LyricsWebClient.STATE_SEARCH)
+            stopLoading()
+            loadUrl(searchUri)
+        } catch (e: Exception) {
+            handleListener?.onError("")
+        }
+    }
+
     @Throws(SiteNotSelectException::class, SiteNotFoundException::class)
     fun search(propertyData: PropertyData) {
         setParam()
@@ -121,18 +141,29 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         lyricsWebClient.setState(LyricsWebClient.STATE_SEARCH)
 
         val searchUri = replaceProperty(siteParam[SiteColumn.SEARCH_URI]!!, true, false)
-        Logger.d("Search URL: " + searchUri)
+
+        Logger.d("Search URL: $searchUri")
 
         try {
             lyricsWebClient.setState(LyricsWebClient.STATE_SEARCH)
             stopLoading()
             loadUrl(searchUri)
         } catch (e: Exception) {
+            handleListener?.onError("")
+        }
+
+    }
+
+    fun download2(url: String) {
+        try {
+            lyricsWebClient.setState(LyricsWebClient.STATE_LYRICS)
+            stopLoading()
+            loadUrl(url)
+        } catch (e: Exception) {
             if (handleListener != null) {
                 handleListener!!.onError("■えらー")
             }
         }
-
     }
 
     @Throws(SiteNotSelectException::class, SiteNotFoundException::class)
@@ -154,12 +185,13 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
     @JavascriptInterface
     fun getSearchResult(html: String) {
+        val searchResultItemList = LinkedHashMap<String, ResultItem>()
+
         try {
-            searchResultItemList.clear()
             val doc = Jsoup.parse(html)
-            if (siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TYPE) == SiteColumn.PARSE_TYPE_XPATH) {
+            if (siteParam[SiteColumn.RESULT_PAGE_PARSE_TYPE] == SiteColumn.PARSE_TYPE_XPATH) {
                 // XPath
-                val e = Xsoup.compile(siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TEXT)).evaluate(doc).elements
+                val e = Xsoup.compile(siteParam[SiteColumn.RESULT_PAGE_PARSE_TEXT]).evaluate(doc).elements
                 if (e == null || e.size == 0) {
                     return
                 }
@@ -169,14 +201,16 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         val item = ResultItem()
                         item.pageUrl = element.attr("href")
                         item.musicTitle = element.text()
-                        searchResultItemList.add(item)
+                        if (item.pageUrl.isNullOrEmpty())
+                            continue;
+                        searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
-
                 }
-            } else if (siteParam.get(SiteColumn.RESULT_PAGE_PARSE_TYPE) == SiteColumn.PARSE_TYPE_REGEXP) {
+                Logger.d(searchResultItemList)
+            } else if (siteParam[SiteColumn.RESULT_PAGE_PARSE_TYPE] == SiteColumn.PARSE_TYPE_REGEXP) {
                 val parseText = replaceProperty(siteParam[SiteColumn.RESULT_PAGE_PARSE_TEXT]!!, false, true)
-                Logger.d("Parse Text: " + parseText)
+                Logger.d("Parse Text: $parseText")
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE)
                 val m = p.matcher(html)
                 while (m.find()) {
@@ -184,7 +218,9 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         val item = ResultItem()
                         item.pageUrl = m.group(1)
                         item.musicTitle = m.group(1)
-                        searchResultItemList.add(item)
+                        if (item.pageUrl.isNullOrEmpty())
+                            continue;
+                        searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
 
@@ -193,9 +229,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
-            if (handleListener != null) {
-                handler.post { handleListener!!.onSearchResult(searchResultItemList) }
-            }
+            webHandler.post { handleListener?.onSearchResult(searchResultItemList.values.toList()) }
         }
     }
 
@@ -203,22 +237,22 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     fun getLyrics(html: String) {
         var lyrics: String? = null
         try {
-            Logger.d("Lyrics HTML: " + html)
+            Logger.d("Lyrics HTML: $html")
 
-            if (siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TYPE) == SiteColumn.PARSE_TYPE_XPATH) {
+            if (siteParam[SiteColumn.LYRICS_PAGE_PARSE_TYPE] == SiteColumn.PARSE_TYPE_XPATH) {
                 // XPath
                 val doc = Jsoup.parse(html)
-                val e = Xsoup.compile(siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TEXT)).evaluate(doc).elements
+                val e = Xsoup.compile(siteParam[SiteColumn.LYRICS_PAGE_PARSE_TEXT]).evaluate(doc).elements
                 if (e == null || e.size == 0) {
                     return
                 }
 
                 val elem = e[0]
                 lyrics = elem.html()
-            } else if (siteParam.get(SiteColumn.LYRICS_PAGE_PARSE_TYPE) == SiteColumn.PARSE_TYPE_REGEXP) {
+            } else if (siteParam[SiteColumn.LYRICS_PAGE_PARSE_TYPE] == SiteColumn.PARSE_TYPE_REGEXP) {
                 // 正規表現
                 val parseText = replaceProperty(siteParam[SiteColumn.LYRICS_PAGE_PARSE_TEXT]!!, false, true)
-                Logger.d("Parse Text: " + parseText)
+                Logger.d("Parse Text: $parseText")
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
                 val m = p.matcher(html)
                 if (m.find()) {
@@ -227,17 +261,17 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             }
 
             if (lyrics != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    lyrics = Html.fromHtml(lyrics, Html.FROM_HTML_MODE_LEGACY).toString()
+                lyrics = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Html.fromHtml(lyrics, Html.FROM_HTML_MODE_LEGACY).toString()
                 } else {
-                    lyrics = Html.fromHtml(lyrics).toString()
+                    Html.fromHtml(lyrics).toString()
                 }
             }
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
             val l = lyrics
-            handler.post {
+            webHandler.post {
                 if (handleListener != null) {
                     handleListener!!.onGetLyrics(l)
                 }
@@ -268,14 +302,14 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             outputBuffer.append(inputText.substring(lastIndex, matcher.start()))
             val tag = matcher.group() // タグ (%KEY%)
             val key = tag.substring(1, tag.length - 1) // プロパティキー (KEY)
-            val `val` = propertyData!!.getFirst(key) // プロパティ値
-            if (!TextUtils.isEmpty(`val`)) {
+            val value = propertyData!!.getFirst(key) // プロパティ値
+            if (!value.isNullOrEmpty()) {
                 try {
-                    var text = AppUtils.normalizeText(`val`)
+                    var text = AppUtils.normalizeText(value)
                     if (escapeRegexp)
                         text = text.replace(REGEXP_ESCAPE.toRegex(), "\\\\$1")
                     if (urlEncode)
-                        text = URLEncoder.encode(text, siteParam.get(SiteColumn.RESULT_PAGE_URI_ENCODING))
+                        text = URLEncoder.encode(text, siteParam[SiteColumn.RESULT_PAGE_URI_ENCODING])
                     outputBuffer.append(text)
                 } catch (e: UnsupportedEncodingException) {
                     Logger.e(e)
@@ -308,7 +342,6 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     }
 
     companion object {
-
         /** Javascriptンターフェースオブジェクト名。  */
         const val JAVASCRIPT_INTERFACE = "android"
         /** 検索ページ取得スクリプト。  */
@@ -317,7 +350,6 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         const val LYRICS_PAGE_GET_SCRIPT = "javascript:window.$JAVASCRIPT_INTERFACE.getLyrics(document.getElementsByTagName('html')[0].outerHTML);"
         /** BASE URI取得用XPATH。  */
         const val BASE_PATH = "/html/head/base"
-
 
         const val REGEXP_ESCAPE = "[\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\$\\-\\|]"
     }

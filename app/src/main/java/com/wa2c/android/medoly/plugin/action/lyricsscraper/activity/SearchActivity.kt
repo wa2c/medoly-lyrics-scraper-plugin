@@ -30,6 +30,10 @@ import kotlinx.android.synthetic.main.activity_search.*
 import java.io.BufferedWriter
 import java.io.OutputStream
 import java.io.OutputStreamWriter
+import android.widget.ArrayAdapter
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView2
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 
 
 /**
@@ -37,40 +41,21 @@ import java.io.OutputStreamWriter
  */
 class SearchActivity : Activity() {
 
-//    @BindView(R.id.searchTitleButton)
-//    internal var searchTitleButton: Button? = null
-//    @BindView(R.id.searchTitleEditText)
-//    internal var searchTitleEditText: EditText? = null
-//    @BindView(R.id.searchArtistButton)
-//    internal var searchArtistButton: Button? = null
-//    @BindView(R.id.searchArtistEditText)
-//    internal var searchArtistEditText: EditText? = null
-//    @BindView(R.id.searchClearButton)
-//    internal var searchClearButton: ImageButton? = null
-//    @BindView(R.id.searchStartButton)
-//    internal var searchStartButton: ImageButton? = null
-//    @BindView(R.id.searchResultListView)
-//    internal var searchResultListView: ListView? = null
-//    @BindView(R.id.searchLyricsScrollView)
-//    internal var searchLyricsScrollView: ScrollView? = null
-//    @BindView(R.id.searchLyricsTextView)
-//    internal var searchLyricsTextView: TextView? = null
-//    @BindView(R.id.searchResultLoadingLayout)
-//    internal var searchResultLoadingLayout: View? = null
-//    @BindView(R.id.searchLyricsLoadingLayout)
-//    internal var searchLyricsLoadingLayout: View? = null
-
     private lateinit var webView: LyricsSearcherWebView
+    private lateinit var webView2: LyricsSearcherWebView2
+
     private var intentSearchTitle: String? = null
     private var intentSearchArtist: String? = null
 
     /** Search list adapter.  */
-    private var searchResultAdapter: SearchResultAdapter? = null
+    private lateinit var searchResultAdapter: SearchResultAdapter
+    private lateinit var prefs: Prefs
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-//        ButterKnife.bind(this)
+        prefs = Prefs(this)
 
         // action bar
         actionBar.setDisplayShowHomeEnabled(true)
@@ -83,6 +68,141 @@ class SearchActivity : Activity() {
         intentSearchArtist = intent.extras?.getString(INTENT_SEARCH_ARTIST)
         searchTitleEditText.setText(intentSearchTitle)
         searchArtistEditText.setText(intentSearchArtist)
+
+        val helper = SearchCacheHelper(this)
+        val siteList = helper.selectSiteList()
+
+        val initSiteId = prefs.getLong(R.string.prefkey_selected_site_id, -1)
+        var currentSite = siteList?.firstOrNull() { i -> i.site_id == initSiteId } ?: if (siteList.isNotEmpty()) siteList[0] else null
+        if (currentSite == null) {
+            searchStartButton.isEnabled = false
+        }
+
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.addAll(siteList.map { i -> i.site_name })
+        searchSiteSpinner.adapter = adapter
+        searchSiteSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                currentSite = if (siteList.isEmpty()) null else siteList[0]
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                currentSite = siteList[position]
+            }
+        }
+
+        // Set web view
+        webView = LyricsSearcherWebView(this)
+        webView.setOnHandleListener(object : LyricsSearcherWebView.HandleListener {
+            override fun onSearchResult(list: List<ResultItem>) {
+                showSearchResult(list)
+                showLyrics(null)
+            }
+
+            override fun onGetLyrics(lyrics: String?) {
+                showLyrics(lyrics)
+            }
+
+            override fun onError(message: String?) {
+                Logger.d(message)
+            }
+        })
+
+        webView2 = LyricsSearcherWebView2(this)
+        webView2.setOnHandleListener(object : LyricsSearcherWebView2.HandleListener {
+            override fun onSearchResult(list: List<ResultItem>) {
+                showSearchResult(list)
+                showLyrics(null)
+            }
+
+            override fun onGetLyrics(lyrics: String?) {
+                showLyrics(lyrics)
+            }
+
+            override fun onError(message: String?) {
+                Logger.d(message)
+            }
+        })
+
+
+        searchTitleButton.setOnClickListener {
+            val dialogFragment = NormalizeDialogFragment.newInstance(searchTitleEditText.text.toString(), intentSearchTitle)
+            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    searchTitleEditText.setText(dialogFragment.inputText)
+                }
+            }
+            dialogFragment.show(this)
+        }
+
+        searchArtistButton.setOnClickListener {
+            val dialogFragment = NormalizeDialogFragment.newInstance(searchArtistEditText.text.toString(), intentSearchArtist)
+            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    searchArtistEditText.setText(dialogFragment.inputText)
+                }
+            }
+            dialogFragment.show(this)
+        }
+
+        searchClearButton.setOnClickListener {
+            searchTitleEditText.text = null
+            searchArtistEditText.text = null
+        }
+
+        searchStartButton.setOnClickListener {
+            // Hide keyboard
+            val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodMgr.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+
+            val title = searchTitleEditText.text.toString()
+            val artist = searchArtistEditText.text.toString()
+            if (title.isEmpty() && artist.isEmpty()) {
+                AppUtils.showToast(this, R.string.error_input_condition)
+                return@setOnClickListener
+            }
+
+            try {
+                // Clear view
+                showSearchResult(null)
+                showLyrics(null)
+                searchResultAdapter.selectedItem = null
+
+                val propertyData = PropertyData()
+                propertyData[MediaProperty.TITLE] = title
+                propertyData[MediaProperty.ARTIST] = artist
+                //webView.search(propertyData)
+                webView2.search(propertyData, currentSite!!)
+                searchResultListView.visibility = View.INVISIBLE
+                searchResultLoadingLayout.visibility = View.VISIBLE
+            } catch (e: SiteNotSelectException) {
+                AppUtils.showToast(this, R.string.message_no_select_site)
+            } catch (e: SiteNotFoundException) {
+                AppUtils.showToast(this, R.string.message_no_site)
+            } catch (e: Exception) {
+                Logger.e(e)
+            }
+        }
+
+        searchResultListView.setOnItemClickListener { _, _, position, _ ->
+            val item = searchResultAdapter.getItem(position) ?: return@setOnItemClickListener
+            if (item.pageUrl == null)
+                return@setOnItemClickListener
+
+            try {
+                //webView.download(item.pageUrl!!)
+                webView2.download(item.pageUrl!!)
+                searchResultAdapter.selectedItem = item
+                searchLyricsScrollView.visibility = View.INVISIBLE
+                searchLyricsLoadingLayout.visibility = View.VISIBLE
+            } catch (e: SiteNotSelectException) {
+                AppUtils.showToast(this, R.string.message_no_select_site)
+            } catch (e: SiteNotFoundException) {
+                AppUtils.showToast(this, R.string.message_no_site)
+            } catch (e: Exception) {
+                Logger.e(e)
+            }
+        }
 
         // adjust size
         searchLyricsScrollView.post(Runnable {
@@ -99,105 +219,6 @@ class SearchActivity : Activity() {
                 searchResultListView.layoutParams = params
             }
         })
-
-        // Set web view
-        webView = LyricsSearcherWebView(this)
-        webView.setOnHandleListener(object : LyricsSearcherWebView.HandleListener {
-            override fun onSearchResult(list: List<ResultItem>) {
-                showSearchResult(list)
-                showLyrics(null)
-                //                    if (list == null) {
-                //                        Logger.d("■");
-                //                    }
-            }
-
-            override fun onGetLyrics(lyrics: String?) {
-                showLyrics(lyrics)
-            }
-
-            override fun onError(message: String?) {
-                Logger.d(message)
-            }
-        })
-
-
-        searchTitleButton.setOnClickListener {
-            val dialogFragment = NormalizeDialogFragment.newInstance(searchTitleEditText!!.text.toString(), intentSearchTitle)
-            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                    searchTitleEditText!!.setText(dialogFragment.inputText)
-                }
-            }
-            dialogFragment.show(this)
-        }
-
-        searchArtistButton.setOnClickListener {
-            val dialogFragment = NormalizeDialogFragment.newInstance(searchArtistEditText!!.text.toString(), intentSearchArtist)
-            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
-                if (which == DialogInterface.BUTTON_POSITIVE) {
-                    searchArtistEditText!!.setText(dialogFragment.inputText)
-                }
-            }
-            dialogFragment.show(this)
-        }
-
-        searchClearButton.setOnClickListener {
-            searchTitleEditText!!.setText(null)
-            searchArtistEditText!!.setText(null)
-        }
-
-        searchStartButton.setOnClickListener {
-            // Hide keyboard
-            val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodMgr.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-
-            val title = searchTitleEditText!!.text.toString()
-            val artist = searchArtistEditText!!.text.toString()
-            if (TextUtils.isEmpty(title) && TextUtils.isEmpty(artist)) {
-                AppUtils.showToast(this, R.string.error_input_condition)
-                return@setOnClickListener
-            }
-
-
-            try {
-                // Clear view
-                showSearchResult(null)
-                showLyrics(null)
-                searchResultAdapter!!.selectedItem = null
-
-                val propertyData = PropertyData()
-                propertyData[MediaProperty.TITLE] = title
-                propertyData[MediaProperty.ARTIST] = artist
-                webView.search(propertyData)
-                searchResultListView!!.visibility = View.INVISIBLE
-                searchResultLoadingLayout!!.visibility = View.VISIBLE
-            } catch (e: SiteNotSelectException) {
-                AppUtils.showToast(this, R.string.message_no_select_site)
-            } catch (e: SiteNotFoundException) {
-                AppUtils.showToast(this, R.string.message_no_site)
-            } catch (e: Exception) {
-                Logger.e(e)
-            }
-        }
-
-        searchResultListView.setOnItemClickListener { parent, view, position, id ->
-            val item = searchResultAdapter!!.getItem(position) ?: return@setOnItemClickListener
-            if (item.pageUrl == null)
-                return@setOnItemClickListener
-
-            try {
-                webView.download(item.pageUrl!!)
-                searchResultAdapter!!.selectedItem = item
-                searchLyricsScrollView!!.visibility = View.INVISIBLE
-                searchLyricsLoadingLayout!!.visibility = View.VISIBLE
-            } catch (e: SiteNotSelectException) {
-                AppUtils.showToast(this, R.string.message_no_select_site)
-            } catch (e: SiteNotFoundException) {
-                AppUtils.showToast(this, R.string.message_no_site)
-            } catch (e: Exception) {
-                Logger.e(e)
-            }
-        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -228,8 +249,8 @@ class SearchActivity : Activity() {
                     return true
                 }
 
-                val title = searchTitleEditText!!.text.toString()
-                val artist = searchArtistEditText!!.text.toString()
+                val title = searchTitleEditText.text.toString()
+                val artist = searchArtistEditText.text.toString()
                 AppUtils.saveFile(this, title, artist)
                 return true
             }
@@ -248,9 +269,9 @@ class SearchActivity : Activity() {
                 )
                 dialog.clickListener = DialogInterface.OnClickListener { _, which ->
                     if (which == DialogInterface.BUTTON_POSITIVE) {
-                        val title = searchTitleEditText!!.text.toString()
-                        val artist = searchArtistEditText!!.text.toString()
-                        saveToCacheBackground(title, artist, searchResultAdapter!!.selectedItem)
+                        val title = searchTitleEditText.text.toString()
+                        val artist = searchArtistEditText.text.toString()
+                        saveToCacheBackground(title, artist, searchResultAdapter.selectedItem)
                     }
                 }
                 dialog.show(this)
@@ -259,8 +280,8 @@ class SearchActivity : Activity() {
             }
             R.id.menu_search_open_cache -> {
                 val intent = Intent(this, CacheActivity::class.java)
-                intent.putExtra(CacheActivity.INTENT_SEARCH_TITLE, searchTitleEditText!!.text.toString())
-                intent.putExtra(CacheActivity.INTENT_SEARCH_ARTIST, searchArtistEditText!!.text.toString())
+                intent.putExtra(CacheActivity.INTENT_SEARCH_TITLE, searchTitleEditText.text.toString())
+                intent.putExtra(CacheActivity.INTENT_SEARCH_ARTIST, searchArtistEditText.text.toString())
                 startActivity(intent)
                 return true
             }
@@ -366,26 +387,26 @@ class SearchActivity : Activity() {
 
     internal fun showSearchResult(itemList: List<ResultItem>?) {
         try {
-            searchResultAdapter!!.clear()
+            searchResultAdapter.clear()
             if (itemList != null)
-                searchResultAdapter!!.addAll(itemList)
-            searchResultAdapter!!.notifyDataSetChanged()
+                searchResultAdapter.addAll(itemList)
+            searchResultAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
-            searchResultListView!!.visibility = View.VISIBLE
-            searchResultLoadingLayout!!.visibility = View.INVISIBLE
+            searchResultListView.visibility = View.VISIBLE
+            searchResultLoadingLayout.visibility = View.INVISIBLE
         }
     }
 
     internal fun showLyrics(lyrics: String?) {
-        val item = searchResultAdapter!!.selectedItem ?: return
+        val item = searchResultAdapter.selectedItem ?: return
         item.lyrics = lyrics
 
-        searchLyricsTextView!!.text = lyrics
-        searchResultAdapter!!.notifyDataSetChanged()
-        searchLyricsScrollView!!.visibility = View.VISIBLE
-        searchLyricsLoadingLayout!!.visibility = View.INVISIBLE
+        searchLyricsTextView.text = lyrics
+        searchResultAdapter.notifyDataSetChanged()
+        searchLyricsScrollView.visibility = View.VISIBLE
+        searchLyricsLoadingLayout.visibility = View.INVISIBLE
     }
 
     /**
@@ -394,7 +415,7 @@ class SearchActivity : Activity() {
      */
     @Synchronized
     private fun existsLyrics(): Boolean {
-        return searchResultAdapter!!.selectedItem != null && !TextUtils.isEmpty(searchResultAdapter!!.selectedItem!!.pageUrl)
+        return searchResultAdapter.selectedItem != null && !searchResultAdapter.selectedItem!!.pageUrl.isNullOrEmpty()
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent) {
@@ -412,7 +433,7 @@ class SearchActivity : Activity() {
                 try {
                     stream = contentResolver.openOutputStream(uri!!)
                     writer = BufferedWriter(OutputStreamWriter(stream!!, "UTF-8"))
-                    writer.write(searchResultAdapter!!.selectedItem!!.lyrics!!)
+                    writer.write(searchResultAdapter.selectedItem!!.lyrics!!)
                     writer.flush()
                     AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
                 } catch (e: Exception) {
@@ -438,15 +459,19 @@ class SearchActivity : Activity() {
         // Hide keyboard
         if (currentFocus != null) {
             val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodMgr.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            inputMethodMgr.hideSoftInputFromWindow(currentFocus.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
-    companion object {
 
-        val INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE"
-        val INTENT_SEARCH_ARTIST = "INTENT_SEARCH_ARTIST"
+
+
+    companion object {
+        const val INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE"
+        const val INTENT_SEARCH_ARTIST = "INTENT_SEARCH_ARTIST"
     }
+
+
 
 
     //    public static final String INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE";

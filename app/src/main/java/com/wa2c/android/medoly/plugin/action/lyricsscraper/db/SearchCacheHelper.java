@@ -157,4 +157,34 @@ public class SearchCacheHelper {
         return true;
     }
 
+
+    public Site selectSite(Long siteId) {
+        final OrmaDatabase od = provideOrmaDatabase(context);
+        return od.selectFromSite().site_idEq(siteId).valueOrNull();
+    }
+
+    public List<Site> selectSiteList() {
+        final OrmaDatabase od = provideOrmaDatabase(context);
+        return od.selectFromSite().toList();
+    }
+
+
+    public List<SiteGroup> selectSiteGroupList() {
+        OrmaDatabase od = provideOrmaDatabase(context);
+        return od.selectFromSiteGroup().toList();
+    }
+
+
+    public void renewSite(Collection<Site> collection) {
+        final OrmaDatabase od = provideOrmaDatabase(context);
+        od.deleteFromSite();
+        od.prepareInsertIntoSite().executeAll(collection);
+    }
+
+    public void renewSiteGroup(Collection<SiteGroup> collection) {
+        final OrmaDatabase od = provideOrmaDatabase(context);
+        od.deleteFromSiteGroup();
+        od.prepareInsertIntoSiteGroup().executeAll(collection);
+    }
+
 }

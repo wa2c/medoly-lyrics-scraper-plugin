@@ -197,7 +197,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
      * @return 歌詞ファイルのURI。
      */
     private fun getLyricsUri(lyrics: String?): Uri? {
-        if (TextUtils.isEmpty(lyrics)) {
+        if (lyrics.isNullOrEmpty()) {
             return null
         }
 

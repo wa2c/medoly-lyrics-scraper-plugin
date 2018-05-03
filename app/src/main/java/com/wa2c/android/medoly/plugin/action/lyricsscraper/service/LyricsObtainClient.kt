@@ -75,7 +75,7 @@ constructor(context: Context, private val requestPropertyMap: PropertyData) {
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val siteId = preferences.getString(context.getString(R.string.prefkey_selected_site_id), null)
-        if (TextUtils.isEmpty(siteId))
+        if (siteId.isNullOrEmpty())
             throw SiteNotSelectException()
 
         siteParam = EnumMap<SiteColumn, String>(SiteColumn::class.java)
@@ -220,7 +220,7 @@ constructor(context: Context, private val requestPropertyMap: PropertyData) {
                     }
                 }
 
-                if (TextUtils.isEmpty(url)) {
+                if (url.isNullOrEmpty()) {
                     returnLyrics()
                     return
                 }
@@ -339,10 +339,10 @@ constructor(context: Context, private val requestPropertyMap: PropertyData) {
             outputBuffer.append(inputText.substring(lastIndex, matcher.start()))
             val tag = matcher.group() // タグ (%KEY%)
             val key = tag.substring(1, tag.length - 1) // プロパティキー (KEY)
-            val `val` = requestPropertyMap.getFirst(key) // プロパティ値
-            if (!TextUtils.isEmpty(`val`)) {
+            val value = requestPropertyMap.getFirst(key) // プロパティ値
+            if (!value.isNullOrEmpty()) {
                 try {
-                    var text = AppUtils.normalizeText(`val`)
+                    var text = AppUtils.normalizeText(value)
                     if (escapeRegexp)
                         text = text.replace(REGEXP_ESCAPE.toRegex(), "\\\\$1")
                     if (urlEncode)

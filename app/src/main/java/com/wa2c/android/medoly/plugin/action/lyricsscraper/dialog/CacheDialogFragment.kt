@@ -2,23 +2,21 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.os.AsyncTask
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import kotlinx.android.synthetic.main.dialog_cache.view.*
-import java.lang.ref.WeakReference
-
-
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 
 /**
- * Confirm dialog.
+ * Cache dialog.
  */
 class CacheDialogFragment : AbstractDialogFragment() {
-
 
     /**
      * onCreateDialog
@@ -34,11 +32,20 @@ class CacheDialogFragment : AbstractDialogFragment() {
         val contentView = View.inflate(activity, R.layout.dialog_cache, null)
         contentView.dialogCacheLyricsTextView.text = if (cache.has_lyrics != null && cache.has_lyrics!!) result!!.lyrics else getString(R.string.message_dialog_cache_none)
 
+//        // delete lyrics button
+//        contentView.dialogCacheDeleteLyricsButton.setOnClickListener { LyricsDeleteAsyncTask(this@CacheDialogFragment, cache).execute() }
+//
+//        // delete cache button
+//        contentView.dialogCacheDeleteCacheButton.setOnClickListener { CacheDeleteAsyncTask(this@CacheDialogFragment, cache).execute() }
         // delete lyrics button
-        contentView.dialogCacheDeleteLyricsButton.setOnClickListener { LyricsDeleteAsyncTask(this@CacheDialogFragment, cache).execute() }
+        contentView.dialogCacheDeleteLyricsButton.setOnClickListener {
+            deleteLyrics(cache)
+        }
 
         // delete cache button
-        contentView.dialogCacheDeleteCacheButton.setOnClickListener { CacheDeleteAsyncTask(this@CacheDialogFragment, cache).execute() }
+        contentView.dialogCacheDeleteCacheButton.setOnClickListener {
+            deleteCache(cache)
+        }
 
         // build dialog
         val builder = AlertDialog.Builder(activity)
@@ -52,43 +59,85 @@ class CacheDialogFragment : AbstractDialogFragment() {
         return builder.create()
     }
 
+//    /**
+//     * Delete lyrics task
+//     */
+//    private class LyricsDeleteAsyncTask internal constructor(dialog: AbstractDialogFragment, private val cache: SearchCache) : AsyncTask<Void, Void, Void>() {
+//
+//        private val dialogReference: WeakReference<AbstractDialogFragment> = WeakReference(dialog)
+//
+//        override fun doInBackground(vararg params: Void): Void? {
+//            val c = dialogReference.get()?.activity ?: return null
+//            val searchCacheHelper = SearchCacheHelper(c)
+//            searchCacheHelper.insertOrUpdate(cache.title, cache.artist, null)
+//            return null
+//        }
+//
+//        override fun onPostExecute(result: Void) {
+//            dialogReference.get()?.onClickButton(dialogReference.get()?.dialog, DIALOG_RESULT_DELETE_LYRICS)
+//        }
+//    }
+
+//    /**
+//     * Delete lyrics task
+//     */
+//    private class CacheDeleteAsyncTask internal constructor(dialog: AbstractDialogFragment, private val cache: SearchCache) : AsyncTask<Void, Void, Void>() {
+//
+//        private val dialogReference: WeakReference<AbstractDialogFragment> = WeakReference(dialog)
+//
+//        override fun doInBackground(vararg params: Void): Void? {
+//            val c = dialogReference.get()?.activity ?: return null
+//            val searchCacheHelper = SearchCacheHelper(c)
+//            searchCacheHelper.delete(listOf(cache))
+//            return null
+//        }
+//
+//        override fun onPostExecute(result: Void) {
+//            dialogReference.get()?.onClickButton(dialogReference.get()?.dialog, DIALOG_RESULT_DELETE_CACHE)
+//        }
+//    }
+
+
     /**
-     * Delete lyrics task
+     * Delete cache lyrics.
      */
-    private class LyricsDeleteAsyncTask internal constructor(dialog: AbstractDialogFragment, private val cache: SearchCache) : AsyncTask<Void, Void, Void>() {
-
-        private val dialogReference: WeakReference<AbstractDialogFragment> = WeakReference(dialog)
-
-        override fun doInBackground(vararg params: Void): Void? {
-            val c = dialogReference.get()?.activity ?: return null
-            val searchCacheHelper = SearchCacheHelper(c)
-            searchCacheHelper.insertOrUpdate(cache.title, cache.artist, null)
-            return null
-        }
-
-        override fun onPostExecute(result: Void) {
-            dialogReference.get()?.onClickButton(dialogReference.get()?.dialog, DIALOG_RESULT_DELETE_LYRICS)
+    private fun deleteLyrics(cache: SearchCache) {
+        val searchCacheHelper = SearchCacheHelper(this@CacheDialogFragment.activity)
+        launch(UI) {
+            val deleteResult = async {
+                try {
+                    searchCacheHelper.insertOrUpdate(cache.title, cache.artist, null)
+                } catch (e: Exception) {
+                    return@async null
+                }
+            }
+            val r = deleteResult.await()
+            if (r != true)
+                AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
+            onClickButton(dialog, DIALOG_RESULT_DELETE_LYRICS)
         }
     }
 
     /**
-     * Delete lyrics task
+     * Delete cache.
      */
-    private class CacheDeleteAsyncTask internal constructor(dialog: AbstractDialogFragment, private val cache: SearchCache) : AsyncTask<Void, Void, Void>() {
-
-        private val dialogReference: WeakReference<AbstractDialogFragment> = WeakReference(dialog)
-
-        override fun doInBackground(vararg params: Void): Void? {
-            val c = dialogReference.get()?.activity ?: return null
-            val searchCacheHelper = SearchCacheHelper(c)
-            searchCacheHelper.delete(listOf(cache))
-            return null
-        }
-
-        override fun onPostExecute(result: Void) {
-            dialogReference.get()?.onClickButton(dialogReference.get()?.dialog, DIALOG_RESULT_DELETE_CACHE)
+    private fun deleteCache(cache: SearchCache) {
+        val searchCacheHelper = SearchCacheHelper(this@CacheDialogFragment.activity)
+        launch(UI) {
+            val deleteResult = async {
+                try {
+                    searchCacheHelper.delete(listOf(cache))
+                } catch (e: Exception) {
+                    return@async null
+                }
+            }
+            val r = deleteResult.await()
+            if (r != true)
+                AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
+            onClickButton(dialog, DIALOG_RESULT_DELETE_CACHE)
         }
     }
+
 
     companion object {
 

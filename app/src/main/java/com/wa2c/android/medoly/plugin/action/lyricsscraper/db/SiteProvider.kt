@@ -30,7 +30,7 @@ class SiteProvider : ContentProvider() {
 
     override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         val tableName = getTableName(uri)
-        if (TextUtils.isEmpty(tableName))
+        if (tableName.isNullOrEmpty())
             return null
 
         val db = dbHelper!!.readableDatabase
@@ -49,7 +49,7 @@ class SiteProvider : ContentProvider() {
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         val tableName = getTableName(uri)
-        if (TextUtils.isEmpty(tableName))
+        if (tableName.isNullOrEmpty())
             return null
 
         val db = dbHelper!!.writableDatabase
@@ -65,7 +65,7 @@ class SiteProvider : ContentProvider() {
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
         val tableName = getTableName(uri)
-        if (TextUtils.isEmpty(tableName))
+        if (tableName.isNullOrEmpty())
             return -1
 
         val db = dbHelper!!.writableDatabase
@@ -84,7 +84,7 @@ class SiteProvider : ContentProvider() {
 
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
         val tableName = getTableName(uri)
-        if (TextUtils.isEmpty(tableName))
+        if (tableName.isNullOrEmpty())
             return -1
 
         val db = dbHelper!!.writableDatabase

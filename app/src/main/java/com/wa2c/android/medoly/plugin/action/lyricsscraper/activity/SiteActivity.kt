@@ -9,7 +9,6 @@ import android.content.Loader
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.*
 import android.widget.*
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
@@ -86,7 +85,7 @@ class SiteActivity : Activity() {
         // create view
         cursorAdapter = SheetCursorAdapter(this, CURSOR_TYPE_GROUP)
         val listView = findViewById<View>(R.id.groupListView) as ListView
-        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
             if (cursorAdapter.cursorType == CURSOR_TYPE_GROUP) {
                 openSiteList(view.tag as String)
             } else if (cursorAdapter.cursorType == CURSOR_TYPE_SITE) {
@@ -213,37 +212,37 @@ class SiteActivity : Activity() {
                 view.siteParamUriTextView.visibility = View.GONE
             } else {
                 // ID
-                val siteId = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_ID.columnKey));
+                val siteId = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_ID.columnKey))
                 view.tag = siteId
 
                 // select
-                view.siteSelectRadioButton!!.visibility = View.VISIBLE
-                view.siteSelectRadioButton!!.isChecked = (siteId == prefs.getString(R.string.prefkey_selected_site_id, "-1"))
-                view.siteSelectRadioButton!!.setOnClickListener {
+                view.siteSelectRadioButton.visibility = View.VISIBLE
+                view.siteSelectRadioButton.isChecked = (siteId == prefs.getString(R.string.prefkey_selected_site_id, "-1"))
+                view.siteSelectRadioButton.setOnClickListener {
                     prefs.putValue(R.string.prefkey_selected_site_id, siteId)
                     notifyDataSetChanged()
                 }
 
                 // title
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_NAME.columnKey))
-                view.siteParamTitleTextView!!.text = title
-                view.siteParamTitleTextView!!.setOnTouchListener { _, event -> view.onTouchEvent(event) }
+                view.siteParamTitleTextView.text = title
+                view.siteParamTitleTextView.setOnTouchListener { _, event -> view.onTouchEvent(event) }
 
                 // uri
                 val uri = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_URI.columnKey))
-                view.siteParamUriTextView!!.visibility = View.VISIBLE
-                view.siteParamUriTextView!!.text = uri
-                view.siteLaunchImageButton!!.tag = uri
-                view.siteLaunchImageButton!!.visibility = View.VISIBLE
-                if (!TextUtils.isEmpty(uri)) {
-                    view.siteLaunchImageButton!!.isEnabled = true
-                    view.siteLaunchImageButton!!.setOnClickListener { v ->
+                view.siteParamUriTextView.visibility = View.VISIBLE
+                view.siteParamUriTextView.text = uri
+                view.siteLaunchImageButton.tag = uri
+                view.siteLaunchImageButton.visibility = View.VISIBLE
+                if (!uri.isNullOrEmpty()) {
+                    view.siteLaunchImageButton.isEnabled = true
+                    view.siteLaunchImageButton.setOnClickListener { v ->
                         val sheetUri = Uri.parse(v.tag as String)
                         val browserIntent = Intent(Intent.ACTION_VIEW, sheetUri)
                         context.startActivity(browserIntent)
                     }
                 } else {
-                    view.siteLaunchImageButton!!.isEnabled = false
+                    view.siteLaunchImageButton.isEnabled = false
                 }
             }
         }

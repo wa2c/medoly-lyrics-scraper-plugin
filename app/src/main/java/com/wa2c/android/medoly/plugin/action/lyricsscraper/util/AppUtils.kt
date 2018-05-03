@@ -192,7 +192,7 @@ object AppUtils {
      * @return ほぼ一致する場合はtrue。
      */
     fun similarText(text1: String?, text2: String?): Boolean {
-        if (text1.isNullOrEmpty() || text2.isNullOrEmpty())
+        if (text1 == null || text2 == null)
             return false
 
         val it = removeWhitespace(normalizeText(text1), false)

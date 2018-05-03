@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.CompoundButton
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
+import kotlinx.android.synthetic.main.dialog_normalize.*
 import kotlinx.android.synthetic.main.dialog_normalize.view.*
 
 
@@ -63,21 +64,21 @@ class NormalizeDialogFragment : AbstractDialogFragment() {
     }
 
     private fun setAfterText() {
-        var text = view. dialogNormalizeBeforeTextView.text.toString()
-        if (view.dialogNormalizeCheckBox.isChecked) {
+        var text = dialog.dialogNormalizeBeforeTextView.text.toString()
+        if (dialog.dialogNormalizeCheckBox.isChecked) {
             text = AppUtils.normalizeText(text)
         }
-        if (view.dialogNormalizeParenthesesCheckBox.isChecked) {
+        if (dialog.dialogNormalizeParenthesesCheckBox.isChecked) {
             text = AppUtils.removeParentheses(text)
         }
-        if (view.dialogNormalizeDashCheckBox.isChecked) {
+        if (dialog.dialogNormalizeDashCheckBox.isChecked) {
             text = AppUtils.removeDash(text)
         }
-        if (view.dialogNormalizeInfoCheckBox.isChecked) {
+        if (dialog.dialogNormalizeInfoCheckBox.isChecked) {
             text = AppUtils.removeTextInfo(text)
         }
         inputText = AppUtils.trimLines(text)
-        view.dialogNormalizeAfterTextView.text = text
+        dialog.dialogNormalizeAfterTextView.text = text
     }
 
     companion object {

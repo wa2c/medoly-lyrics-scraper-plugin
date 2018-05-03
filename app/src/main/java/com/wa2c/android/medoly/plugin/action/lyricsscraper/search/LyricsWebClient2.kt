@@ -5,7 +5,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 
-class LyricsWebClient(private val lyricsSearcherWebView: LyricsSearcherWebView) : WebViewClient() {
+class LyricsWebClient2(private val lyricsSearcherWebView: LyricsSearcherWebView2) : WebViewClient() {
 
     private var state = STATE_IDLE
 
