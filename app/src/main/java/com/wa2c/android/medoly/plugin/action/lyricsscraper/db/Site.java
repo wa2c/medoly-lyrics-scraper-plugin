@@ -21,7 +21,7 @@ public class Site implements Serializable {
     @Column
     public long group_id;
 
-    @Column
+    @Column(indexed = true)
     public String site_name;
 
     @Column

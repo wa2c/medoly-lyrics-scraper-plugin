@@ -72,8 +72,13 @@ class SearchActivity : Activity() {
         val helper = SearchCacheHelper(this)
         val siteList = helper.selectSiteList()
 
-        val initSiteId = prefs.getLong(R.string.prefkey_selected_site_id, -1)
-        var currentSite = siteList?.firstOrNull() { i -> i.site_id == initSiteId } ?: if (siteList.isNotEmpty()) siteList[0] else null
+        val initSiteId = try {
+            prefs.getLong(R.string.prefkey_selected_site_id, -1)
+        } catch (e: Exception) {
+            prefs.remove(R.string.prefkey_selected_site_id)
+            -1
+        }
+        var currentSite = siteList?.firstOrNull { i -> i.site_id == initSiteId } ?: if (siteList.isNotEmpty()) siteList[0] else null
         if (currentSite == null) {
             searchStartButton.isEnabled = false
         }

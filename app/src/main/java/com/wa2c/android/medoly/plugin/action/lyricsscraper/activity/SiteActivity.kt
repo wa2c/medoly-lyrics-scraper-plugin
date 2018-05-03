@@ -1,70 +1,30 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
 import android.app.Activity
-import android.app.LoaderManager
 import android.content.Context
-import android.content.CursorLoader
 import android.content.Intent
-import android.content.Loader
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.GroupColumn
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteProvider
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteGroup
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.SpreadSheetReadTask
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.layout_site_item.view.*
-import java.util.*
 
-
+/**
+ * Site activity
+ */
 class SiteActivity : Activity() {
 
     private lateinit var prefs: Prefs
-    private lateinit var cursorAdapter: SheetCursorAdapter
-
-    /**
-     * Cursor loader.
-     */
-    private val cursorLoaderCallbacks = object : LoaderManager.LoaderCallbacks<Cursor> {
-
-        override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
-            if (args != null) {
-                val type = args.getInt(CURSOR_TYPE, CURSOR_TYPE_GROUP)
-                if (type == CURSOR_TYPE_GROUP) {
-                    return CursorLoader(
-                            this@SiteActivity,
-                            SiteProvider.GROUP_URI, null, null, null,
-                            GroupColumn.NAME.columnKey)
-                } else if (type == CURSOR_TYPE_SITE) {
-                    val groupId = args.getString(GROUP_ID, "-1")
-                    return CursorLoader(
-                            this@SiteActivity,
-                            SiteProvider.SITE_URI, null,
-                            SiteColumn.GROUP_ID.columnKey + "=?",
-                            arrayOf(groupId),
-                            SiteColumn.SITE_NAME.columnKey)
-                }
-            }
-            return null
-        }
-
-        override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
-            if (loader.isReset || loader.isAbandoned) return
-            cursorAdapter.swapCursor(data)
-            cursorAdapter.notifyDataSetChanged()
-        }
-
-        override fun onLoaderReset(loader: Loader<Cursor>) {
-            cursorAdapter.swapCursor(null)
-        }
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,26 +38,17 @@ class SiteActivity : Activity() {
         actionBar.setDisplayShowHomeEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        // create loader manager
-        val bundle = Bundle()
-        bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_GROUP)
-
-        // create view
-        cursorAdapter = SheetCursorAdapter(this, CURSOR_TYPE_GROUP)
-        val listView = findViewById<View>(R.id.groupListView) as ListView
-        listView.onItemClickListener = AdapterView.OnItemClickListener { _, view, _, _ ->
-            if (cursorAdapter.cursorType == CURSOR_TYPE_GROUP) {
-                openSiteList(view.tag as String)
-            } else if (cursorAdapter.cursorType == CURSOR_TYPE_SITE) {
-                prefs.putValue(R.string.prefkey_selected_site_id, view.tag as String)
-                cursorAdapter.notifyDataSetChanged()
+        groupListView.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
+            val item = groupListView.adapter.getItem(position)
+            if (groupListView.adapter is SiteGroupListAdapter) {
+                openSiteList((item as SiteGroup).group_id)
+            } else if (groupListView.adapter is SiteListAdapter) {
+                prefs.putValue(R.string.prefkey_selected_site_id, (item as Site).site_id)
+                (groupListView.adapter as SiteListAdapter).notifyDataSetChanged()
             }
         }
-        listView.choiceMode = AbsListView.CHOICE_MODE_SINGLE
-        listView.adapter = cursorAdapter
-
-        // create load manager
-        loaderManager.restartLoader(CURSOR_LOADER_ID, bundle, cursorLoaderCallbacks)
+        groupListView.choiceMode = AbsListView.CHOICE_MODE_SINGLE
+        groupListView.adapter = SiteGroupListAdapter(this)
     }
 
 
@@ -110,7 +61,7 @@ class SiteActivity : Activity() {
         when (item.itemId) {
             android.R.id.home -> {
                 // home
-                if (cursorAdapter.cursorType == CURSOR_TYPE_SITE) {
+                if (groupListView.adapter is SiteListAdapter) {
                     openGroupList()
                 } else {
                     finish()
@@ -128,9 +79,6 @@ class SiteActivity : Activity() {
                         } else {
                             AppUtils.showToast(applicationContext, R.string.message_renew_list_failed)
                         }
-                        val bundle = Bundle()
-                        bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_GROUP)
-                        loaderManager.restartLoader(CURSOR_LOADER_ID, bundle, cursorLoaderCallbacks)
                         groupListView.visibility = View.VISIBLE
                         loadingLayout.visibility = View.INVISIBLE
                     }
@@ -138,15 +86,11 @@ class SiteActivity : Activity() {
 
                 groupListView.visibility = View.INVISIBLE
                 loadingLayout.visibility = View.VISIBLE
-                loaderManager.destroyLoader(CURSOR_LOADER_ID)
                 task.execute()
                 return true
             }
             R.id.menu_open_sheet -> {
-                val sheetUrl = getString(R.string.sheet_uri, getString(R.string.sheet_id))
-                //if (BuildConfig.DEBUG)
-                //    sheetUrl = getString(R.string.sheet_uri, getString(R.string.sheet_id_debug));
-                val sheetUri = Uri.parse(sheetUrl)
+                val sheetUri = Uri.parse(getString(R.string.sheet_uri, getString(R.string.sheet_id)))
                 val browserIntent = Intent(Intent.ACTION_VIEW, sheetUri)
                 startActivity(browserIntent)
                 return true
@@ -158,7 +102,7 @@ class SiteActivity : Activity() {
     override fun dispatchKeyEvent(e: KeyEvent): Boolean {
         when (e.keyCode) {
             // back key
-            KeyEvent.KEYCODE_BACK -> if (cursorAdapter.cursorType == CURSOR_TYPE_SITE) {
+            KeyEvent.KEYCODE_BACK -> if (groupListView.adapter is SiteListAdapter) {
                 openGroupList()
                 return true
             }
@@ -166,101 +110,110 @@ class SiteActivity : Activity() {
         return super.dispatchKeyEvent(e)
     }
 
-    /**
-     * Open site list.
-     * @param groupId Group ID.
-     */
-    private fun openSiteList(groupId: String?) {
-        cursorAdapter.cursorType = CURSOR_TYPE_SITE
-        val bundle = Bundle()
-        bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_SITE)
-        bundle.putString(GROUP_ID, groupId)
-        loaderManager.restartLoader(CURSOR_LOADER_ID, bundle, cursorLoaderCallbacks)
+    private fun openSiteList(groupId: Long) {
+        groupListView.adapter = SiteListAdapter(this, groupId)
     }
 
-    /**
-     * Open group list.
-     */
     private fun openGroupList() {
-        cursorAdapter.cursorType = CURSOR_TYPE_GROUP
-        val bundle = Bundle()
-        bundle.putInt(CURSOR_TYPE, CURSOR_TYPE_GROUP)
-        loaderManager.restartLoader(CURSOR_LOADER_ID, bundle, cursorLoaderCallbacks)
+        groupListView.adapter = SiteGroupListAdapter(this)
     }
 
-
     /**
-     * Spreadsheet data cursor adapter.
+     * Site group adapter.
      */
-    private class SheetCursorAdapter internal constructor(context: Activity, internal var cursorType: Int) : CursorAdapter(context, null, true) {
-
-        private val prefs = Prefs(context)
-        private val localeGroupNameCol: GroupColumn = GroupColumn.findLocaleColumn(Locale.getDefault())
-
-        override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
-            return View.inflate(context, R.layout.layout_site_item, null)
+    private class SiteGroupListAdapter internal constructor(context: Context) : ArrayAdapter<SiteGroup>(context, R.layout.layout_site_item) {
+        init {
+            addAll(SearchCacheHelper(context).selectSiteGroupList())
         }
 
-        override fun bindView(view: View, context: Context, cursor: Cursor) {
-            if (cursorType == CURSOR_TYPE_GROUP) {
-                view.siteSelectRadioButton.visibility = View.GONE
-                view.siteLaunchImageButton.visibility = View.GONE
-
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(localeGroupNameCol.columnKey))
-                view.tag = cursor.getString(cursor.getColumnIndexOrThrow(GroupColumn.GROUP_ID.columnKey))
-                view.siteParamTitleTextView.text = title
-                view.siteParamUriTextView.visibility = View.GONE
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var itemView = convertView
+            // itemView
+            val holder: ListItemViewHolder
+            if (itemView == null) {
+                holder = ListItemViewHolder(parent.context)
+                itemView = holder.itemView
             } else {
-                // ID
-                val siteId = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_ID.columnKey))
-                view.tag = siteId
+                holder = itemView.tag as ListItemViewHolder
+            }
 
-                // select
-                view.siteSelectRadioButton.visibility = View.VISIBLE
-                view.siteSelectRadioButton.isChecked = (siteId == prefs.getString(R.string.prefkey_selected_site_id, "-1"))
-                view.siteSelectRadioButton.setOnClickListener {
-                    prefs.putValue(R.string.prefkey_selected_site_id, siteId)
-                    notifyDataSetChanged()
-                }
+            holder.bind(getItem(position))
 
-                // title
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_NAME.columnKey))
-                view.siteParamTitleTextView.text = title
-                view.siteParamTitleTextView.setOnTouchListener { _, event -> view.onTouchEvent(event) }
+            return itemView
+        }
 
-                // uri
-                val uri = cursor.getString(cursor.getColumnIndexOrThrow(SiteColumn.SITE_URI.columnKey))
-                view.siteParamUriTextView.visibility = View.VISIBLE
-                view.siteParamUriTextView.text = uri
-                view.siteLaunchImageButton.tag = uri
-                view.siteLaunchImageButton.visibility = View.VISIBLE
-                if (!uri.isNullOrEmpty()) {
-                    view.siteLaunchImageButton.isEnabled = true
-                    view.siteLaunchImageButton.setOnClickListener { v ->
+        /** List item view holder.  */
+        private class ListItemViewHolder(context: Context) {
+            val itemView = View.inflate(context, R.layout.layout_site_item, null)!!
+            init {
+                itemView.tag = this
+            }
+
+            fun bind(item: SiteGroup) {
+                itemView.siteSelectRadioButton.visibility = View.GONE
+                itemView.siteLaunchImageButton.visibility = View.GONE
+                itemView.siteParamUriTextView.visibility = View.GONE
+                itemView.siteParamTitleTextView.text = item.findLocaleName(null)
+            }
+        }
+    }
+
+    /**
+     * Site adapter.
+     */
+    private class SiteListAdapter internal constructor(context: Context, groupId: Long) : ArrayAdapter<Site>(context, R.layout.layout_site_item) {
+
+        init {
+            addAll(SearchCacheHelper(context).selectSiteListByGroupId(groupId))
+        }
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var itemView = convertView
+            val holder: ListItemViewHolder
+            if (itemView == null) {
+                holder = ListItemViewHolder(parent.context)
+                itemView = holder.itemView
+            } else {
+                holder = itemView.tag as ListItemViewHolder
+            }
+
+            holder.bind(getItem(position))
+
+            return itemView
+        }
+
+        /** List item view holder.  */
+        private class ListItemViewHolder(val context: Context) {
+            val prefs = Prefs(context)
+            val itemView = View.inflate(context, R.layout.layout_site_item, null)!!
+            init {
+                itemView.tag = this
+            }
+
+            fun bind(site: Site) {
+                itemView.siteSelectRadioButton.visibility = View.VISIBLE
+                itemView.siteLaunchImageButton.visibility = View.VISIBLE
+                itemView.siteParamUriTextView.visibility = View.VISIBLE
+
+                itemView.siteSelectRadioButton.isChecked = (site.site_id == prefs.getLong(R.string.prefkey_selected_site_id))
+                itemView.siteSelectRadioButton.setOnTouchListener { _, event -> itemView.onTouchEvent(event) }
+                itemView.siteSelectRadioButton.isClickable = false
+
+                itemView.siteParamTitleTextView.text = site.site_name
+                itemView.siteParamUriTextView.text = site.site_uri
+                itemView.siteLaunchImageButton.tag = site.site_uri
+                if (!site.site_uri.isNullOrEmpty()) {
+                    itemView.siteLaunchImageButton.isEnabled = true
+                    itemView.siteLaunchImageButton.setOnClickListener { v ->
                         val sheetUri = Uri.parse(v.tag as String)
                         val browserIntent = Intent(Intent.ACTION_VIEW, sheetUri)
                         context.startActivity(browserIntent)
                     }
                 } else {
-                    view.siteLaunchImageButton.isEnabled = false
+                    itemView.siteLaunchImageButton.isEnabled = false
                 }
             }
         }
-
-    }
-
-    companion object {
-
-        /** Cursor loader ID.  */
-        private const val CURSOR_LOADER_ID = 1
-        /** Cursor type.  */
-        private const val CURSOR_TYPE = "cursor_type"
-        /** Cursor type: site.  */
-        private const val CURSOR_TYPE_SITE = 0
-        /** Cursor type: group.  */
-        private const val CURSOR_TYPE_GROUP = 1
-        /** Group ID.  */
-        private const val GROUP_ID = "group_id"
     }
 
 }

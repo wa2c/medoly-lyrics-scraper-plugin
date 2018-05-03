@@ -165,25 +165,29 @@ public class SearchCacheHelper {
 
     public List<Site> selectSiteList() {
         final OrmaDatabase od = provideOrmaDatabase(context);
-        return od.selectFromSite().toList();
+        return od.selectFromSite().orderBySite_idAsc().toList();
     }
 
+    public List<Site> selectSiteListByGroupId(Long groupId) {
+        final OrmaDatabase od = provideOrmaDatabase(context);
+        return od.selectFromSite().where("group_id = ?", groupId).orderBySite_idAsc().toList();
+    }
 
     public List<SiteGroup> selectSiteGroupList() {
         OrmaDatabase od = provideOrmaDatabase(context);
-        return od.selectFromSiteGroup().toList();
+        return od.selectFromSiteGroup().orderByGroup_idAsc().toList();
     }
 
 
     public void renewSite(Collection<Site> collection) {
         final OrmaDatabase od = provideOrmaDatabase(context);
-        od.deleteFromSite();
+        od.deleteFromSite().execute();
         od.prepareInsertIntoSite().executeAll(collection);
     }
 
     public void renewSiteGroup(Collection<SiteGroup> collection) {
         final OrmaDatabase od = provideOrmaDatabase(context);
-        od.deleteFromSiteGroup();
+        od.deleteFromSiteGroup().execute();
         od.prepareInsertIntoSiteGroup().executeAll(collection);
     }
 
