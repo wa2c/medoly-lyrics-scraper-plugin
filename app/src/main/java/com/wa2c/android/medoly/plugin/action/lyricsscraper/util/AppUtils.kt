@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import android.preference.PreferenceManager
 import android.text.Html
-import android.text.TextUtils
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
@@ -44,6 +43,7 @@ object AppUtils {
     }
 
 
+
     /**
      * Get first non-null object.
      * @param objects Objects.
@@ -54,7 +54,7 @@ object AppUtils {
     }
 
     /**
-     * Get first non-null text.
+     * Get first non-empty text.
      * @param texts Texts.
      * @return First non-null object. empty text as all null.
      */
@@ -68,9 +68,9 @@ object AppUtils {
 
 
     /**
-     * 歌詞を調整する。
-     * @param inputText 歌詞テキスト。
-     * @return 調整後の歌詞テキスト。
+     * Adjust lyrics. (remove tags, trim lines)
+     * @param inputText lyrics text.
+     * @return adjusted lyrics text.
      */
     fun adjustLyrics(inputText: String?): String? {
         if (inputText.isNullOrEmpty())
@@ -90,29 +90,29 @@ object AppUtils {
     }
 
     /**
-     * 全角を含めてトリミング。
-     * @param text 元テキスト。
-     * @return トリミングテキスト。
+     * Trim spaces including full-width characters.
+     * @param text Text.
+     * @return Trimmed text.
      */
     fun trimLines(text: String?): String {
-        return if (text.isNullOrEmpty()) ""
-            else text!!.replace("(?m)^[\\t 　]*".toRegex(), "").replace("(?m)[\\t 　]*$".toRegex(), "").trim({ it <= ' ' })
-
+        return if (text.isNullOrEmpty()) "" else text!!
+                .replace("(?m)^[\\t 　]*".toRegex(), "")
+                .replace("(?m)[\\t 　]*$".toRegex(), "")
+                .trim { it <= ' ' }
     }
 
-
     /**
-     * 比較向けにテキストをノーマライズ。
-     * @param text テキスト。
-     * @return 変換後テキスト。
+     * Normalize text.
+     * @param text text.
+     * @return Normalized text.
      */
     fun normalizeText(text: String?): String {
         if (text.isNullOrEmpty())
             return ""
 
-        // 正規化
-        val output = trimLines(removeParentheses(Normalizer.normalize(text, Normalizer.Form.NFKC)).toLowerCase())
-        // 特殊文字正規化
+        // normalize
+        val output = trimLines(Normalizer.normalize(text, Normalizer.Form.NFKC)).toLowerCase()
+        // change special characters
         return output
                 .replace("゠", "=")
                 .replace("(“|”)", "\"")
@@ -120,32 +120,27 @@ object AppUtils {
     }
 
     /**
-     * 括弧で括られた文字等（補助文字）を取り除く
-     * @param text テキスト。
-     * @return 括弧を取り除いたテキスト。
+     * Remove parentheses.
+     * @param text text.
+     * @return removed text.
      */
     fun removeParentheses(text: String?): String {
-        return if (text.isNullOrEmpty()) ""
-            else text!!
-                .replace("(^[^\\(]+)\\(.*?\\)".toRegex(), "$1")
-                .replace("(^[^\\[]+)\\[.*?\\]".toRegex(), "$1")
-                .replace("(^[^\\{]+)\\{.*?\\}".toRegex(), "$1")
-                .replace("(^[^\\<]+)\\<.*?\\>".toRegex(), "$1")
-                .replace("(^[^\\（]+)\\（.*?\\）".toRegex(), "$1")
-                .replace("(^[^\\［]+)\\［.*?\\］".toRegex(), "$1")
-                .replace("(^[^\\｛]+)\\｛.*?\\｝".toRegex(), "$1")
-                .replace("(^[^\\＜]+)\\＜.*?\\＞".toRegex(), "$1")
-                .replace("(^[^\\【]+)\\【.*?\\】".toRegex(), "$1")
-                .replace("(^[^\\〔]+)\\〔.*?\\〕".toRegex(), "$1")
-                .replace("(^[^\\〈]+)\\〈.*?\\〉".toRegex(), "$1")
-                .replace("(^[^\\《]+)\\《.*?\\》".toRegex(), "$1")
-                .replace("(^[^\\「]+)\\「.*?\\」".toRegex(), "$1")
-                .replace("(^[^\\『]+)\\『.*?\\』".toRegex(), "$1")
-                .replace("(^[^\\〖]+)\\〖.*?\\〗".toRegex(), "$1")
-                .replace("(^[^\\-]+)-.*?-".toRegex(), "$1")
-                .replace("(^[^\\－]+)－.*?－".toRegex(), "$1")
-                .replace(" (~|～|〜|〰).*".toRegex(), "")
-
+        return if (text.isNullOrEmpty()) "" else text!!
+                .replace("([^\\(]+)\\(.*?\\)".toRegex(), "$1")
+                .replace("([^\\[]+)\\[.*?\\]".toRegex(), "$1")
+                .replace("([^\\{]+)\\{.*?\\}".toRegex(), "$1")
+                .replace("([^\\<]+)\\<.*?\\>".toRegex(), "$1")
+                .replace("([^\\（]+)\\（.*?\\）".toRegex(), "$1")
+                .replace("([^\\［]+)\\［.*?\\］".toRegex(), "$1")
+                .replace("([^\\｛]+)\\｛.*?\\｝".toRegex(), "$1")
+                .replace("([^\\＜]+)\\＜.*?\\＞".toRegex(), "$1")
+                .replace("([^\\【]+)\\【.*?\\】".toRegex(), "$1")
+                .replace("([^\\〔]+)\\〔.*?\\〕".toRegex(), "$1")
+                .replace("([^\\〈]+)\\〈.*?\\〉".toRegex(), "$1")
+                .replace("([^\\《]+)\\《.*?\\》".toRegex(), "$1")
+                .replace("([^\\「]+)\\「.*?\\」".toRegex(), "$1")
+                .replace("([^\\『]+)\\『.*?\\』".toRegex(), "$1")
+                .replace("([^\\〖]+)\\〖.*?\\〗".toRegex(), "$1")
     }
 
     /**
@@ -154,9 +149,8 @@ object AppUtils {
      * @return removed text.
      */
     fun removeDash(text: String?): String {
-        return if (text.isNullOrEmpty()) ""
-            else text!!.replace("\\s+(-|－|―|ー|ｰ|~|～|〜|〰|=|＝).*".toRegex(), "")
-
+        return if (text.isNullOrEmpty()) "" else text!!
+                .replace("\\s+(-|－|―|ー|ｰ|~|～|〜|〰|=|＝).*".toRegex(), "")
     }
 
     /**
@@ -165,8 +159,7 @@ object AppUtils {
      * @return removed text.
      */
     fun removeTextInfo(text: String?): String {
-        return if (text.isNullOrEmpty()) ""
-            else text!!
+        return if (text.isNullOrEmpty()) "" else text!!
                 .replace("(?i)[\\(\\<\\[\\{\\s]?off vocal.*".toRegex(), "")
                 .replace("(?i)[\\(\\<\\[\\{\\s]?no vocal.*".toRegex(), "")
                 .replace("(?i)[\\(\\<\\[\\{\\s]?less vocal.*".toRegex(), "")
@@ -182,34 +175,6 @@ object AppUtils {
                 .replace("(?i)[\\(\\<\\[\\{\\s]?instrumental.*".toRegex(), "")
                 .replace("(?i)[\\(\\<\\[\\{\\s]?inst\\..*".toRegex(), "")
                 .replace("(?i)[\\(\\<\\[\\{\\s]?インスト.*".toRegex(), "")
-    }
-
-
-    /**
-     * 2つのテキストを比較して、ほぼ同じ場合はtrue。
-     * @param text1 比較テキスト1。
-     * @param text2 比較テキスト2。
-     * @return ほぼ一致する場合はtrue。
-     */
-    fun similarText(text1: String?, text2: String?): Boolean {
-        if (text1 == null || text2 == null)
-            return false
-
-        val it = removeWhitespace(normalizeText(text1), false)
-        val ot = removeWhitespace(normalizeText(text2), false)
-        return it == ot
-    }
-
-    /**
-     * 空白を置換える
-     * @param text テキスト。
-     * @param insertSpace スペースに置換える場合はtrue。
-     * @return 変換後テキスト。
-     */
-    private fun removeWhitespace(text: String?, insertSpace: Boolean): String {
-        return if (text.isNullOrEmpty()) ""
-            else text!!.replace("(\\s|　)".toRegex(), if (insertSpace) " " else "")
-
     }
 
     /**
@@ -244,7 +209,7 @@ object AppUtils {
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "*/*"
-            intent.putExtra(Intent.EXTRA_TITLE, fileName + ".lrc")
+            intent.putExtra(Intent.EXTRA_TITLE, "$fileName.txt")
             activity.startActivityForResult(intent, REQUEST_CODE_SAVE_FILE)
         } catch (e: Exception) {
             Logger.e(e)

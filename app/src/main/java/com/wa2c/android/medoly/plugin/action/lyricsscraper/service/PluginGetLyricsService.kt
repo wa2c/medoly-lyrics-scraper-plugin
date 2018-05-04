@@ -150,9 +150,9 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
 
         try {
             // 歌詞取得
-            val obtainClient = LyricsObtainClient(applicationContext, propertyData)
+            val obtainClient = LyricsObtainClient2(applicationContext, propertyData)
 
-            obtainClient.obtainLyrics(object: LyricsObtainClient.LyricsObtainListener {
+            obtainClient.obtainLyrics(object: LyricsObtainClient2.LyricsObtainListener {
                 override fun onLyricsObtain(lyrics: String?, title: String?, uri: String?) {
                     // 送信
                     sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.mediaUri.toString()).apply()
@@ -246,11 +246,11 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         if (lyricsUri != null) {
             if (lyricsUri === Uri.EMPTY)
                 return  // EMPTYは無視
-            if (pref.getBoolean(getString(R.string.prefkey_success_message_show), false)) {
+            if (pref.getBoolean(getString(R.string.pref_success_message_show), false)) {
                 AppUtils.showToast(this, R.string.message_lyrics_success)
             }
         } else {
-            if (pref.getBoolean(getString(R.string.prefkey_failure_message_show), false)) {
+            if (pref.getBoolean(getString(R.string.pref_failure_message_show), false)) {
                 AppUtils.showToast(this, R.string.message_lyrics_failure)
             }
         }

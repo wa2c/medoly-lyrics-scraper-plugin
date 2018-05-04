@@ -13,11 +13,12 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteGroup
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.SpreadSheetReadTask
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.SpreadSheetReadTask2
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.layout_site_item.view.*
+
 
 /**
  * Site activity
@@ -70,8 +71,8 @@ class SiteActivity : Activity() {
             }
             R.id.menu_update_list -> {
                 // update list
-                val task = SpreadSheetReadTask(applicationContext)
-                task.setOnPropertyActionListener(object: SpreadSheetReadTask.SiteUpdateListener {
+                val task = SpreadSheetReadTask2(applicationContext)
+                task.setOnPropertyActionListener(object: SpreadSheetReadTask2.SiteUpdateListener {
                     override fun onListUpdated(isSucceeded: Boolean) {
                         if (isSucceeded) {
                             openGroupList()

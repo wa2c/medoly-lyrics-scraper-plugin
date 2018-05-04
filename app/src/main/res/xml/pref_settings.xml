@@ -7,25 +7,45 @@
             android:defaultValue="@string/event_get_lyrics_values_default"
             android:entries="@array/event_get_lyrics_entries"
             android:entryValues="@array/event_get_lyrics_values"
-            android:key="@string/prefkey_event_get_lyrics"
+            android:key="@string/pref_event_get_lyrics"
             android:summary="@string/pref_summary_event_get_lyrics"
             android:title="@string/pref_title_event_get_lyrics" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="@string/prefkey_previous_media_enabled"
-            android:summary="@string/pref_summary_previous_media_enabled"
-            android:title="@string/pref_title_previous_media_enabled" />
+            android:defaultValue="true"
+            android:key="@string/pref_use_cache"
+            android:summary="@string/pref_summary_use_cache"
+            android:title="@string/pref_title_use_cache" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_cache_result"
+            android:summary="@string/pref_summary_cache_result"
+            android:title="@string/pref_title_cache_result" />
+
+        <ListPreference
+            android:defaultValue="@string/file_name_default_default"
+            android:entries="@array/file_name_default_entries"
+            android:entryValues="@array/file_name_default_values"
+            android:key="@string/pref_file_name_default"
+            android:summary="@string/pref_summary_file_name_default"
+            android:title="@string/pref_title_file_name_default" />
+
+        <EditTextPreference
+            android:defaultValue="@string/file_name_separator_default"
+            android:key="@string/pref_file_name_separator"
+            android:summary="@string/pref_summary_file_name_separator"
+            android:title="@string/pref_title_file_name_separator" />
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="@string/prefkey_success_message_show"
+            android:key="@string/pref_success_message_show"
             android:summary="@string/pref_summary_post_success_message_show"
             android:title="@string/pref_title_post_success_message_show" />
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/prefkey_failure_message_show"
+            android:key="@string/pref_failure_message_show"
             android:summary="@string/pref_summary_post_failure_message_show"
             android:title="@string/pref_title_post_failure_message_show" />
 

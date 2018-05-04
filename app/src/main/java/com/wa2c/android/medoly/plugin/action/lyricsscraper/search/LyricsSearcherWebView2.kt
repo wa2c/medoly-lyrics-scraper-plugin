@@ -17,7 +17,6 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteProvider
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
@@ -92,7 +91,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
         Logger.d("Search URL: $searchUri")
 
         try {
-            lyricsWebClient.setState(LyricsWebClient.STATE_SEARCH)
+            lyricsWebClient.setState(LyricsWebClient2.STATE_SEARCH)
             stopLoading()
             loadUrl(searchUri)
         } catch (e: Exception) {
@@ -102,7 +101,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
 
     fun download(url: String) {
         try {
-            lyricsWebClient.setState(LyricsWebClient.STATE_LYRICS)
+            lyricsWebClient.setState(LyricsWebClient2.STATE_LYRICS)
             stopLoading()
             loadUrl(url)
         } catch (e: Exception) {
@@ -204,7 +203,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
                     handleListener!!.onGetLyrics(l)
                 }
             }
-            lyricsWebClient.setState(LyricsWebClient.STATE_IDLE)
+            lyricsWebClient.setState(LyricsWebClient2.STATE_IDLE)
         }
     }
 

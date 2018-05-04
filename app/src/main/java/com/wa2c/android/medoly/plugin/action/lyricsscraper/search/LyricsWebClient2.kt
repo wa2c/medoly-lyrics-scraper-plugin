@@ -16,8 +16,8 @@ class LyricsWebClient2(private val lyricsSearcherWebView: LyricsSearcherWebView2
     private val scriptRunnable = Runnable {
         when (state) {
             STATE_IDLE -> { }
-            STATE_SEARCH -> lyricsSearcherWebView.loadUrl(LyricsSearcherWebView.SEARCH_PAGE_GET_SCRIPT)
-            STATE_LYRICS -> lyricsSearcherWebView.loadUrl(LyricsSearcherWebView.LYRICS_PAGE_GET_SCRIPT)
+            STATE_SEARCH -> lyricsSearcherWebView.loadUrl(LyricsSearcherWebView2.SEARCH_PAGE_GET_SCRIPT)
+            STATE_LYRICS -> lyricsSearcherWebView.loadUrl(LyricsSearcherWebView2.LYRICS_PAGE_GET_SCRIPT)
             else -> lyricsSearcherWebView.handleListener?.onError(null)
         }
     }

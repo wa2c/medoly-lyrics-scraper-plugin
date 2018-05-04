@@ -81,10 +81,12 @@
             android:name=".util.ToastReceiver"
             android:exported="false" />
 
+        <!--
         <provider
             android:name=".db.SiteProvider"
             android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper.siteprovider"
             android:exported="false" />
+            -->
 
     </application>
 

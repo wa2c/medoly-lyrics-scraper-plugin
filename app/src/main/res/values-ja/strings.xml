@@ -123,8 +123,14 @@
 
     <string name="pref_title_event_get_lyrics">歌詞取得イベント</string>
     <string name="pref_summary_event_get_lyrics">歌詞を取得するイベントを選択します。</string>
-    <string name="pref_title_previous_media_enabled">前回メディア実行</string>
-    <string name="pref_summary_previous_media_enabled">前回歌詞取得済みの同一メディアに対しても、再取得を行います。</string>
+    <string name="pref_title_use_cache">キャッシュ検索</string>
+    <string name="pref_summary_use_cache">イベント検索でキャッシュから歌詞を検索します。</string>
+    <string name="pref_title_cache_result">キャッシュ保存</string>
+    <string name="pref_summary_cache_result">イベント検索で取得した歌詞をキャッシュに保存します。</string>
+    <string name="pref_title_file_name_default">初期ファイル名</string>
+    <string name="pref_summary_file_name_default">ファイル保存時の初期ファイル名を選択します。</string>
+    <string name="pref_title_file_name_separator">ファイル名区切り</string>
+    <string name="pref_summary_file_name_separator">初期ファイル名のタイトルとアーティストの間の区切り文字を入力します.</string>
     <string name="pref_title_post_success_message_show">成功メッセージ表示</string>
     <string name="pref_summary_post_success_message_show">送信に成功した際にメッセージを表示します。</string>
     <string name="pref_title_post_failure_message_show">失敗メッセージ表示</string>
@@ -148,4 +154,12 @@
         <item>@string/label_plugin_operation_media_open</item>
         <item>@string/label_plugin_operation_play_start</item>
     </string-array>
+
+    <!-- File name -->
+    <string-array name="file_name_default_entries">
+        <item>[タイトル]</item>
+        <item>[タイトル] [アーティスト]</item>
+        <item>[アーティスト] [タイトル]</item>
+    </string-array>
+
 </resources>

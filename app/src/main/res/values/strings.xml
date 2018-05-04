@@ -123,16 +123,23 @@
 
     <string name="pref_title_event_get_lyrics">Get Lyrics Event</string>
     <string name="pref_summary_event_get_lyrics">Select the event to get lyrics.</string>
-    <string name="pref_title_previous_media_enabled">Read Previous Media Lyrics</string>
-    <string name="pref_summary_previous_media_enabled">Enable to get the lyrics for the same media that has got already last time.</string>
+    <string name="pref_title_use_cache">Search Cache</string>
+    <string name="pref_summary_use_cache">Search the lyrics in the cache.</string>
+    <string name="pref_title_cache_result">Save Lyrics</string>
+    <string name="pref_summary_cache_result">Save the lyrics of event search result in the cache.</string>
+    <string name="pref_title_file_name_default">Default File Name</string>
+    <string name="pref_summary_file_name_default">Select the default filename for saving.</string>
+    <string name="pref_title_file_name_separator">File Name Separator</string>
+    <string name="pref_summary_file_name_separator">Input a separator between the title and the artist for default file name.</string>
     <string name="pref_title_post_success_message_show">Show Success Message</string>
     <string name="pref_summary_post_success_message_show">Show the message when send succeeded.</string>
     <string name="pref_title_post_failure_message_show">Show Failure Message</string>
     <string name="pref_summary_post_failure_message_show">Show the message when send failed. </string>
+
     <string name="pref_title_application_details">App Info</string>
-    <string name="pref_summary_application_details">Show application information.</string>
+    <string name="pref_summary_application_details">Show application information of this device.</string>
     <string name="pref_title_about">About</string>
-    <string name="pref_summary_about">About</string>
+    <string name="pref_summary_about">Show about.</string>
 
     <!-- System -->
     <string name="error_app">The operation failed due to an error.</string>
@@ -147,6 +154,13 @@
         <item>Invalid</item>
         <item>@string/label_plugin_operation_media_open</item>
         <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
+
+    <!-- File name -->
+    <string-array name="file_name_default_entries">
+        <item>[Title]</item>
+        <item>[Title] [Artist]</item>
+        <item>[Artist] [Title]</item>
     </string-array>
 
 </resources>

@@ -59,6 +59,12 @@ public class Site implements Serializable {
 
 
 
+    /** Parse type: XPath.  */
+    public static final String PARSE_TYPE_XPATH = "XPath";
+    /** Parse type: Regular Expression.  */
+    public static final String PARSE_TYPE_REGEXP = "RegularExpression";
+
+
 //    /** ID.  */
 //    _ID("_ID", "_id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
 //    /** Site ID.  */

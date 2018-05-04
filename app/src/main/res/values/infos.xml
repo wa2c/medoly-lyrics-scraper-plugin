@@ -50,13 +50,11 @@
     </string-array>
 
     <!-- Preferences -->
-    <string name="prefkey_selected_id">selected_id</string>
     <string name="prefkey_selected_site_id">selected_site_id</string>
 
-    <string name="prefkey_event_get_lyrics">event_get_lyrics</string>
-    <string name="prefkey_previous_media_enabled">previous_media_enabled</string>
-    <string name="prefkey_success_message_show">success_message_show</string>
-    <string name="prefkey_failure_message_show">failure_message_show</string>
+    <string name="pref_event_get_lyrics">pref_event_get_lyrics</string>
+    <string name="pref_use_cache">pref_use_cache</string>
+    <string name="pref_cache_result">pref_cache_result</string>
     <string name="pref_file_name_default">pref_file_name_default</string>
     <string name="pref_file_name_separator">pref_file_name_separator</string>
     <string name="pref_success_message_show">pref_success_message_show</string>
@@ -73,7 +71,7 @@
 
     <string name="empty_value" />
 
-    <!-- Tweet event -->
+    <!-- Plugin event -->
     <string name="event_get_lyrics_values_default" />
     <string-array name="event_get_lyrics_values">
         <item />
