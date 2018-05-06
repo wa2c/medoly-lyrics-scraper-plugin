@@ -182,6 +182,8 @@ class SearchActivity : Activity() {
                 return@setOnItemClickListener
 
             try {
+
+
                 //webView.download(item.pageUrl!!)
                 webView.download(item.pageUrl!!)
                 searchResultAdapter.selectedItem = item

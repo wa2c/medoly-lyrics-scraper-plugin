@@ -102,7 +102,7 @@
     <ListView
         android:id="@+id/searchResultListView"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/searchInputLayout" />

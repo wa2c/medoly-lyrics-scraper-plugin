@@ -72,41 +72,6 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         } catch (e: Exception) {
             Logger.e(e)
         }
-
-
-//        var notificationManager : NotificationManager? = null
-//        try {
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//                val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW)
-//                notificationManager.createNotificationChannel(channel)
-//                val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
-//                        .setContentTitle(getString(R.string.app_name))
-//                        .setContentText("")
-//                        .setSmallIcon(R.drawable.ic_launcher)
-//                startForeground(NOTIFICATION_ID, builder.build())
-//            }
-//
-//            if (intent == null)
-//                return
-//
-//            resultSent = false
-//            context = applicationContext
-//            prefs = Prefs(this)
-//            pluginIntent = MediaPluginIntent(intent)
-//            propertyData = pluginIntent.propertyData ?: PropertyData()
-//            receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
-//
-//        } catch (e: Exception) {
-//            Logger.e(e)
-//        } finally {
-//            if (notificationManager != null) {
-//                notificationManager.deleteNotificationChannel(NOTIFICATION_CHANNEL_ID)
-//                notificationManager.cancel(NOTIFICATION_ID)
-//                stopForeground(true)
-//            }
-//        }
     }
 
 

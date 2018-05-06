@@ -2,6 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.search
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
 import android.os.Handler
 import android.view.View
 import android.webkit.*
@@ -130,8 +131,20 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
                 for (element in e) {
                     try {
+                        val urlText = element.attr("href")
+                        var url = Uri.parse(urlText)
+                        if (!url.isAbsolute) {
+                            //url = Uri.
+                            val searchUrl = Uri.parse(site!!.search_uri)
+                            url = Uri.Builder()
+                                    .scheme(searchUrl.scheme)
+                                    .authority(searchUrl.authority)
+                                    .path(urlText)
+                                    .build()
+                        }
+
                         val item = ResultItem()
-                        item.pageUrl = element.attr("href")
+                        item.pageUrl = url.toString()
                         item.pageTitle = element.text()
                         item.musicTitle = item.pageTitle
                         if (item.pageUrl.isNullOrEmpty())
