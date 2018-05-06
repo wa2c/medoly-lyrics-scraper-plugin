@@ -8,14 +8,11 @@ class ResultItem {
     var musicTitle: String? = null
     /** Media artist.  */
     var musicArtist: String? = null
-    /** Media album.  */
-    var musicAlbum: String? = null
+//    /** Media album.  */
+//    var musicAlbum: String? = null
 
     /** Lyric title.  */
     var pageTitle: String? = null
-        set(lyricTitle) {
-            field = this.pageTitle
-        }
     /** Lyric url.  */
     var pageUrl: String? = null
     /** Lyrics.  */

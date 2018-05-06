@@ -22,18 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="@android:dimen/app_icon_size">
 
-            <Spinner
-                android:id="@+id/searchSiteSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="@android:dimen/app_icon_size"
-                android:layout_span="3" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="@android:dimen/app_icon_size">
-
             <Button
                 android:id="@+id/searchTitleButton"
                 android:layout_width="wrap_content"
@@ -91,6 +79,17 @@
 
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="@android:dimen/app_icon_size">
+
+            <Spinner
+                android:id="@+id/searchSiteSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="@android:dimen/app_icon_size"
+                android:layout_span="3" />
+
+        </TableRow>
     </TableLayout>
 
 

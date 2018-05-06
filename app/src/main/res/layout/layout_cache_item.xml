@@ -40,7 +40,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text="@string/label_cache_item_artist" />
-
+<!--
     <TextView
         android:id="@+id/cacheItemAlbumTextView"
         android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text="@string/label_cache_item_album" />
-
+-->
     <ImageView
         android:id="@+id/cacheItemHasLyricsImageView"
         android:layout_width="32dp"

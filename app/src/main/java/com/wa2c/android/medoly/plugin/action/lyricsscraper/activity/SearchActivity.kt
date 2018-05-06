@@ -413,7 +413,7 @@ class SearchActivity : Activity() {
                 fun bind(item: ResultItem, selected: Boolean, listener: (View) -> Unit) {
                     itemView.searchItemRadioButton.isChecked = selected
                     itemView.searchItemTitleTextView.text = item.musicTitle
-                    itemView.searchItemUrlTextView.text = AppUtils.coalesce(item.musicArtist, "-")
+                    itemView.searchItemUrlTextView.text = item.pageUrl
                     itemView.searchItemRadioButton.setOnClickListener(listener)
                 }
             }

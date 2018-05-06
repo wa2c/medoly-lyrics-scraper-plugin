@@ -132,7 +132,8 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                     try {
                         val item = ResultItem()
                         item.pageUrl = element.attr("href")
-                        item.musicTitle = element.text()
+                        item.pageTitle = element.text()
+                        item.musicTitle = item.pageTitle
                         if (item.pageUrl.isNullOrEmpty())
                             continue
                         searchResultItemList[item.pageUrl!!] = item
@@ -149,7 +150,8 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                     try {
                         val item = ResultItem()
                         item.pageUrl = m.group(1)
-                        item.musicTitle = m.group(1)
+                        item.pageTitle = m.group(1)
+                        item.musicTitle = item.pageTitle
                         if (item.pageUrl.isNullOrEmpty())
                             continue
                         searchResultItemList[item.pageUrl!!] = item
@@ -187,7 +189,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 val elem = e[0]
                 lyrics = elem.html()
             } else if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_REGEXP) {
-                // 正規表現
+                // Regular expression
                 val parseText = replaceProperty(site!!.lyrics_page_parse_text, false, true)
                 Logger.d("Parse Text: $parseText")
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
