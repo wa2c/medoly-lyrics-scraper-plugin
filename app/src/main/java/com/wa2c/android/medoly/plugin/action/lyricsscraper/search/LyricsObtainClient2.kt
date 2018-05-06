@@ -1,4 +1,4 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper.service
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.search
 
 import android.content.Context
 import android.os.Handler

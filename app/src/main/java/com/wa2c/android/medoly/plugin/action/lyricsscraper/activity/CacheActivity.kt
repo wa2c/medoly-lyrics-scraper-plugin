@@ -84,7 +84,7 @@ class CacheActivity : Activity() {
                         currentCacheItem = item
                         AppUtils.saveFile(this@CacheActivity, item.title, item.artist)
                     }
-                    // Re-search
+                    // Re-searchCache
                     DialogInterface.BUTTON_NEGATIVE -> {
                         currentCacheItem = item
                         val intent = Intent(this@CacheActivity, SearchActivity::class.java)
@@ -148,7 +148,7 @@ class CacheActivity : Activity() {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         launch(UI) {
                             val result = async {
-                                return@async searchCacheHelper.delete(cacheAdapter.checkedSet)
+                                return@async searchCacheHelper.deleteCache(cacheAdapter.checkedSet)
                             }
                             if (result.await()) {
                                 cacheAdapter.removeCheckedItem()
@@ -204,92 +204,89 @@ class CacheActivity : Activity() {
     private fun searchCache(title: String, artist: String) {
         launch(UI) {
             val result = async {
-                return@async searchCacheHelper.search(title, artist)
+                return@async searchCacheHelper.searchCache(title, artist)
             }
             cacheAdapter.setList(result.await().toMutableList())
         }
     }
 
-
-
-    /**
-     * Search result adapter.
-     */
-    private class CacheAdapter internal constructor(context: Context) : ArrayAdapter<SearchCache>(context, R.layout.layout_search_item) {
-        /** Checked item. */
-        val checkedSet = HashSet<SearchCache>()
-        /** SearchCache list.  */
-        private var cacheList: MutableList<SearchCache> = ArrayList()
-
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var itemView = convertView
-            // itemView
-            val holder: ListItemViewHolder
-            if (itemView == null) {
-                holder = ListItemViewHolder(parent.context)
-                itemView = holder.itemView
-            } else {
-                holder = itemView.tag as ListItemViewHolder
-            }
-
-            holder.bind(getItem(position), checkedSet)
-
-            return itemView
-        }
-
-        fun setList(list: MutableList<SearchCache>) {
-            cacheList = list
-            showCacheList()
-        }
-
-        fun removeCheckedItem() {
-            cacheList.removeAll(checkedSet)
-            showCacheList()
-        }
-
-        fun showCacheList() {
-            clear()
-            addAll(cacheList)
-            notifyDataSetChanged()
-        }
-
-        override fun notifyDataSetChanged() {
-            super.notifyDataSetChanged()
-            checkedSet.clear()
-        }
-
-        /** List item view holder.  */
-        private class ListItemViewHolder(val context: Context) {
-            val itemView = View.inflate(context, R.layout.layout_cache_item, null)!!
-            init {
-                itemView.tag = this
-            }
-
-            fun bind(item: SearchCache, checkedSet: HashSet<SearchCache>) {
-                itemView.cacheItemCheckBox.isChecked = checkedSet.contains(item)
-                itemView.cacheItemTitleTextView.text = context.getString(R.string.label_cache_item_title, AppUtils.coalesce(item.title))
-                itemView.cacheItemArtistTextView.text = context.getString(R.string.label_cache_item_artist, AppUtils.coalesce(item.artist))
-                if (item.has_lyrics == true) {
-                    itemView.cacheItemHasLyricsImageView.visibility = View.VISIBLE
-                } else {
-                    itemView.cacheItemHasLyricsImageView.visibility = View.GONE
-                }
-
-                // event
-                itemView.cacheItemCheckBox.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked)
-                        checkedSet.add(item)
-                    else
-                        checkedSet.remove(item)
-                }
-            }
-        }
-    }
-
-
     companion object {
         const val INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE"
         const val INTENT_SEARCH_ARTIST = "INTENT_SEARCH_ARTIST"
+
+        /**
+         * Search result adapter.
+         */
+        private class CacheAdapter internal constructor(context: Context) : ArrayAdapter<SearchCache>(context, R.layout.layout_search_item) {
+            /** Checked item. */
+            val checkedSet = HashSet<SearchCache>()
+            /** SearchCache list.  */
+            private var cacheList: MutableList<SearchCache> = ArrayList()
+
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                var itemView = convertView
+                // itemView
+                val holder: ListItemViewHolder
+                if (itemView == null) {
+                    holder = ListItemViewHolder(parent.context)
+                    itemView = holder.itemView
+                } else {
+                    holder = itemView.tag as ListItemViewHolder
+                }
+
+                holder.bind(getItem(position), checkedSet)
+
+                return itemView
+            }
+
+            fun setList(list: MutableList<SearchCache>) {
+                cacheList = list
+                showCacheList()
+            }
+
+            fun removeCheckedItem() {
+                cacheList.removeAll(checkedSet)
+                showCacheList()
+            }
+
+            fun showCacheList() {
+                clear()
+                addAll(cacheList)
+                notifyDataSetChanged()
+            }
+
+            override fun notifyDataSetChanged() {
+                super.notifyDataSetChanged()
+                checkedSet.clear()
+            }
+
+            /** List item view holder.  */
+            private class ListItemViewHolder(val context: Context) {
+                val itemView = View.inflate(context, R.layout.layout_cache_item, null)!!
+                init {
+                    itemView.tag = this
+                }
+
+                fun bind(item: SearchCache, checkedSet: HashSet<SearchCache>) {
+                    itemView.cacheItemCheckBox.isChecked = checkedSet.contains(item)
+                    itemView.cacheItemTitleTextView.text = context.getString(R.string.label_cache_item_title, AppUtils.coalesce(item.title))
+                    itemView.cacheItemArtistTextView.text = context.getString(R.string.label_cache_item_artist, AppUtils.coalesce(item.artist))
+                    if (item.has_lyrics == true) {
+                        itemView.cacheItemHasLyricsImageView.visibility = View.VISIBLE
+                    } else {
+                        itemView.cacheItemHasLyricsImageView.visibility = View.GONE
+                    }
+
+                    // event
+                    itemView.cacheItemCheckBox.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked)
+                            checkedSet.add(item)
+                        else
+                            checkedSet.remove(item)
+                    }
+                }
+            }
+        }
     }
 
 }

@@ -1,27 +1,22 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper.service
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.db
 
-import android.content.ContentResolver
 import android.content.Context
 import android.os.AsyncTask
-
 import com.google.gdata.client.spreadsheet.FeedURLFactory
 import com.google.gdata.client.spreadsheet.ListQuery
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import com.google.gdata.data.spreadsheet.ListFeed
 import com.google.gdata.data.spreadsheet.WorksheetFeed
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.*
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-
-import java.util.EventListener
+import java.util.*
 
 
 /**
  * Spread sheet reading task class.
  */
-class SpreadSheetReadTask2(private val context: Context) : AsyncTask<String, Void, Boolean>() {
+class SpreadSheetReadTask(private val context: Context) : AsyncTask<String, Void, Boolean>() {
     private val service: SpreadsheetService = SpreadsheetService(context.getString(R.string.app_name))
-    private val resolver: ContentResolver = context.contentResolver
 
     /** Event listener.  */
     private var actionListener: SiteUpdateListener? = null
@@ -142,7 +137,7 @@ class SpreadSheetReadTask2(private val context: Context) : AsyncTask<String, Voi
     }
 
     companion object {
-        private val SITE_SHEET_NAME = "SITE"
-        private val GROUP_SHEET_NAME = "GROUP"
+        private const val SITE_SHEET_NAME = "SITE"
+        private const val GROUP_SHEET_NAME = "GROUP"
     }
 }

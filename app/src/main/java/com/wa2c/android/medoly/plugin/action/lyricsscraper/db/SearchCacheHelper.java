@@ -25,7 +25,7 @@ public class SearchCacheHelper {
      * @param context context.
      * @return OrmaDatabase object.
      */
-    public static synchronized OrmaDatabase provideOrmaDatabase(Context context) {
+    static synchronized OrmaDatabase provideOrmaDatabase(Context context) {
         if (ormaDatabase == null) {
             ormaDatabase = OrmaDatabase.builder(context).build();
         }
@@ -55,7 +55,7 @@ public class SearchCacheHelper {
      * @param artist Search artist.
      * @return Exists item, null if not exists.
      */
-    public SearchCache select(String title, String artist) {
+    public SearchCache selectCache(String title, String artist) {
         OrmaDatabase od = provideOrmaDatabase(context);
         return od.selectFromSearchCache()
                 .titleAndArtistEq(AppUtils.INSTANCE.coalesce(title), AppUtils.INSTANCE.coalesce(artist))
@@ -68,7 +68,7 @@ public class SearchCacheHelper {
      * @param artist Search artist.
      * @return Exists item, null if not exists.
      */
-    public List<SearchCache> search(String title, String artist) {
+    public List<SearchCache> searchCache(String title, String artist) {
         OrmaDatabase od = provideOrmaDatabase(context);
         SearchCache_Selector selector = od.selectFromSearchCache();
         // title
@@ -89,7 +89,7 @@ public class SearchCacheHelper {
      * @param resultItem Result item.
      * @return true as succeeded.
      */
-    public boolean insertOrUpdate(@NonNull String title, String artist, @Nullable ResultItem resultItem) {
+    public boolean insertOrUpdateCache(@NonNull String title, String artist, @Nullable ResultItem resultItem) {
         OrmaDatabase od = provideOrmaDatabase(context);
 
         String language = null;
@@ -107,7 +107,7 @@ public class SearchCacheHelper {
         title = AppUtils.INSTANCE.coalesce(title);
         artist = AppUtils.INSTANCE.coalesce(artist);
 
-        SearchCache cache = select(title, artist);
+        SearchCache cache = selectCache(title, artist);
         if (cache != null) {
             int count = od.updateSearchCache()._idEq(cache._id)
                     //.language(language)
@@ -137,7 +137,7 @@ public class SearchCacheHelper {
      * @param caches Cache.
      * @return true as succeeded.
      */
-    public boolean delete(final Collection<SearchCache> caches) {
+    public boolean deleteCache(final Collection<SearchCache> caches) {
         if (caches == null || caches.size() == 0)
             return false;
 
@@ -158,33 +158,60 @@ public class SearchCacheHelper {
     }
 
 
+    // Site / Group
+
+    /**
+     * Select a site by id.
+     * @param siteId A site id.
+     * @return A site.
+     */
     public Site selectSite(Long siteId) {
         final OrmaDatabase od = provideOrmaDatabase(context);
         return od.selectFromSite().site_idEq(siteId).valueOrNull();
     }
 
+    /**
+     * Select all sites.
+     * @return All sites.
+     */
     public List<Site> selectSiteList() {
         final OrmaDatabase od = provideOrmaDatabase(context);
         return od.selectFromSite().orderBySite_idAsc().toList();
     }
 
+    /**
+     * Select sites by group id
+     * @param groupId A group id.
+     * @return Selected sits.
+     */
     public List<Site> selectSiteListByGroupId(Long groupId) {
         final OrmaDatabase od = provideOrmaDatabase(context);
         return od.selectFromSite().where("group_id = ?", groupId).orderBySite_idAsc().toList();
     }
 
+    /**
+     * Select all site groups.
+     * @return All site groups.
+     */
     public List<SiteGroup> selectSiteGroupList() {
         OrmaDatabase od = provideOrmaDatabase(context);
         return od.selectFromSiteGroup().orderByGroup_idAsc().toList();
     }
 
-
+    /**
+     * Renew sites.
+     * @param collection Insert sits.
+     */
     public void renewSite(Collection<Site> collection) {
         final OrmaDatabase od = provideOrmaDatabase(context);
         od.deleteFromSite().execute();
         od.prepareInsertIntoSite().executeAll(collection);
     }
 
+    /**
+     * Renew site groups.
+     * @param collection Insert site groups.
+     */
     public void renewSiteGroup(Collection<SiteGroup> collection) {
         final OrmaDatabase od = provideOrmaDatabase(context);
         od.deleteFromSiteGroup().execute();

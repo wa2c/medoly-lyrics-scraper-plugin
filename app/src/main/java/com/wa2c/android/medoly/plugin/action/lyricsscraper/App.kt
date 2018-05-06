@@ -24,7 +24,7 @@ class App : Application() {
 
         // 4
         if (previousVersion < 0) {
-            // delete tables
+            // deleteCache tables
 //            try {
 //                val od = OrmaDatabase.builder(context).writeOnMainThread(AccessThreadConstraint.NONE).build()
 //                od.connection.rawQuery("drop table sites;")
@@ -32,7 +32,7 @@ class App : Application() {
 //            } catch (ignore: Exception) {
 //            }
 
-            // delete prefs
+            // deleteCache prefs
             pref.remove("previous_media_enabled")
             pref.remove("selected_id")
             pref.remove("selected_site_id")

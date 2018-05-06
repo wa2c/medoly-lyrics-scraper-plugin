@@ -1,3 +1,5 @@
+package com.wa2c.android.medoly.plugin.action.lyricsscraper.search
+
 //package com.wa2c.android.medoly.plugin.action.lyricsscraper.service
 //
 //import android.content.Context
@@ -27,7 +29,7 @@
 //import org.jsoup.Jsoup
 //import org.jsoup.nodes.Document
 //import org.jsoup.nodes.Element
-//import org.jsoup.select.Elements
+//import org.jsoup.selectCache.Elements
 //
 //import java.io.UnsupportedEncodingException
 //import java.net.MalformedURLException

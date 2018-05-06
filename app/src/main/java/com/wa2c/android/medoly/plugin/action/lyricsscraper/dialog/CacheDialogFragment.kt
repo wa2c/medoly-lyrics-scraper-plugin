@@ -32,17 +32,17 @@ class CacheDialogFragment : AbstractDialogFragment() {
         val contentView = View.inflate(activity, R.layout.dialog_cache, null)
         contentView.dialogCacheLyricsTextView.text = if (cache.has_lyrics != null && cache.has_lyrics!!) result!!.lyrics else getString(R.string.message_dialog_cache_none)
 
-//        // delete lyrics button
+//        // deleteCache lyrics button
 //        contentView.dialogCacheDeleteLyricsButton.setOnClickListener { LyricsDeleteAsyncTask(this@CacheDialogFragment, cache).execute() }
 //
-//        // delete cache button
+//        // deleteCache cache button
 //        contentView.dialogCacheDeleteCacheButton.setOnClickListener { CacheDeleteAsyncTask(this@CacheDialogFragment, cache).execute() }
-        // delete lyrics button
+        // deleteCache lyrics button
         contentView.dialogCacheDeleteLyricsButton.setOnClickListener {
             deleteLyrics(cache)
         }
 
-        // delete cache button
+        // deleteCache cache button
         contentView.dialogCacheDeleteCacheButton.setOnClickListener {
             deleteCache(cache)
         }
@@ -69,7 +69,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        override fun doInBackground(vararg params: Void): Void? {
 //            val c = dialogReference.get()?.activity ?: return null
 //            val searchCacheHelper = SearchCacheHelper(c)
-//            searchCacheHelper.insertOrUpdate(cache.title, cache.artist, null)
+//            searchCacheHelper.insertOrUpdateCache(cache.title, cache.artist, null)
 //            return null
 //        }
 //
@@ -88,7 +88,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        override fun doInBackground(vararg params: Void): Void? {
 //            val c = dialogReference.get()?.activity ?: return null
 //            val searchCacheHelper = SearchCacheHelper(c)
-//            searchCacheHelper.delete(listOf(cache))
+//            searchCacheHelper.deleteCache(listOf(cache))
 //            return null
 //        }
 //
@@ -106,7 +106,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
         launch(UI) {
             val deleteResult = async {
                 try {
-                    searchCacheHelper.insertOrUpdate(cache.title, cache.artist, null)
+                    searchCacheHelper.insertOrUpdateCache(cache.title, cache.artist, null)
                 } catch (e: Exception) {
                     return@async null
                 }
@@ -126,7 +126,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
         launch(UI) {
             val deleteResult = async {
                 try {
-                    searchCacheHelper.delete(listOf(cache))
+                    searchCacheHelper.deleteCache(listOf(cache))
                 } catch (e: Exception) {
                     return@async null
                 }
@@ -141,9 +141,9 @@ class CacheDialogFragment : AbstractDialogFragment() {
 
     companion object {
 
-        /** Dialog result on delete lyrics.  */
+        /** Dialog result on deleteCache lyrics.  */
         const val DIALOG_RESULT_DELETE_LYRICS = -10
-        /** Dialog result on delete cache.  */
+        /** Dialog result on deleteCache cache.  */
         const val DIALOG_RESULT_DELETE_CACHE = -20
 
         /** Cache key.  */
@@ -187,7 +187,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        val textView = content.findViewById<View>(R.id.dialogCacheLyricsTextView) as TextView
 //        textView.text = if (cache.has_lyrics != null && cache.has_lyrics!!) result!!.lyrics else getString(R.string.message_dialog_cache_none)
 //
-//        //        // delete lyrics button
+//        //        // deleteCache lyrics button
 //        //        content.findViewById(R.id.dialogCacheDeleteLyricsButton).setOnClickListener(new View.OnClickListener() {
 //        //            @Override
 //        //            public void onClick(View v) {
@@ -195,7 +195,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        //                    @Override
 //        //                    protected Void doInBackground(Void... params) {
 //        //                        SearchCacheHelper searchCacheHelper = new SearchCacheHelper(getActivity());
-//        //                        searchCacheHelper.insertOrUpdate(cache.title, cache.artist, null);
+//        //                        searchCacheHelper.insertOrUpdateCache(cache.title, cache.artist, null);
 //        //                        return null;
 //        //                    }
 //        //                    @Override
@@ -205,7 +205,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        //                }).execute();
 //        //             }
 //        //        });
-//        //        // delete cache button
+//        //        // deleteCache cache button
 //        //        content.findViewById(R.id.dialogCacheDeleteCacheButton).setOnClickListener(new View.OnClickListener() {
 //        //            @Override
 //        //            public void onClick(View v) {
@@ -213,7 +213,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        //                    @Override
 //        //                    protected Void doInBackground(Void... params) {
 //        //                        SearchCacheHelper searchCacheHelper = new SearchCacheHelper(getActivity());
-//        //                        searchCacheHelper.delete(Arrays.asList(cache));
+//        //                        searchCacheHelper.deleteCache(Arrays.asList(cache));
 //        //                        return null;
 //        //                    }
 //        //                    @Override
@@ -238,9 +238,9 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //
 //    companion object {
 //
-//        /** Dialog result on delete lyrics.  */
+//        /** Dialog result on deleteCache lyrics.  */
 //        val DIALOG_RESULT_DELETE_LYRICS = -10
-//        /** Dialog result on delete cache.  */
+//        /** Dialog result on deleteCache cache.  */
 //        val DIALOG_RESULT_DELETE_CACHE = -20
 //
 //        /** Cache key.  */

@@ -178,7 +178,7 @@ class SearchActivity : Activity() {
                 val propertyData = PropertyData()
                 propertyData[MediaProperty.TITLE] = title
                 propertyData[MediaProperty.ARTIST] = artist
-                //webView.search(propertyData)
+                //webView.searchCache(propertyData)
                 webView.search(propertyData, currentSite!!)
                 searchResultListView.visibility = View.INVISIBLE
                 searchResultLoadingLayout.visibility = View.VISIBLE
@@ -303,7 +303,7 @@ class SearchActivity : Activity() {
         saveHandlerThread.start()
         val saveHandler = Handler(saveHandlerThread.looper)
         saveHandler.post {
-            if (searchCacheHelper.insertOrUpdate(title, artist, item))
+            if (searchCacheHelper.insertOrUpdateCache(title, artist, item))
                 AppUtils.showToast(applicationContext, R.string.message_save_cache)
         }
     }
@@ -389,49 +389,50 @@ class SearchActivity : Activity() {
     companion object {
         const val INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE"
         const val INTENT_SEARCH_ARTIST = "INTENT_SEARCH_ARTIST"
+
+        /**
+         * Search result adapter.
+         */
+        private class SearchResultAdapter(context: Context) : ArrayAdapter<ResultItem>(context, R.layout.layout_search_item) {
+
+            /** Selected item.  */
+            var selectedItem: ResultItem? = null
+
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val listView = parent as ListView
+                var itemView = convertView
+                val holder: ListItemViewHolder
+                if (itemView == null) {
+                    holder = ListItemViewHolder(parent.context)
+                    itemView = holder.itemView
+                } else {
+                    holder = itemView.tag as ListItemViewHolder
+                }
+
+                val item = getItem(position)
+                val listener : (View) -> Unit = {
+                    listView.performItemClick(it, position, getItemId(position))
+                }
+                holder.bind(item, (item == selectedItem), listener)
+
+                return itemView
+            }
+
+            /** List item view holder.  */
+            private class ListItemViewHolder(context: Context) {
+                val itemView = View.inflate(context, R.layout.layout_search_item, null)!!
+                init {
+                    itemView.tag = this
+                }
+
+                fun bind(item: ResultItem, selected: Boolean, listener: (View) -> Unit) {
+                    itemView.searchItemRadioButton.isChecked = selected
+                    itemView.searchItemTitleTextView.text = item.musicTitle
+                    itemView.searchItemUrlTextView.text = AppUtils.coalesce(item.musicArtist, "-")
+                    itemView.searchItemRadioButton.setOnClickListener(listener)
+                }
+            }
+        }
     }
 }
 
-/**
- * Search result adapter.
- */
-private class SearchResultAdapter(context: Context) : ArrayAdapter<ResultItem>(context, R.layout.layout_search_item) {
-
-    /** Selected item.  */
-    var selectedItem: ResultItem? = null
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val listView = parent as ListView
-        var itemView = convertView
-        val holder: ListItemViewHolder
-        if (itemView == null) {
-            holder = ListItemViewHolder(parent.context)
-            itemView = holder.itemView
-        } else {
-            holder = itemView.tag as ListItemViewHolder
-        }
-
-        val item = getItem(position)
-        val listener : (View) -> Unit = {
-            listView.performItemClick(it, position, getItemId(position))
-        }
-        holder.bind(item, (item == selectedItem), listener)
-
-        return itemView
-    }
-
-    /** List item view holder.  */
-    private class ListItemViewHolder(context: Context) {
-        val itemView = View.inflate(context, R.layout.layout_search_item, null)!!
-        init {
-            itemView.tag = this
-        }
-
-        fun bind(item: ResultItem, selected: Boolean, listener: (View) -> Unit) {
-            itemView.searchItemRadioButton.isChecked = selected
-            itemView.searchItemTitleTextView.text = item.musicTitle
-            itemView.searchItemUrlTextView.text = AppUtils.coalesce(item.musicArtist, "-")
-            itemView.searchItemRadioButton.setOnClickListener(listener)
-        }
-    }
-}

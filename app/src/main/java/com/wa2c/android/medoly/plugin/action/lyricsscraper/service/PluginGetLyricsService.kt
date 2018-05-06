@@ -2,24 +2,18 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.service
 
 import android.app.IntentService
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.IBinder
 import android.preference.PreferenceManager
-import android.text.TextUtils
 
 import com.wa2c.android.medoly.library.LyricsProperty
-import com.wa2c.android.medoly.library.MediaPluginIntent
-import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.library.PluginOperationCategory
-import com.wa2c.android.medoly.library.PluginTypeCategory
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SiteActivity
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsObtainClient2
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 
@@ -37,22 +31,17 @@ import java.io.PrintWriter
  */
 class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.simpleName) {
 
-
-//    /** Context.  */
-//    private var context: Context? = null
-//    /** Preferences.  */
-//    private var sharedPreferences: SharedPreferences? = null
-//    /** Plugin intent.  */
-//    private var pluginIntent: MediaPluginIntent? = null
-//    /** Property data.  */
-//    private var propertyData: PropertyData? = null
-
     override fun onHandleIntent(intent: Intent?) {}
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        startScraping(intent) // onStartCommand でUIスレッドが実行可能
+        // onStartCommand でUIスレッドが実行可能
+        try {
+            downloadLyrics()
+        } catch (e: Exception) {
+            Logger.e(e)
+        }
 
         return Service.START_NOT_STICKY
     }
@@ -61,92 +50,12 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         return null
     }
 
-    /**
-     * Start lyrics scraping.
-     * @param intent A plugin intent.
-     */
-    @Synchronized
-    private fun startScraping(intent: Intent?) {
-        if (intent == null)
-            return
-
-        try {
-//            context = applicationContext
-//            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-//            pluginIntent = MediaPluginIntent(intent)
-//            propertyData = pluginIntent!!.propertyData
-
-            // Execute
-
-//            if (pluginIntent!!.hasCategory(PluginOperationCategory.OPERATION_EXECUTE)) {
-//                val receivedClassName = pluginIntent!!.getStringExtra(RECEIVED_CLASS_NAME)
-//                if (receivedClassName == PluginReceiver.ExecuteGetLyricsReceiver::class.java!!.getName()) {
-//                    downloadLyrics()
-//                }
-//                return
-//            }
-//
-//            // Event
-//
-//            if (pluginIntent!!.hasCategory(PluginTypeCategory.TYPE_GET_LYRICS)) {
-//                val operation = sharedPreferences!!.getString(getString(R.string.prefkey_event_get_lyrics), getString(R.string.event_get_lyrics_values_default))
-//                if (pluginIntent!!.hasCategory(PluginOperationCategory.OPERATION_MEDIA_OPEN) && PluginOperationCategory.OPERATION_MEDIA_OPEN.name == operation || pluginIntent!!.hasCategory(PluginOperationCategory.OPERATION_PLAY_START) && PluginOperationCategory.OPERATION_PLAY_START.name == operation) {
-//                    downloadLyrics()
-//                } else {
-//                    sendLyricsResult(Uri.EMPTY)
-//                }
-//            }
-            downloadLyrics()
-        } catch (e: Exception) {
-            Logger.e(e)
-
-//            AppUtils.showToast(this, R.string.error_app)
-//
-//            // Error
-//            try {
-//                if (pluginIntent != null && pluginIntent!!.hasCategory(PluginTypeCategory.TYPE_GET_PROPERTY))
-//                    sendLyricsResult(null)
-//            } catch (e1: Exception) {
-//                Logger.e(e1)
-//            }
-
-        }
-
-    }
 
     /**
      * 歌詞取得。
      */
     private fun downloadLyrics() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-//
-//        // 音楽データ無し
-//        if (propertyData.mediaUri == null) {
-//            AppUtils.showToast(applicationContext, R.string.message_no_media)
-//            sendLyricsResult(Uri.EMPTY)
-//            return
-//        }
-//
-//        // 必須情報無し
-//        if (propertyData == null ||
-//                propertyData!!.isEmpty(MediaProperty.TITLE) ||
-//                propertyData!!.isEmpty(MediaProperty.ARTIST)) {
-//            sendLyricsResult(null)
-//            return
-//        }
-//
-//        // 前回メディア確認
-//        val mediaUriText = propertyData!!.mediaUri.toString()
-//        val previousMediaUri = sharedPreferences.getString(PREFKEY_PREVIOUS_MEDIA_URI, "")
-//        val previousMediaEnabled = sharedPreferences.getBoolean(applicationContext.getString(R.string.prefkey_previous_media_enabled), false)
-//        if (!previousMediaEnabled && !TextUtils.isEmpty(mediaUriText) && !TextUtils.isEmpty(previousMediaUri) && mediaUriText == previousMediaUri) {
-//            // 前回と同じメディアは保存データを返す
-//            val lyrics = sharedPreferences.getString(PREFKEY_PREVIOUS_LYRICS_TEXT, null)
-//            val title = sharedPreferences.getString(PREFKEY_PREVIOUS_SITE_TITLE, null)
-//            val uri = sharedPreferences.getString(PREFKEY_PREVIOUS_SITE_URI, null)
-//            sendLyricsResult(getLyricsUri(lyrics), title, uri)
-//            return
-//        }
 
         try {
             // 歌詞取得
@@ -204,7 +113,6 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         // フォルダ作成
         val lyricsDir = File(externalCacheDir, "lyrics")
         if (!lyricsDir.exists()) {
-
             lyricsDir.mkdir()
         }
 
@@ -257,10 +165,6 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
     }
 
     companion object {
-
-        /** Received receiver class name.  */
-        const val RECEIVED_CLASS_NAME = "RECEIVED_CLASS_NAME"
-
         /** 前回のファイルパス設定キー。  */
         const val PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri"
         /** 前回の歌詞テキスト設定キー。  */
