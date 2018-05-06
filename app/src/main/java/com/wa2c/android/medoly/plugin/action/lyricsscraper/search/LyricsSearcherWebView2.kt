@@ -2,11 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.search
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.database.Cursor
-import android.os.Build
 import android.os.Handler
-import android.preference.PreferenceManager
-import android.text.Html
 import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
@@ -16,9 +12,6 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
@@ -26,22 +19,16 @@ import org.jsoup.Jsoup
 import us.codecraft.xsoup.Xsoup
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.EnumMap
 import java.util.EventListener
 import java.util.regex.Pattern
 import kotlin.collections.LinkedHashMap
-import kotlin.collections.List
 import kotlin.collections.set
-import kotlin.collections.toList
 
 
 @SuppressLint("SetJavaScriptEnabled")
 class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
 
-    //private val siteParam = EnumMap<SiteColumn, String>(SiteColumn::class.java)
-
     private val lyricsWebClient = LyricsWebClient2(this)
-
     private var propertyData: PropertyData? = null
     private var site: Site? = null
 
@@ -64,19 +51,9 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
         addJavascriptInterface(this, JAVASCRIPT_INTERFACE)
     }
 
-//    @Throws(SiteNotFoundException::class, SiteNotSelectException::class)
-//    private fun setSite(siteId: Long?) : Boolean {
-//        val searchCacheHelper = SearchCacheHelper(context)
-//        site = searchCacheHelper.selectSite(siteId ?: Prefs(context).getLong(R.string.prefkey_selected_site_id, -1))
-//        if (site == null)
-//            return false
-//
-//        lyricsWebClient.delay = site!!.delay
-//    }
-
-    fun search(propertyData: PropertyData, siteId: Long) {
+    fun search(propertyData: PropertyData, siteId: Long?) {
         this.propertyData = propertyData
-        var site = SearchCacheHelper(context).selectSite(siteId ?: Prefs(context).getLong(R.string.prefkey_selected_site_id, -1))
+        val site = SearchCacheHelper(context).selectSite(siteId ?: Prefs(context).getLong(R.string.prefkey_selected_site_id, -1))
         if (site == null)
             return
         else
@@ -116,7 +93,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
 
         try {
             val doc = Jsoup.parse(html)
-            if (site!!.result_page_parse_type == SiteColumn.PARSE_TYPE_XPATH) {
+            if (site!!.result_page_parse_type == Site.PARSE_TYPE_XPATH) {
                 // XPath
                 val e = Xsoup.compile(site!!.result_page_parse_text).evaluate(doc).elements
                 if (e == null || e.size == 0) {
@@ -129,13 +106,13 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
                         item.pageUrl = element.attr("href")
                         item.musicTitle = element.text()
                         if (item.pageUrl.isNullOrEmpty())
-                            continue;
+                            continue
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
                 }
                 Logger.d(searchResultItemList)
-            } else if (site!!.result_page_parse_type == SiteColumn.PARSE_TYPE_REGEXP) {
+            } else if (site!!.result_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                 val parseText = replaceProperty(site!!.result_page_parse_text, false, true)
                 Logger.d("Parse Text: $parseText")
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE)
@@ -146,7 +123,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
                         item.pageUrl = m.group(1)
                         item.musicTitle = m.group(1)
                         if (item.pageUrl.isNullOrEmpty())
-                            continue;
+                            continue
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
@@ -166,7 +143,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
         try {
             Logger.d("Lyrics HTML: $html")
 
-            if (site!!.lyrics_page_parse_type == SiteColumn.PARSE_TYPE_XPATH) {
+            if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_XPATH) {
                 // XPath
                 val doc = Jsoup.parse(html)
                 val e = Xsoup.compile(site!!.lyrics_page_parse_text).evaluate(doc).elements
@@ -176,7 +153,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
 
                 val elem = e[0]
                 lyrics = elem.html()
-            } else if (site!!.lyrics_page_parse_type == SiteColumn.PARSE_TYPE_REGEXP) {
+            } else if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                 // 正規表現
                 val parseText = replaceProperty(site!!.lyrics_page_parse_text, false, true)
                 Logger.d("Parse Text: $parseText")
@@ -187,21 +164,12 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
                 }
             }
 
-            if (lyrics != null) {
-                lyrics = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Html.fromHtml(lyrics, Html.FROM_HTML_MODE_LEGACY).toString()
-                } else {
-                    Html.fromHtml(lyrics).toString()
-                }
-            }
+            lyrics = AppUtils.adjustLyrics(lyrics)
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
-            val l = lyrics
             webHandler.post {
-                if (handleListener != null) {
-                    handleListener!!.onGetLyrics(l)
-                }
+                handleListener?.onGetLyrics(lyrics)
             }
             lyricsWebClient.setState(LyricsWebClient2.STATE_IDLE)
         }
@@ -275,8 +243,6 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
         const val SEARCH_PAGE_GET_SCRIPT = "javascript:window.$JAVASCRIPT_INTERFACE.getSearchResult(document.getElementsByTagName('html')[0].outerHTML);"
         /** 歌詞ページ取得スクリプト。  */
         const val LYRICS_PAGE_GET_SCRIPT = "javascript:window.$JAVASCRIPT_INTERFACE.getLyrics(document.getElementsByTagName('html')[0].outerHTML);"
-        /** BASE URI取得用XPATH。  */
-        const val BASE_PATH = "/html/head/base"
 
         const val REGEXP_ESCAPE = "[\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\$\\-\\|]"
     }

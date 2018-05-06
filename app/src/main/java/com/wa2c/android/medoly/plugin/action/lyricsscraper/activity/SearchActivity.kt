@@ -27,6 +27,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.layout_search_item.view.*
 import java.io.BufferedWriter
 import java.io.OutputStream
 import java.io.OutputStreamWriter
@@ -73,9 +74,14 @@ class SearchActivity : Activity() {
             prefs.remove(R.string.prefkey_selected_site_id)
             -1
         }
-        var currentSite = siteList?.firstOrNull { i -> i.site_id == initSiteId } ?: if (siteList.isNotEmpty()) siteList[0] else null
-        if (currentSite == null) {
+
+
+        val selectedPosition = siteList.indexOfFirst { i -> i.site_id == initSiteId }
+        var currentSite = if (selectedPosition < 0) {
             searchStartButton.isEnabled = false
+            null
+        } else {
+            siteList[selectedPosition]
         }
 
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
@@ -90,6 +96,7 @@ class SearchActivity : Activity() {
                 currentSite = siteList[position]
             }
         }
+        searchSiteSpinner.setSelection(selectedPosition)
 
         // Set web view
         webView = LyricsSearcherWebView2(this)
@@ -379,57 +386,52 @@ class SearchActivity : Activity() {
         }
     }
 
-
-
-
     companion object {
         const val INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE"
         const val INTENT_SEARCH_ARTIST = "INTENT_SEARCH_ARTIST"
     }
 }
 
-
-internal class SearchResultAdapter(context: Context) : ArrayAdapter<ResultItem>(context, R.layout.layout_search_item) {
+/**
+ * Search result adapter.
+ */
+private class SearchResultAdapter(context: Context) : ArrayAdapter<ResultItem>(context, R.layout.layout_search_item) {
 
     /** Selected item.  */
-    /** Get selected item.  */
-    /** Set selected item.  */
     var selectedItem: ResultItem? = null
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var itemView = convertView
-        // view
         val listView = parent as ListView
+        var itemView = convertView
         val holder: ListItemViewHolder
         if (itemView == null) {
-            val view = View.inflate(parent.getContext(), R.layout.layout_search_item, null)
-            holder = ListItemViewHolder()
-            holder.searchItemRadioButton = view.findViewById(R.id.searchItemRadioButton)
-            holder.searchItemTitleTextView = view.findViewById(R.id.searchItemTitleTextView)
-            holder.searchItemUrlTextView = view.findViewById(R.id.searchItemUrlTextView)
-            view.tag = holder
-            itemView = view
+            holder = ListItemViewHolder(parent.context)
+            itemView = holder.itemView
         } else {
             holder = itemView.tag as ListItemViewHolder
         }
 
-        // data
-        var item = getItem(position)
-        if (item == null)
-            item = ResultItem()
-        holder.searchItemRadioButton!!.isChecked = item === selectedItem
-        holder.searchItemRadioButton!!.setOnClickListener { v -> listView.performItemClick(v, position, getItemId(position)) }
-        holder.searchItemTitleTextView!!.text = item.musicTitle
-        holder.searchItemUrlTextView!!.text = item.pageUrl
+        val item = getItem(position)
+        val listener : (View) -> Unit = {
+            listView.performItemClick(it, position, getItemId(position))
+        }
+        holder.bind(item, (item == selectedItem), listener)
 
-        return itemView!!
+        return itemView
     }
 
+    /** List item view holder.  */
+    private class ListItemViewHolder(context: Context) {
+        val itemView = View.inflate(context, R.layout.layout_search_item, null)!!
+        init {
+            itemView.tag = this
+        }
 
-    /** リスト項目のビュー情報を保持するHolder。  */
-    private class ListItemViewHolder {
-        internal var searchItemRadioButton: RadioButton? = null
-        internal var searchItemTitleTextView: TextView? = null
-        internal var searchItemUrlTextView: TextView? = null
+        fun bind(item: ResultItem, selected: Boolean, listener: (View) -> Unit) {
+            itemView.searchItemRadioButton.isChecked = selected
+            itemView.searchItemTitleTextView.text = item.musicTitle
+            itemView.searchItemUrlTextView.text = AppUtils.coalesce(item.musicArtist, "-")
+            itemView.searchItemRadioButton.setOnClickListener(listener)
+        }
     }
 }

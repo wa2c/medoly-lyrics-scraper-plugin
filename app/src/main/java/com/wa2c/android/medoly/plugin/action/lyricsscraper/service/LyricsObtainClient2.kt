@@ -10,7 +10,6 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteColumn
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
@@ -218,7 +217,7 @@ constructor(context: Context, private val requestPropertyMap: PropertyData) {
                 Logger.d("Lyrics HTML: $html")
 
 
-                if (siteParam.lyrics_page_parse_type == SiteColumn.PARSE_TYPE_XPATH) {
+                if (siteParam.lyrics_page_parse_type == Site.PARSE_TYPE_XPATH) {
                     // XPath
                     val doc = Jsoup.parse(html)
                     val e = Xsoup.compile(siteParam.lyrics_page_parse_text).evaluate(doc).elements
@@ -229,7 +228,7 @@ constructor(context: Context, private val requestPropertyMap: PropertyData) {
 
                     val elem = e[0]
                     lyrics = elem.html()
-                } else if (siteParam.lyrics_page_parse_type == SiteColumn.PARSE_TYPE_REGEXP) {
+                } else if (siteParam.lyrics_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                     // 正規表現
                     val parseText = replaceProperty(siteParam.lyrics_page_parse_text, false, true)
                     Logger.d("Parse Text: $parseText")

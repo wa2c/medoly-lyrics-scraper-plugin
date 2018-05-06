@@ -39,7 +39,7 @@ class SiteActivity : Activity() {
         actionBar.setDisplayShowHomeEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        groupListView.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
+        groupListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val item = groupListView.adapter.getItem(position)
             if (groupListView.adapter is SiteGroupListAdapter) {
                 openSiteList((item as SiteGroup).group_id)

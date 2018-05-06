@@ -88,9 +88,9 @@ class SettingsFragment : PreferenceFragment() {
         val summary = p.summary
         if (!summary.isNullOrEmpty()) {
             if (summary.toString().lastIndexOf("\n") != 0) p.summary = summary.toString() + "\n" // add break
-            summaryLengthMap.put(p, p.summary.length)
+            summaryLengthMap[p] = p.summary.length
         } else {
-            summaryLengthMap.put(p, 0)
+            summaryLengthMap[p] = 0
         }
 
         // update summary

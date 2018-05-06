@@ -3,9 +3,15 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
+//import com.github.gfx.android.orma.AccessThreadConstraint
+//import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.OrmaDatabase
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 
+
+/**
+ * App class.
+ */
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
@@ -18,10 +24,20 @@ class App : Application() {
 
         // 4
         if (previousVersion < 0) {
+            // delete tables
+//            try {
+//                val od = OrmaDatabase.builder(context).writeOnMainThread(AccessThreadConstraint.NONE).build()
+//                od.connection.rawQuery("drop table sites;")
+//                od.connection.rawQuery("drop table groups;")
+//            } catch (ignore: Exception) {
+//            }
+
+            // delete prefs
             pref.remove("previous_media_enabled")
             pref.remove("selected_id")
             pref.remove("selected_site_id")
 
+            // replace prefs
             if (pref.contains("event_get_lyrics"))
                 pref.putValue(R.string.pref_event_get_lyrics, pref.getString("event_get_lyrics"))
             if (pref.contains("success_message_show"))
