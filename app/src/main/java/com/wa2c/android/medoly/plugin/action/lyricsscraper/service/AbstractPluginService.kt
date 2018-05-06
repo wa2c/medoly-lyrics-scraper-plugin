@@ -32,7 +32,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     protected lateinit var receivedClassName: String
     /** True if result sent.  */
     protected var resultSent: Boolean = false
-
+    /** Notification manager. */
     private var notificationManager : NotificationManager? = null
 
 

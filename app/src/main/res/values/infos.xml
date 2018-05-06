@@ -55,6 +55,7 @@
     <string name="pref_event_get_lyrics">pref_event_get_lyrics</string>
     <string name="pref_use_cache">pref_use_cache</string>
     <string name="pref_cache_result">pref_cache_result</string>
+    <string name="pref_cache_non_result">pref_cache_non_result</string>
     <string name="pref_file_name_default">pref_file_name_default</string>
     <string name="pref_file_name_separator">pref_file_name_separator</string>
     <string name="pref_success_message_show">pref_success_message_show</string>

@@ -128,6 +128,8 @@
     <string name="pref_summary_use_cache">イベント検索でキャッシュから歌詞を検索します。</string>
     <string name="pref_title_cache_result">キャッシュ保存</string>
     <string name="pref_summary_cache_result">イベント検索で取得した歌詞をキャッシュに保存します。</string>
+    <string name="pref_title_cache_non_result">結果無しを保存</string>
+    <string name="pref_summary_cache_non_result">イベント検索で歌詞が見つからない場合もキャッシュに結果を保存します。</string>
     <string name="pref_title_file_name_default">初期ファイル名</string>
     <string name="pref_summary_file_name_default">ファイル保存時の初期ファイル名を選択します。</string>
     <string name="pref_title_file_name_separator">ファイル名区切り</string>

@@ -23,6 +23,12 @@
             android:summary="@string/pref_summary_cache_result"
             android:title="@string/pref_title_cache_result" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_cache_non_result"
+            android:summary="@string/pref_summary_cache_non_result"
+            android:title="@string/pref_title_cache_non_result" />
+
         <ListPreference
             android:defaultValue="@string/file_name_default_default"
             android:entries="@array/file_name_default_entries"

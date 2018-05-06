@@ -6,13 +6,17 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.FileProvider
 import com.wa2c.android.medoly.library.LyricsProperty
+import com.wa2c.android.medoly.library.MediaPluginIntent
+import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 
 
@@ -55,26 +59,53 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
      * Get lyrics.
      */
     private fun getLyrics() {
+
+        // search cache
+        if (prefs.getBoolean(R.string.pref_use_cache, true)) {
+            val titleText = propertyData.getFirst(MediaProperty.TITLE) ?: ""
+            val artistText = propertyData.getFirst(MediaProperty.ARTIST) ?: ""
+            val cacheHelper = DbHelper(this)
+            val cache = cacheHelper.selectCache(titleText, artistText)
+            if (cache != null) {
+                sendLyricsResult(cache.makeResultItem())
+                return;
+            }
+        }
+
         val webView = LyricsSearcherWebView(this)
         webView.setOnHandleListener(object : LyricsSearcherWebView.HandleListener {
-            var item: ResultItem? = null
+            var resultItem: ResultItem? = null
             override fun onSearchResult(list: List<ResultItem>) {
-                item = list.firstOrNull()
-                if (item == null || item?.pageUrl == null) {
+                resultItem = list.firstOrNull()
+                if (resultItem == null || resultItem?.pageUrl == null) {
                     sendLyricsResult(null)
-
+                    return
                 }
-                webView.download(item?.pageUrl!!)
+                webView.download(resultItem?.pageUrl!!)
             }
             override fun onGetLyrics(lyrics: String?) {
-                item?.lyrics = lyrics
-                sendLyricsResult(item)
+                resultItem?.lyrics = lyrics
+
+                // save to cache.
+                if (resultItem != null) {
+                    if (prefs.getBoolean(R.string.pref_cache_result, true)) {
+                        saveCache(pluginIntent, resultItem)
+                    }
+                }
+
+                sendLyricsResult(resultItem)
             }
             override fun onError(message: String?) {
                 if (message.isNullOrEmpty())
                     Logger.e(getString(R.string.message_lyrics_failure))
                 else
                     Logger.d(message)
+
+                // save to cache.
+                if (prefs.getBoolean(R.string.pref_cache_result, true) && prefs.getBoolean(R.string.pref_cache_non_result, true)) {
+                    saveCache(pluginIntent, null)
+                }
+
                 sendLyricsResult(null)
             }
         })
@@ -125,6 +156,23 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         return FileProvider.getUriForFile(this, PROVIDER_AUTHORITIES, sharedLyricsFile)
     }
 
+    /**
+     * Save lyrics info to cache.
+     * @param pluginIntent Parameter.
+     * @param resultItem Result item.
+     */
+    private fun saveCache(pluginIntent: MediaPluginIntent?, resultItem: ResultItem?) {
+        if (pluginIntent == null)
+            return
+        val propertyData = pluginIntent.propertyData ?: return
+
+        val title = propertyData.getFirst(MediaProperty.TITLE)
+        val artist = propertyData.getFirst(MediaProperty.ARTIST)
+        val searchCacheHelper = DbHelper(this)
+        launch {
+            searchCacheHelper.insertOrUpdateCache(title!!, artist, resultItem)
+        }
+    }
 
 
     companion object {

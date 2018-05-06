@@ -128,6 +128,8 @@
     <string name="pref_summary_use_cache">Search the lyrics in the cache.</string>
     <string name="pref_title_cache_result">Save Lyrics</string>
     <string name="pref_summary_cache_result">Save the lyrics of event search result in the cache.</string>
+    <string name="pref_title_cache_non_result">Save Empty Result</string>
+    <string name="pref_summary_cache_non_result">Save empty data of the event search result in the cache.</string>
     <string name="pref_title_file_name_default">Default File Name</string>
     <string name="pref_summary_file_name_default">Select the default filename for saving.</string>
     <string name="pref_title_file_name_separator">File Name Separator</string>
