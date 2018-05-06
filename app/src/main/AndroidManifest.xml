@@ -43,10 +43,14 @@
             android:name=".service.PluginGetLyricsService"
             android:exported="false"/>
 
+        <service
+            android:name=".service.PluginRunService"
+            android:exported="false"/>
+
         <!-- Plugin event action -->
 
         <receiver
-            android:name=".service.PluginReceiver$EventGetLyricsReceiver"
+            android:name=".service.PluginReceivers$EventGetLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_download"
             android:label="@string/label_execute_get_lyrics">
@@ -66,13 +70,27 @@
 
         <!-- Get lyrics -->
         <receiver
-            android:name=".service.PluginReceiver$ExecuteGetLyricsReceiver"
+            android:name=".service.PluginReceivers$ExecuteGetLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_download"
             android:label="@string/label_execute_get_lyrics">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_LYRICS" />
+                <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Search lyrics -->
+        <receiver
+            android:name=".service.PluginReceivers$ExecuteSearchLyricsReceiver"
+            android:exported="true"
+            android:icon="@drawable/ic_action_find"
+            android:label="@string/label_execute_search_lyrics">
+            <intent-filter>
+                <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
+                <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_RUN" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
         </receiver>

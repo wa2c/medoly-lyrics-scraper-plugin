@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="site_name">Site Name</string>
-    <string name="site_uri">Site URI</string>
-    <string name="search_uri">Search URI</string>
-    <string name="search_anchor_parse_text">Search Anchor Parse String</string>
-    <string name="search_anchor_parse_type">Search Anchor Parse Type</string>
-    <string name="search_lyrics_parse_text">Lyrics Parse String</string>
-    <string name="search_lyrics_parse_type">Lyrics Parse Type</string>
-    <string name="uri_encoding">URI Encoding</string>
-    <string name="page_encoding">Page Encoding</string>
-    <string name="timeout_milliseconds">Timeout (ms)</string>
-    <string name="delay_milliseconds">Delay (ms)</string>
-
-    <string name="regular_expression">正規表現</string>
-    <string name="xpath">XPath</string>
-
     <!-- Package -->
     <string name="app_description">Get a lyrics from external site.</string>
-    <string name="class_receiver_label">Lyrics get action.</string>
     <string name="label_execute_get_lyrics">Get Lyrics</string>
+    <string name="label_execute_search_lyrics">Search Lyrics</string>
 
     <!-- Label -->
     <string name="label_title">Title</string>
@@ -34,6 +19,22 @@
 
     <string name="loading">Loading…</string>
     <string name="label_close">Close</string>
+
+    <!-- DB -->
+    <string name="site_name">Site Name</string>
+    <string name="site_uri">Site URI</string>
+    <string name="search_uri">Search URI</string>
+    <string name="search_anchor_parse_text">Search Anchor Parse String</string>
+    <string name="search_anchor_parse_type">Search Anchor Parse Type</string>
+    <string name="search_lyrics_parse_text">Lyrics Parse String</string>
+    <string name="search_lyrics_parse_type">Lyrics Parse Type</string>
+    <string name="uri_encoding">URI Encoding</string>
+    <string name="page_encoding">Page Encoding</string>
+    <string name="timeout_milliseconds">Timeout (ms)</string>
+    <string name="delay_milliseconds">Delay (ms)</string>
+
+    <string name="regular_expression">Regexp</string>
+    <string name="xpath">XPath</string>
 
     <!-- Activity -->
     <string name="title_activity_search">Search</string>

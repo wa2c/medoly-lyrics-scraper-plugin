@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="site_name">サイト名</string>
-    <string name="site_uri">サイトURI</string>
-    <string name="search_uri">検索URI</string>
-    <string name="search_anchor_parse_text">検索アンカーパース文字列</string>
-    <string name="search_anchor_parse_type">検索アンカーパース種別</string>
-    <string name="search_lyrics_parse_text">歌詞パース文字列</string>
-    <string name="search_lyrics_parse_type">歌詞パース種別</string>
-    <string name="uri_encoding">URI文字コード</string>
-    <string name="page_encoding">ページ文字コード</string>
-    <string name="timeout_milliseconds">読み込みタイムアウト (ms)</string>
-    <string name="delay_milliseconds">読み込み遅延 (ms)</string>
-
-    <string name="regular_expression">正規表現</string>
-    <string name="xpath">XPath</string>
-
     <!-- Package -->
     <string name="app_description">外部サイトから歌詞を取得します。</string>
-    <string name="class_receiver_label">歌詞取得アクション</string>
     <string name="label_execute_get_lyrics">歌詞取得</string>
+    <string name="label_execute_search_lyrics">歌詞検索</string>
 
     <!-- Label -->
     <string name="label_title">タイトル</string>
@@ -34,6 +19,22 @@
 
     <string name="loading">Loading…</string>
     <string name="label_close">閉じる</string>
+
+    <!-- DB -->
+    <string name="site_name">サイト名</string>
+    <string name="site_uri">サイトURI</string>
+    <string name="search_uri">検索URI</string>
+    <string name="search_anchor_parse_text">検索アンカーパース文字列</string>
+    <string name="search_anchor_parse_type">検索アンカーパース種別</string>
+    <string name="search_lyrics_parse_text">歌詞パース文字列</string>
+    <string name="search_lyrics_parse_type">歌詞パース種別</string>
+    <string name="uri_encoding">URI文字コード</string>
+    <string name="page_encoding">ページ文字コード</string>
+    <string name="timeout_milliseconds">読み込みタイムアウト (ms)</string>
+    <string name="delay_milliseconds">読み込み遅延 (ms)</string>
+
+    <string name="regular_expression">正規表現</string>
+    <string name="xpath">XPath</string>
 
     <!-- Activity -->
     <string name="title_activity_search">検索</string>

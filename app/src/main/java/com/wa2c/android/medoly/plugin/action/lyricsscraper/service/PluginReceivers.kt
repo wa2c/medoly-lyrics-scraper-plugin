@@ -17,7 +17,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 /**
  * Execute receiver.
  */
-class PluginReceiver {
+class PluginReceivers {
 
     abstract class AbstractPluginReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -54,6 +54,14 @@ class PluginReceiver {
 
                 // service
                 pluginIntent.setClass(context, PluginGetLyricsService::class.java)
+            } else if (this is ExecuteSearchLyricsReceiver) {
+                // check
+                if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_RUN)) {
+                    return
+                }
+
+                // service
+                pluginIntent.setClass(context, PluginRunService::class.java)
             }
 
             pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
@@ -75,4 +83,5 @@ class PluginReceiver {
 
     class ExecuteGetLyricsReceiver : AbstractPluginReceiver()
 
+    class ExecuteSearchLyricsReceiver : AbstractPluginReceiver()
 }

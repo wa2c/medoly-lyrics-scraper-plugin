@@ -66,6 +66,8 @@
 
     <string name="id_lyrics">Lyrics</string>
 
+    <integer name="download_timeout_sec">30</integer>
+
 
     <!-- List -->
 

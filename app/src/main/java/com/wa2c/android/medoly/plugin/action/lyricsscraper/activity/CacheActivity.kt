@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.CacheDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.view.View
+import android.webkit.*
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
@@ -20,7 +21,6 @@ import java.util.EventListener
 import java.util.regex.Pattern
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
-import android.webkit.*
 
 
 @SuppressLint("SetJavaScriptEnabled")

@@ -41,7 +41,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
 
         // prevent service destroying
         val startTime = System.currentTimeMillis()
-        val stopTime = startTime + 30 * 1000
+        val stopTime = startTime + resources.getInteger(R.integer.download_timeout_sec) * 1000
         while (!resultSent || (System.currentTimeMillis() >= stopTime)) {
             Thread.sleep(100)
         }

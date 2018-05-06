@@ -5,8 +5,8 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.View
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import kotlinx.android.synthetic.main.dialog_cache.view.*
 import kotlinx.coroutines.experimental.android.UI
