@@ -139,7 +139,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                             url = Uri.Builder()
                                     .scheme(searchUrl.scheme)
                                     .authority(searchUrl.authority)
-                                    .path(urlText)
+                                    .encodedPath(urlText)
                                     .build()
                         }
 
@@ -161,8 +161,20 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 val m = p.matcher(html)
                 while (m.find()) {
                     try {
+                        val urlText = m.group(1)
+                        var url = Uri.parse(urlText)
+                        if (!url.isAbsolute) {
+                            //url = Uri.
+                            val searchUrl = Uri.parse(site!!.search_uri)
+                            url = Uri.Builder()
+                                    .scheme(searchUrl.scheme)
+                                    .authority(searchUrl.authority)
+                                    .encodedPath(urlText)
+                                    .build()
+                        }
+
                         val item = ResultItem()
-                        item.pageUrl = m.group(1)
+                        item.pageUrl = url.toString()
                         item.pageTitle = m.group(1)
                         item.musicTitle = item.pageTitle
                         if (item.pageUrl.isNullOrEmpty())
