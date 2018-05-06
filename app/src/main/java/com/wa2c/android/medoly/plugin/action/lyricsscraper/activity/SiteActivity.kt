@@ -16,7 +16,7 @@ import com.google.gdata.client.spreadsheet.SpreadsheetService
 import com.google.gdata.data.spreadsheet.ListFeed
 import com.google.gdata.data.spreadsheet.WorksheetFeed
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteGroup
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
@@ -137,7 +137,7 @@ class SiteActivity : Activity() {
          */
         private class SiteGroupListAdapter internal constructor(context: Context) : ArrayAdapter<SiteGroup>(context, R.layout.layout_site_item) {
             init {
-                addAll(SearchCacheHelper(context).selectSiteGroupList())
+                addAll(DbHelper(context).selectSiteGroupList())
             }
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -179,7 +179,7 @@ class SiteActivity : Activity() {
         private class SiteListAdapter internal constructor(context: Context, groupId: Long) : ArrayAdapter<Site>(context, R.layout.layout_site_item) {
 
             init {
-                addAll(SearchCacheHelper(context).selectSiteListByGroupId(groupId))
+                addAll(DbHelper(context).selectSiteListByGroupId(groupId))
             }
 
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -237,7 +237,7 @@ class SiteActivity : Activity() {
          */
         class SpreadSheetReadTask(context: Context) : AsyncTask<String, Void, Boolean>() {
             private val service: SpreadsheetService = SpreadsheetService(context.getString(R.string.app_name))
-            private val db = SearchCacheHelper(context)
+            private val db = DbHelper(context)
             private val sheetId = context.getString(R.string.sheet_id)
             //if (BuildConfig.DEBUG)
             //    sheetId = context.getString(R.string.sheet_id_debug);

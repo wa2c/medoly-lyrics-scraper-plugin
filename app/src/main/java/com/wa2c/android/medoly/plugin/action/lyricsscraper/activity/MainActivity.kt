@@ -6,7 +6,6 @@ import android.os.Bundle
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**

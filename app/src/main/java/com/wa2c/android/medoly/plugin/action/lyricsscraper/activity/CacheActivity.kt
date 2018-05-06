@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.CacheDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
@@ -36,7 +36,7 @@ class CacheActivity : Activity() {
     /** Search list adapter.  */
     private lateinit var cacheAdapter: CacheAdapter
     /** Search cache helper.  */
-    private lateinit var searchCacheHelper: SearchCacheHelper
+    private lateinit var dbHelper: DbHelper
     /** Current cache item. */
     private var currentCacheItem: SearchCache? = null
 
@@ -48,7 +48,7 @@ class CacheActivity : Activity() {
         actionBar.setDisplayHomeAsUpEnabled(true)
         actionBar.setDisplayShowTitleEnabled(true)
 
-        searchCacheHelper = SearchCacheHelper(this)
+        dbHelper = DbHelper(this)
         cacheAdapter = CacheAdapter(this)
         cacheListView.adapter = cacheAdapter
 
@@ -148,7 +148,7 @@ class CacheActivity : Activity() {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         launch(UI) {
                             val result = async {
-                                return@async searchCacheHelper.deleteCache(cacheAdapter.checkedSet)
+                                return@async dbHelper.deleteCache(cacheAdapter.checkedSet)
                             }
                             if (result.await()) {
                                 cacheAdapter.removeCheckedItem()
@@ -204,7 +204,7 @@ class CacheActivity : Activity() {
     private fun searchCache(title: String, artist: String) {
         launch(UI) {
             val result = async {
-                return@async searchCacheHelper.searchCache(title, artist)
+                return@async dbHelper.searchCache(title, artist)
             }
             cacheAdapter.setList(result.await().toMutableList())
         }

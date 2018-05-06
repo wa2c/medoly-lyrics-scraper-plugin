@@ -12,16 +12,18 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.NormalizeDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView2
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
@@ -38,7 +40,7 @@ import java.io.OutputStreamWriter
  */
 class SearchActivity : Activity() {
 
-    private lateinit var webView: LyricsSearcherWebView2
+    private lateinit var webView: LyricsSearcherWebView
 
     private var intentSearchTitle: String? = null
     private var intentSearchArtist: String? = null
@@ -65,7 +67,7 @@ class SearchActivity : Activity() {
         searchTitleEditText.setText(intentSearchTitle)
         searchArtistEditText.setText(intentSearchArtist)
 
-        val helper = SearchCacheHelper(this)
+        val helper = DbHelper(this)
         val siteList = helper.selectSiteList()
 
         val initSiteId = try {
@@ -99,8 +101,8 @@ class SearchActivity : Activity() {
         searchSiteSpinner.setSelection(selectedPosition)
 
         // Set web view
-        webView = LyricsSearcherWebView2(this)
-        webView.setOnHandleListener(object : LyricsSearcherWebView2.HandleListener {
+        webView = LyricsSearcherWebView(this)
+        webView.setOnHandleListener(object : LyricsSearcherWebView.HandleListener {
             override fun onSearchResult(list: List<ResultItem>) {
                 showSearchResult(list)
                 showLyrics(null)
@@ -281,7 +283,7 @@ class SearchActivity : Activity() {
     }
 
     private fun saveToCacheBackground(title: String, artist: String, item: ResultItem?) {
-        val searchCacheHelper = SearchCacheHelper(this)
+        val searchCacheHelper = DbHelper(this)
         val saveHandlerThread = HandlerThread("saveThreadHandler")
         saveHandlerThread.start()
         val saveHandler = Handler(saveHandlerThread.looper)

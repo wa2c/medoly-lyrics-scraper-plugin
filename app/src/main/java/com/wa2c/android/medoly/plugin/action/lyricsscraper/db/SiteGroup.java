@@ -5,9 +5,7 @@ import com.github.gfx.android.orma.annotation.PrimaryKey;
 import com.github.gfx.android.orma.annotation.Table;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Locale;
 
 /**

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCacheHelper
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import kotlinx.android.synthetic.main.dialog_cache.view.*
 import kotlinx.coroutines.experimental.android.UI
@@ -68,7 +68,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //
 //        override fun doInBackground(vararg params: Void): Void? {
 //            val c = dialogReference.get()?.activity ?: return null
-//            val searchCacheHelper = SearchCacheHelper(c)
+//            val searchCacheHelper = DbHelper(c)
 //            searchCacheHelper.insertOrUpdateCache(cache.title, cache.artist, null)
 //            return null
 //        }
@@ -87,7 +87,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //
 //        override fun doInBackground(vararg params: Void): Void? {
 //            val c = dialogReference.get()?.activity ?: return null
-//            val searchCacheHelper = SearchCacheHelper(c)
+//            val searchCacheHelper = DbHelper(c)
 //            searchCacheHelper.deleteCache(listOf(cache))
 //            return null
 //        }
@@ -102,7 +102,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
      * Delete cache lyrics.
      */
     private fun deleteLyrics(cache: SearchCache) {
-        val searchCacheHelper = SearchCacheHelper(this@CacheDialogFragment.activity)
+        val searchCacheHelper = DbHelper(this@CacheDialogFragment.activity)
         launch(UI) {
             val deleteResult = async {
                 try {
@@ -122,7 +122,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
      * Delete cache.
      */
     private fun deleteCache(cache: SearchCache) {
-        val searchCacheHelper = SearchCacheHelper(this@CacheDialogFragment.activity)
+        val searchCacheHelper = DbHelper(this@CacheDialogFragment.activity)
         launch(UI) {
             val deleteResult = async {
                 try {
@@ -194,7 +194,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        //                (new AsyncTask<Void, Void, Void>() {
 //        //                    @Override
 //        //                    protected Void doInBackground(Void... params) {
-//        //                        SearchCacheHelper searchCacheHelper = new SearchCacheHelper(getActivity());
+//        //                        DbHelper searchCacheHelper = new DbHelper(getActivity());
 //        //                        searchCacheHelper.insertOrUpdateCache(cache.title, cache.artist, null);
 //        //                        return null;
 //        //                    }
@@ -212,7 +212,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
 //        //                (new AsyncTask<Void, Void, Void>() {
 //        //                    @Override
 //        //                    protected Void doInBackground(Void... params) {
-//        //                        SearchCacheHelper searchCacheHelper = new SearchCacheHelper(getActivity());
+//        //                        DbHelper searchCacheHelper = new DbHelper(getActivity());
 //        //                        searchCacheHelper.deleteCache(Arrays.asList(cache));
 //        //                        return null;
 //        //                    }

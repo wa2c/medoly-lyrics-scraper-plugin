@@ -4,23 +4,16 @@ import android.app.IntentService
 import android.app.Service
 import android.content.Intent
 import android.net.Uri
-import android.os.IBinder
-import android.preference.PreferenceManager
 import android.support.v4.content.FileProvider
-
 import com.wa2c.android.medoly.library.LyricsProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SiteActivity
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsObtainClient2
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView2
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import java.io.*
+import java.io.File
 
 
 /**
@@ -60,13 +53,14 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
      * Get lyrics.
      */
     private fun getLyrics() {
-        val webView = LyricsSearcherWebView2(this)
-        webView.setOnHandleListener(object : LyricsSearcherWebView2.HandleListener {
+        val webView = LyricsSearcherWebView(this)
+        webView.setOnHandleListener(object : LyricsSearcherWebView.HandleListener {
             var item: ResultItem? = null
             override fun onSearchResult(list: List<ResultItem>) {
                 item = list.firstOrNull()
                 if (item == null || item?.pageUrl == null) {
                     sendLyricsResult(null)
+
                 }
                 webView.download(item?.pageUrl!!)
             }
@@ -75,7 +69,10 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
                 sendLyricsResult(item)
             }
             override fun onError(message: String?) {
-                Logger.d(message)
+                if (message.isNullOrEmpty())
+                    Logger.e(getString(R.string.message_lyrics_failure))
+                else
+                    Logger.d(message)
                 sendLyricsResult(null)
             }
         })

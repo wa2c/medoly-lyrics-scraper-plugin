@@ -15,7 +15,7 @@ import java.util.List;
  * Search cache adapter.
  */
 
-public class SearchCacheHelper {
+public class DbHelper {
 
     /** Singleton object. */
     private static OrmaDatabase ormaDatabase = null;
@@ -43,7 +43,7 @@ public class SearchCacheHelper {
      * Constructor.
      * @param context Context.
      */
-    public SearchCacheHelper(@NonNull Context context) {
+    public DbHelper(@NonNull Context context) {
         this.context = context;
         this.gson = new Gson();
     }
