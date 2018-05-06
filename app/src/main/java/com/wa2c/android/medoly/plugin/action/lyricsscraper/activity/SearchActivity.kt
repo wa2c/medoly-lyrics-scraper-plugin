@@ -115,23 +115,6 @@ class SearchActivity : Activity() {
             }
         })
 
-        webView = LyricsSearcherWebView2(this)
-        webView.setOnHandleListener(object : LyricsSearcherWebView2.HandleListener {
-            override fun onSearchResult(list: List<ResultItem>) {
-                showSearchResult(list)
-                showLyrics(null)
-            }
-
-            override fun onGetLyrics(lyrics: String?) {
-                showLyrics(lyrics)
-            }
-
-            override fun onError(message: String?) {
-                Logger.d(message)
-            }
-        })
-
-
         searchTitleButton.setOnClickListener {
             val dialogFragment = NormalizeDialogFragment.newInstance(searchTitleEditText.text.toString(), intentSearchTitle)
             dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->

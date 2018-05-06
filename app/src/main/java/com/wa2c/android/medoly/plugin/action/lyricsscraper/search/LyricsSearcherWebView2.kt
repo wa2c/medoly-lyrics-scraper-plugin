@@ -28,7 +28,7 @@ import kotlin.collections.set
 @SuppressLint("SetJavaScriptEnabled")
 class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
 
-    private val lyricsWebClient = LyricsWebClient2(this)
+    private val lyricsWebClient = LyricsWebClient(this)
     private var propertyData: PropertyData? = null
     private var site: Site? = null
 
@@ -68,7 +68,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
         Logger.d("Search URL: $searchUri")
 
         try {
-            lyricsWebClient.setState(LyricsWebClient2.STATE_SEARCH)
+            lyricsWebClient.setState(LyricsWebClient.STATE_SEARCH)
             stopLoading()
             loadUrl(searchUri)
         } catch (e: Exception) {
@@ -78,7 +78,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
 
     fun download(url: String) {
         try {
-            lyricsWebClient.setState(LyricsWebClient2.STATE_LYRICS)
+            lyricsWebClient.setState(LyricsWebClient.STATE_LYRICS)
             stopLoading()
             loadUrl(url)
         } catch (e: Exception) {
@@ -171,7 +171,7 @@ class LyricsSearcherWebView2 constructor(context: Context) : WebView(context) {
             webHandler.post {
                 handleListener?.onGetLyrics(lyrics)
             }
-            lyricsWebClient.setState(LyricsWebClient2.STATE_IDLE)
+            lyricsWebClient.setState(LyricsWebClient.STATE_IDLE)
         }
     }
 

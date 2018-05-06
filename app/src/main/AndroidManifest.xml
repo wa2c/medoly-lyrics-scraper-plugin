@@ -81,12 +81,15 @@
             android:name=".util.ToastReceiver"
             android:exported="false" />
 
-        <!--
         <provider
-            android:name=".db.SiteProvider"
-            android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper.siteprovider"
-            android:exported="false" />
-            -->
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
     </application>
 

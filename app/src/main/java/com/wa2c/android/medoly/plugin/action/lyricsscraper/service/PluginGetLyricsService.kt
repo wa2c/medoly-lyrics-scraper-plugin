@@ -6,172 +6,131 @@ import android.content.Intent
 import android.net.Uri
 import android.os.IBinder
 import android.preference.PreferenceManager
+import android.support.v4.content.FileProvider
 
 import com.wa2c.android.medoly.library.LyricsProperty
 import com.wa2c.android.medoly.library.PropertyData
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SiteActivity
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotFoundException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSelectException
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsObtainClient2
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView2
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.PrintWriter
+import java.io.*
 
 
 /**
- * 歌詞取得サービス。
- */
-/**
- * コンストラクタ。
+ * Get lyrics plugin service.
  */
 class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.simpleName) {
 
-    override fun onHandleIntent(intent: Intent?) {}
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        Logger.d("onStartCommand")
 
-        // onStartCommand でUIスレッドが実行可能
         try {
-            downloadLyrics()
+            getLyrics()
         } catch (e: Exception) {
             Logger.e(e)
+            //AppUtils.showToast(this, R.string.error_app);
         }
 
         return Service.START_NOT_STICKY
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return null
+    override fun onHandleIntent(intent: Intent?) {
+        super.onHandleIntent(intent)
+        Logger.d("onHandleIntent")
+
+        // prevent service destroying
+        val startTime = System.currentTimeMillis()
+        val stopTime = startTime + 30 * 1000
+        while (!resultSent || (System.currentTimeMillis() >= stopTime)) {
+            Thread.sleep(100)
+        }
     }
 
 
+
     /**
-     * 歌詞取得。
+     * Get lyrics.
      */
-    private fun downloadLyrics() {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-
-        try {
-            // 歌詞取得
-            val obtainClient = LyricsObtainClient2(applicationContext, propertyData)
-
-            obtainClient.obtainLyrics(object: LyricsObtainClient2.LyricsObtainListener {
-                override fun onLyricsObtain(lyrics: String?, title: String?, uri: String?) {
-                    // 送信
-                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, propertyData.mediaUri.toString()).apply()
-                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply()
-                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_TITLE, title).apply()
-                    sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_URI, uri).apply()
-                    sendLyricsResult(getLyricsUri(lyrics), title, uri)
+    private fun getLyrics() {
+        val webView = LyricsSearcherWebView2(this)
+        webView.setOnHandleListener(object : LyricsSearcherWebView2.HandleListener {
+            var item: ResultItem? = null
+            override fun onSearchResult(list: List<ResultItem>) {
+                item = list.firstOrNull()
+                if (item == null || item?.pageUrl == null) {
+                    sendLyricsResult(null)
                 }
-            })
-//            obtainClient.obtainLyrics { lyrics, title, uri ->
-//                // 送信
-//                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_MEDIA_URI, propertyData!!.mediaUri.toString()).apply()
-//                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_LYRICS_TEXT, lyrics).apply()
-//                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_TITLE, title).apply()
-//                sharedPreferences.edit().putString(PREFKEY_PREVIOUS_SITE_URI, uri).apply()
-//                sendLyricsResult(getLyricsUri(lyrics), title, uri)
-//            }
-        } catch (e: SiteNotSelectException) {
-            // サイト未選択の場合はアクティビティ起動
-            val siteIntent = Intent(this, SiteActivity::class.java)
-            siteIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(siteIntent)
-            AppUtils.showToast(this, R.string.message_no_select_site)
-            sendLyricsResult(null)
-        } catch (e: SiteNotFoundException) {
-            // サイト情報未取得の場合はアクティビティ起動
-            val siteIntent = Intent(this, SiteActivity::class.java)
-            siteIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(siteIntent)
-            AppUtils.showToast(this, R.string.message_no_site)
-            sendLyricsResult(null)
-        } catch (e: Exception) {
-            Logger.e(e)
-            sendLyricsResult(null)
-        }
-
+                webView.download(item?.pageUrl!!)
+            }
+            override fun onGetLyrics(lyrics: String?) {
+                item?.lyrics = lyrics
+                sendLyricsResult(item)
+            }
+            override fun onError(message: String?) {
+                Logger.d(message)
+                sendLyricsResult(null)
+            }
+        })
+        val selectedSiteId = prefs.getLong(R.string.prefkey_selected_site_id, -1)
+        webView.search(propertyData, selectedSiteId)
     }
 
     /**
-     * 歌詞を保存したファイルのURIを取得する。
-     * @param lyrics 歌詞テキスト。
-     * @return 歌詞ファイルのURI。
+     * Send lyrics info.
+     * @param resultItem search result.
      */
-    private fun getLyricsUri(lyrics: String?): Uri? {
-        if (lyrics.isNullOrEmpty()) {
-            return null
-        }
-
-        // フォルダ作成
-        val lyricsDir = File(externalCacheDir, "lyrics")
-        if (!lyricsDir.exists()) {
-            lyricsDir.mkdir()
-        }
-
-        // ファイル作成、URL取得
-        val lyricsFile = File(lyricsDir, "lyrics.txt")
-        var pw: PrintWriter? = null
-        try {
-            pw = PrintWriter(BufferedWriter(FileWriter(lyricsFile)))
-            pw.println(lyrics)
-            return Uri.fromFile(lyricsFile)
-        } catch (e: Exception) {
-            Logger.e(e)
-            return null
-        } finally {
-            if (pw != null)
-                pw.close()
-        }
-    }
-
-    /**
-     * 歌詞を送り返す。
-     * @param lyricsUri 歌詞データのURI。無視の場合はUri.EMPTY、取得失敗の場合はnull (メッセージ有り)。
-     * @param siteTitle サイトのタイトル。
-     * @param siteUri  サイトのURI。
-     */
-    private fun sendLyricsResult(lyricsUri: Uri?, siteTitle: String? = null, siteUri: String? = null) {
+    private fun sendLyricsResult(resultItem: ResultItem?) {
         val resultPropertyData = PropertyData()
-        resultPropertyData[LyricsProperty.DATA_URI] = lyricsUri?.toString()
-        resultPropertyData[LyricsProperty.SOURCE_TITLE] = siteTitle
-        resultPropertyData[LyricsProperty.SOURCE_URI] = siteUri
-
-        val returnIntent = pluginIntent.createResultIntent(resultPropertyData)
-        applicationContext.grantUriPermission(pluginIntent.srcPackage, lyricsUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        returnIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-        sendBroadcast(returnIntent)
-
-        // Message
-        val pref = PreferenceManager.getDefaultSharedPreferences(this)
-        if (lyricsUri != null) {
-            if (lyricsUri === Uri.EMPTY)
-                return  // EMPTYは無視
-            if (pref.getBoolean(getString(R.string.pref_success_message_show), false)) {
+        if (!resultItem?.lyrics.isNullOrEmpty()) {
+            val fileUri = saveLyricsFile(resultItem?.lyrics) // save lyrics and get uri
+            resultPropertyData[LyricsProperty.DATA_URI] = fileUri?.toString()
+            resultPropertyData[LyricsProperty.SOURCE_TITLE] = resultItem?.pageTitle
+            resultPropertyData[LyricsProperty.SOURCE_URI] = resultItem?.pageUrl
+            applicationContext.grantUriPermission(pluginIntent.srcPackage, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (prefs.getBoolean(R.string.pref_success_message_show)) {
                 AppUtils.showToast(this, R.string.message_lyrics_success)
             }
         } else {
-            if (pref.getBoolean(getString(R.string.pref_failure_message_show), false)) {
+            if (prefs.getBoolean(R.string.pref_failure_message_show)) {
                 AppUtils.showToast(this, R.string.message_lyrics_failure)
             }
         }
+        sendResult(resultPropertyData)
     }
 
+    /**
+     * Save lyrics file.
+     * @param lyricsText Lyrics text.
+     * @return Saved lyrics URI.
+     */
+    private fun saveLyricsFile(lyricsText: String?): Uri? {
+        if (lyricsText.isNullOrEmpty()) {
+            return null
+        }
+        // Create folder
+        val sharedLyricsDir = File(this.filesDir, SHARED_DIR_NAME)
+        if (!sharedLyricsDir.exists()) {
+            sharedLyricsDir.mkdir()
+        }
+        val sharedLyricsFile = File(sharedLyricsDir, SHARED_FILE_NAME)
+        sharedLyricsFile.writeText(lyricsText!!)
+
+        return FileProvider.getUriForFile(this, PROVIDER_AUTHORITIES, sharedLyricsFile)
+    }
+
+
+
     companion object {
-        /** 前回のファイルパス設定キー。  */
-        const val PREFKEY_PREVIOUS_MEDIA_URI = "previous_media_uri"
-        /** 前回の歌詞テキスト設定キー。  */
-        const val PREFKEY_PREVIOUS_LYRICS_TEXT = "previous_lyrics_text"
-        /** 前回のサイトタイトル設定キー。  */
-        const val PREFKEY_PREVIOUS_SITE_TITLE = "previous_site_text"
-        /** 前回のサイトURI設定キー。  */
-        const val PREFKEY_PREVIOUS_SITE_URI = "previous_site_uri"
+        private const val SHARED_DIR_NAME = "lyrics"
+        private const val SHARED_FILE_NAME = "lyrics.txt"
+        private const val PROVIDER_AUTHORITIES = BuildConfig.APPLICATION_ID + ".fileprovider"
     }
 }

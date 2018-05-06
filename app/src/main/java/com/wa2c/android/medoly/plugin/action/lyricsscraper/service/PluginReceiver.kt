@@ -53,7 +53,7 @@ class PluginReceiver {
                 }
 
                 // service
-                pluginIntent.setClass(context, PluginReceiver::class.java)
+                pluginIntent.setClass(context, PluginGetLyricsService::class.java)
             }
 
             pluginIntent.putExtra(AbstractPluginService.RECEIVED_CLASS_NAME, this.javaClass.name)
