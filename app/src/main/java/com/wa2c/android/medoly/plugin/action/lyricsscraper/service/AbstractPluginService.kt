@@ -34,6 +34,9 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     protected var resultSent: Boolean = false
     /** Notification manager. */
     private var notificationManager : NotificationManager? = null
+    /** True if initialized. */
+    private var initialized = false;
+
 
 
     @SuppressLint("NewApi")
@@ -41,15 +44,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         super.onStartCommand(intent, flags, startId)
         Logger.d("onStartCommand")
 
-        resultSent = false
-        context = applicationContext
-        prefs = Prefs(this)
-
-        if (intent != null) {
-            pluginIntent = MediaPluginIntent(intent)
-            propertyData = pluginIntent.propertyData ?: PropertyData()
-            receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
-        }
+        initialize(intent)
 
         return Service.START_NOT_STICKY
     }
@@ -58,6 +53,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     override fun onHandleIntent(intent: Intent?) {
         Logger.d("onHandleIntent")
 
+        initialize(intent)
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -71,6 +67,28 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
             }
         } catch (e: Exception) {
             Logger.e(e)
+        }
+    }
+
+    /**
+     * Initialized
+     */
+    private fun initialize(intent: Intent?) {
+        synchronized(lock) {
+            if (initialized)
+                return
+
+            resultSent = false
+            context = applicationContext
+            prefs = Prefs(this)
+
+            if (intent != null) {
+                pluginIntent = MediaPluginIntent(intent)
+                propertyData = pluginIntent.propertyData ?: PropertyData()
+                receivedClassName = pluginIntent.getStringExtra(RECEIVED_CLASS_NAME)
+            }
+
+            initialized = true
         }
     }
 
@@ -109,6 +127,8 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
         /** Received receiver class name.  */
         const val RECEIVED_CLASS_NAME = "RECEIVED_CLASS_NAME"
+
+        private val lock = Object()
     }
 
 

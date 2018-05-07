@@ -24,28 +24,35 @@
 
         <activity
             android:name=".activity.SearchActivity"
-            android:label="@string/title_activity_search"/>
+            android:exported="false"
+            android:label="@string/title_activity_search"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".activity.CacheActivity"
-            android:label="@string/title_activity_cache"/>
+            android:exported="false"
+            android:label="@string/title_activity_cache"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".activity.SiteActivity"
-            android:label="@string/title_activity_site"/>
+            android:exported="false"
+            android:label="@string/title_activity_site"
+            android:launchMode="singleTask" />
 
         <activity
             android:name=".activity.SettingsActivity"
+            android:exported="false"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
         <service
             android:name=".service.PluginGetLyricsService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <service
             android:name=".service.PluginRunService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <!-- Plugin event action -->
 
@@ -58,6 +65,7 @@
             <!-- Get lyrics -->
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_LYRICS" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_MEDIA_OPEN" />
@@ -76,6 +84,7 @@
             android:label="@string/label_execute_get_lyrics">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
+
                 <category android:name="com.wa2c.android.medoly.plugin.category.TYPE_GET_LYRICS" />
                 <category android:name="com.wa2c.android.medoly.plugin.category.OPERATION_EXECUTE" />
             </intent-filter>
@@ -86,7 +95,8 @@
             android:name=".service.PluginReceivers$ExecuteSearchLyricsReceiver"
             android:exported="true"
             android:icon="@drawable/ic_action_find"
-            android:label="@string/label_execute_search_lyrics">
+            android:label="@string/label_execute_search_lyrics"
+            android:permission="">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
 

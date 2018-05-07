@@ -29,7 +29,8 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
     private var propertyData: PropertyData? = null
     private var site: Site? = null
-    private var currentState = STATE_IDLE
+    var currentState = STATE_IDLE
+        private set
 
     /** Event handle listener。  */
     var handleListener: HandleListener? = null
@@ -46,10 +47,6 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         settings.userAgentString = context.getString(R.string.app_user_agent)
         visibility = View.INVISIBLE
         webViewClient = (object : WebViewClient() {
-//            override fun onPageStarted(view: WebView, url: String, favicon: Bitmap) {
-//                super.onPageStarted(view, url, favicon)
-//            }
-
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 webHandler.postDelayed(scriptRunnable, site?.delay ?: 0)
@@ -68,7 +65,6 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         addJavascriptInterface(this, JAVASCRIPT_INTERFACE)
     }
 
-    // スクリプトを実行してページを取得
     private val scriptRunnable = Runnable {
         when (currentState) {
             STATE_IDLE -> { }
@@ -135,11 +131,12 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         var url = Uri.parse(urlText)
                         if (!url.isAbsolute) {
                             //url = Uri.
-                            val searchUrl = Uri.parse(site!!.search_uri)
+                            val baseUrl = getBaseUrl(html, site!!.search_uri)
                             url = Uri.Builder()
-                                    .scheme(searchUrl.scheme)
-                                    .authority(searchUrl.authority)
-                                    .encodedPath(urlText)
+                                    .scheme(baseUrl.scheme)
+                                    .authority(baseUrl.authority)
+                                    .encodedPath(baseUrl.path)
+                                    .appendEncodedPath(urlText)
                                     .build()
                         }
 
@@ -164,12 +161,12 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         val urlText = m.group(1)
                         var url = Uri.parse(urlText)
                         if (!url.isAbsolute) {
-                            //url = Uri.
-                            val searchUrl = Uri.parse(site!!.search_uri)
+                            val baseUrl = getBaseUrl(html, site!!.search_uri)
                             url = Uri.Builder()
-                                    .scheme(searchUrl.scheme)
-                                    .authority(searchUrl.authority)
-                                    .encodedPath(urlText)
+                                    .scheme(baseUrl.scheme)
+                                    .authority(baseUrl.authority)
+                                    .encodedPath(baseUrl.path)
+                                    .appendEncodedPath(urlText)
                                     .build()
                         }
 
@@ -236,9 +233,45 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     }
 
     /**
-     * 文字列のプロパティ情報を入れる。
-     * @param inputText 入力テキスト。
-     * @return 置換え後のテキスト。
+     * Get base URL
+     * @param html HTML.
+     * @param pageUrl Web page URL.
+     */
+    private fun getBaseUrl(html: String?, pageUrl: String?): Uri {
+        try {
+            if (!html.isNullOrEmpty()) {
+                val doc = Jsoup.parse(html)
+                val e = doc.getElementsByTag("base")
+                if (e != null && !e.isEmpty()) {
+                    val baseUrlText = e[0].attr("href")
+                    if (!baseUrlText.isNullOrEmpty())
+                        return Uri.parse(baseUrlText)
+                }
+            }
+        } catch (ignored: Exception) {}
+
+        try {
+            if (!pageUrl.isNullOrEmpty()) {
+                val baseUrl = Uri.parse(pageUrl)
+                if (baseUrl.isAbsolute) {
+                    return Uri.Builder()
+                            .scheme(baseUrl.scheme)
+                            .authority(baseUrl.authority)
+                            .encodedPath(baseUrl.path)
+                            .build()
+                }
+            }
+        } catch (ignored: Exception) {}
+
+        return Uri.EMPTY
+    }
+
+    /**
+     * Replace property
+     * @param inputText Input text.
+     * @param urlEncode True if url encoding.
+     * @param escapeRegexp True if escape regexp.
+     * @return Replaces text.
      */
     private fun replaceProperty(inputText: String, urlEncode: Boolean, escapeRegexp: Boolean): String {
         // 正規表現作成
@@ -297,18 +330,18 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     }
 
     companion object {
-        /** 初期状態。  */
+        /** Init state  */
         const val STATE_IDLE = 0
-        /** 検索ページ取得中。  */
+        /** Getting search page. */
         const val STATE_SEARCH = 1
-        /** 歌詞ページ取得中。   */
+        /** Getting lyrics page. */
         const val STATE_LYRICS = 2
 
-        /** Javascriptンターフェースオブジェクト名。  */
+        /** Javascript interface object name. */
         const val JAVASCRIPT_INTERFACE = "android"
-        /** 検索ページ取得スクリプト。  */
+        /** Search page getting script. */
         const val SEARCH_PAGE_GET_SCRIPT = "javascript:window.$JAVASCRIPT_INTERFACE.getSearchResult(document.getElementsByTagName('html')[0].outerHTML);"
-        /** 歌詞ページ取得スクリプト。  */
+        /** Lyrics page getting script. */
         const val LYRICS_PAGE_GET_SCRIPT = "javascript:window.$JAVASCRIPT_INTERFACE.getLyrics(document.getElementsByTagName('html')[0].outerHTML);"
 
         const val REGEXP_ESCAPE = "[\\\\\\*\\+\\.\\?\\{\\}\\(\\)\\[\\]\\^\\$\\-\\|]"

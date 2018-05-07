@@ -9,6 +9,7 @@ android {
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
         minSdkVersion 17
+
         targetSdkVersion 26
         versionCode 3
         versionName "2.0.0"

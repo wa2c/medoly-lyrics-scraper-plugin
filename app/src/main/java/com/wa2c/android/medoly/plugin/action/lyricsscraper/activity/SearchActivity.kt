@@ -113,7 +113,13 @@ class SearchActivity : Activity() {
             }
 
             override fun onError(message: String?) {
-                Logger.d(message)
+                val text = message ?: getString(R.string.message_lyrics_failure)
+                AppUtils.showToast(this@SearchActivity, text)
+                Logger.d(text)
+                if (webView.currentState == LyricsSearcherWebView.STATE_SEARCH) {
+                    showSearchResult(null)
+                }
+                showLyrics(null)
             }
         })
 
@@ -218,6 +224,11 @@ class SearchActivity : Activity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+
+        searchResultListView.adapter = searchResultAdapter
+
+        searchTitleEditText.setText(intent.getStringExtra(INTENT_SEARCH_TITLE))
+        searchArtistEditText.setText(intent.getStringExtra(INTENT_SEARCH_ARTIST))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
