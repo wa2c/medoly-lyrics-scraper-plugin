@@ -15,6 +15,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 
 
+
 /**
  * Plugin service base.
  */
@@ -54,6 +55,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         Logger.d("onHandleIntent")
 
         initialize(intent)
+
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

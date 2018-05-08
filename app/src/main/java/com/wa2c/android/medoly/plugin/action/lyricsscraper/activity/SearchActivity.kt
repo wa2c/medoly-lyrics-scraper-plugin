@@ -229,6 +229,9 @@ class SearchActivity : Activity() {
 
         searchTitleEditText.setText(intent.getStringExtra(INTENT_SEARCH_TITLE))
         searchArtistEditText.setText(intent.getStringExtra(INTENT_SEARCH_ARTIST))
+
+        showSearchResult(null)
+        showLyrics(null)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -73,7 +73,7 @@ object AppUtils {
      * @return adjusted lyrics text.
      */
     fun adjustLyrics(inputText: String?): String? {
-        if (inputText.isNullOrEmpty())
+        if (inputText.isNullOrEmpty() || inputText == "null") // "null" for  JOYSOUND
             return null
 
         // Remove tags

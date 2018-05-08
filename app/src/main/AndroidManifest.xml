@@ -46,6 +46,7 @@
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask" />
 
+
         <service
             android:name=".service.PluginGetLyricsService"
             android:exported="false" />
@@ -53,6 +54,7 @@
         <service
             android:name=".service.PluginRunService"
             android:exported="false" />
+
 
         <!-- Plugin event action -->
 

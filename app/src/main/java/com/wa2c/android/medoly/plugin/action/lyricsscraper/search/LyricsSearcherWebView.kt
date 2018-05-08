@@ -14,9 +14,11 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
+import org.apache.http.client.utils.URIUtils
 import org.jsoup.Jsoup
 import us.codecraft.xsoup.Xsoup
 import java.io.UnsupportedEncodingException
+import java.net.URI
 import java.net.URLEncoder
 import java.util.EventListener
 import java.util.regex.Pattern
@@ -34,6 +36,10 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
     /** Event handle listener。  */
     var handleListener: HandleListener? = null
+
+    var searchUri: String? = null
+
+    var timeoutSec: Int = context.resources.getInteger(R.integer.download_timeout_sec)
 
     val webHandler: Handler = Handler()
 
@@ -66,12 +72,18 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     }
 
     private val scriptRunnable = Runnable {
+        webHandler.removeCallbacks(cancelRunnable)
         when (currentState) {
             STATE_IDLE -> { }
             STATE_SEARCH -> loadUrl(LyricsSearcherWebView.SEARCH_PAGE_GET_SCRIPT)
             STATE_LYRICS -> loadUrl(LyricsSearcherWebView.LYRICS_PAGE_GET_SCRIPT)
             else -> handleListener?.onError()
         }
+    }
+
+    private val cancelRunnable = Runnable {
+        this.stopLoading()
+        handleListener?.onError()
     }
 
 
@@ -89,13 +101,14 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         this.propertyData = propertyData
         this.site = site
 
-        val searchUri = replaceProperty(site.search_uri, true, false)
+        searchUri = replaceProperty(site.search_uri, true, false)
         Logger.d("Search URL: $searchUri")
 
         try {
             currentState = STATE_SEARCH
             stopLoading()
             loadUrl(searchUri)
+            webHandler.postDelayed(cancelRunnable, timeoutSec * 1000L)
         } catch (e: Exception) {
             handleListener?.onError()
         }
@@ -106,6 +119,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             currentState = STATE_LYRICS
             stopLoading()
             loadUrl(url)
+            webHandler.postDelayed(cancelRunnable, timeoutSec * 1000L)
         } catch (e: Exception) {
             handleListener?.onError()
         }
@@ -128,24 +142,14 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 for (element in e) {
                     try {
                         val urlText = element.attr("href")
-                        var url = Uri.parse(urlText)
-                        if (!url.isAbsolute) {
-                            //url = Uri.
-                            val baseUrl = getBaseUrl(html, site!!.search_uri)
-                            url = Uri.Builder()
-                                    .scheme(baseUrl.scheme)
-                                    .authority(baseUrl.authority)
-                                    .encodedPath(baseUrl.path)
-                                    .appendEncodedPath(urlText)
-                                    .build()
-                        }
+                        val url = getFullUrl(urlText, html, searchUri)
+                        if (url == Uri.EMPTY)
+                            continue
 
                         val item = ResultItem()
                         item.pageUrl = url.toString()
                         item.pageTitle = element.text()
                         item.musicTitle = item.pageTitle
-                        if (item.pageUrl.isNullOrEmpty())
-                            continue
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
@@ -159,23 +163,14 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 while (m.find()) {
                     try {
                         val urlText = m.group(1)
-                        var url = Uri.parse(urlText)
-                        if (!url.isAbsolute) {
-                            val baseUrl = getBaseUrl(html, site!!.search_uri)
-                            url = Uri.Builder()
-                                    .scheme(baseUrl.scheme)
-                                    .authority(baseUrl.authority)
-                                    .encodedPath(baseUrl.path)
-                                    .appendEncodedPath(urlText)
-                                    .build()
-                        }
+                        val url = getFullUrl(urlText, html, searchUri)
+                        if (url == Uri.EMPTY)
+                            continue
 
                         val item = ResultItem()
                         item.pageUrl = url.toString()
                         item.pageTitle = m.group(1)
                         item.musicTitle = item.pageTitle
-                        if (item.pageUrl.isNullOrEmpty())
-                            continue
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
@@ -237,29 +232,34 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
      * @param html HTML.
      * @param pageUrl Web page URL.
      */
-    private fun getBaseUrl(html: String?, pageUrl: String?): Uri {
+    private fun getFullUrl(sourceUrl: String?, html: String?, pageUrl: String?): Uri {
+        try {
+            val url = Uri.parse(sourceUrl)
+            if (url.isAbsolute)
+                return url
+        } catch (ignored: Exception) {
+        }
+
         try {
             if (!html.isNullOrEmpty()) {
                 val doc = Jsoup.parse(html)
                 val e = doc.getElementsByTag("base")
                 if (e != null && !e.isEmpty()) {
                     val baseUrlText = e[0].attr("href")
-                    if (!baseUrlText.isNullOrEmpty())
-                        return Uri.parse(baseUrlText)
+                    if (!baseUrlText.isNullOrEmpty()) {
+                        val baseUrl = URI(baseUrlText)
+                        val url = URIUtils.resolve(baseUrl, sourceUrl)
+                        return Uri.parse(url.toASCIIString())
+                    }
                 }
             }
         } catch (ignored: Exception) {}
 
         try {
             if (!pageUrl.isNullOrEmpty()) {
-                val baseUrl = Uri.parse(pageUrl)
-                if (baseUrl.isAbsolute) {
-                    return Uri.Builder()
-                            .scheme(baseUrl.scheme)
-                            .authority(baseUrl.authority)
-                            .encodedPath(baseUrl.path)
-                            .build()
-                }
+                val baseUrl = URI(pageUrl)
+                val url = URIUtils.resolve(baseUrl, sourceUrl)
+                return Uri.parse(url.toASCIIString())
             }
         } catch (ignored: Exception) {}
 
@@ -274,14 +274,13 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
      * @return Replaces text.
      */
     private fun replaceProperty(inputText: String, urlEncode: Boolean, escapeRegexp: Boolean): String {
-        // 正規表現作成
         val regexpBuilder = StringBuilder()
         for (p in MediaProperty.values()) {
             regexpBuilder.append("|%").append(p.keyName).append("%")
         }
         val regexp = "(" + regexpBuilder.substring(1) + ")"
 
-        // URIを作成
+        // create uri
         val outputBuffer = StringBuilder()
         val pattern = Pattern.compile(regexp, Pattern.MULTILINE or Pattern.DOTALL)
         val matcher = pattern.matcher(inputText)
