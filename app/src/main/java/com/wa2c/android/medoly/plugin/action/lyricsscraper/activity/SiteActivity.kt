@@ -15,6 +15,7 @@ import com.google.gdata.client.spreadsheet.ListQuery
 import com.google.gdata.client.spreadsheet.SpreadsheetService
 import com.google.gdata.data.spreadsheet.ListFeed
 import com.google.gdata.data.spreadsheet.WorksheetFeed
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
@@ -98,7 +99,11 @@ class SiteActivity : Activity() {
                 return true
             }
             R.id.menu_open_sheet -> {
-                val sheetUri = Uri.parse(getString(R.string.sheet_uri, getString(R.string.sheet_id)))
+                val sheetUri = if (BuildConfig.DEBUG)
+                        Uri.parse(getString(R.string.sheet_uri, getString(R.string.sheet_id_debug)))
+                    else
+                        Uri.parse(getString(R.string.sheet_uri, getString(R.string.sheet_id)))
+
                 val browserIntent = Intent(Intent.ACTION_VIEW, sheetUri)
                 startActivity(browserIntent)
                 return true
@@ -238,9 +243,10 @@ class SiteActivity : Activity() {
         class SpreadSheetReadTask(context: Context) : AsyncTask<String, Void, Boolean>() {
             private val service: SpreadsheetService = SpreadsheetService(context.getString(R.string.app_name))
             private val db = DbHelper(context)
-            private val sheetId = context.getString(R.string.sheet_id)
-            //if (BuildConfig.DEBUG)
-            //    sheetId = context.getString(R.string.sheet_id_debug);
+            private val sheetId =  if (BuildConfig.DEBUG)
+                context.getString(R.string.sheet_id_debug)
+            else
+                context.getString(R.string.sheet_id)
 
             /** Event listener.  */
             private var actionListener: SiteUpdateListener? = null

@@ -72,7 +72,7 @@ object AppUtils {
      * @param inputText lyrics text.
      * @return adjusted lyrics text.
      */
-    fun adjustLyrics(inputText: String?): String? {
+    fun adjustHtmltext(inputText: String?): String? {
         if (inputText.isNullOrEmpty() || inputText == "null") // "null" for  JOYSOUND
             return null
 

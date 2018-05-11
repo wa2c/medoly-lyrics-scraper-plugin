@@ -11,6 +11,7 @@ import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SiteActivity
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
@@ -110,7 +111,10 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
             }
         })
         val selectedSiteId = prefs.getLong(R.string.prefkey_selected_site_id, -1)
-        webView.search(propertyData, selectedSiteId)
+        if (!webView.search(propertyData, selectedSiteId)) {
+            startActivity(Intent(this, SiteActivity::class.java))
+            sendLyricsResult(null)
+        }
     }
 
     /**

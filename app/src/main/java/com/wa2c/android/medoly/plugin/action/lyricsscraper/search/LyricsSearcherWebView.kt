@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Handler
 import android.view.View
 import android.webkit.*
+import com.google.code.regexp.Pattern
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
@@ -21,7 +22,6 @@ import java.io.UnsupportedEncodingException
 import java.net.URI
 import java.net.URLEncoder
 import java.util.EventListener
-import java.util.regex.Pattern
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.set
 
@@ -88,16 +88,16 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
 
 
-    fun search(propertyData: PropertyData, siteId: Long?) {
+    fun search(propertyData: PropertyData, siteId: Long?): Boolean {
         this.propertyData = propertyData
         val site = DbHelper(context).selectSite(siteId ?: Prefs(context).getLong(R.string.prefkey_selected_site_id, -1))
-        if (site == null)
-            return
+        return if (site == null)
+            false
         else
             search(propertyData, site)
     }
 
-    fun search(propertyData: PropertyData, site: Site) {
+    fun search(propertyData: PropertyData, site: Site): Boolean {
         this.propertyData = propertyData
         this.site = site
 
@@ -112,6 +112,8 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         } catch (e: Exception) {
             handleListener?.onError()
         }
+
+        return true
     }
 
     fun download(url: String) {
@@ -158,19 +160,22 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             } else if (site!!.result_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                 val parseText = replaceProperty(site!!.result_page_parse_text, false, true)
                 Logger.d("Parse Text: $parseText")
+
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE)
                 val m = p.matcher(html)
                 while (m.find()) {
                     try {
-                        val urlText = m.group(1)
+                        //val urlText = m.group(1)
+                        val urlText = m.group("url")
                         val url = getFullUrl(urlText, html, searchUri)
                         if (url == Uri.EMPTY)
                             continue
 
                         val item = ResultItem()
                         item.pageUrl = url.toString()
-                        item.pageTitle = m.group(1)
-                        item.musicTitle = item.pageTitle
+                        //item.pageTitle = m.group(2)
+                        item.pageTitle = m.group("name")
+                        item.musicTitle = AppUtils.adjustHtmltext(item.pageTitle)
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
@@ -216,7 +221,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 }
             }
 
-            lyrics = AppUtils.adjustLyrics(lyrics)
+            lyrics = AppUtils.adjustHtmltext(lyrics)
         } catch (e: Exception) {
             Logger.e(e)
         } finally {
