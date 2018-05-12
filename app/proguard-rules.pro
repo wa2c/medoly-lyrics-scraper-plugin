@@ -23,6 +23,11 @@
 -keep class org.assertj.core.** {*;}
 -dontwarn org.assertj.core.**
 
+-keep class org.jsoup.** {*;}
+-dontwarn org.jsoup.**
+
+-keep class us.codecraft.** {*;}
+-dontwarn us.codecraft.**
+
 -dontnote org.apache.http.**
 -dontnote android.net.http.**
-

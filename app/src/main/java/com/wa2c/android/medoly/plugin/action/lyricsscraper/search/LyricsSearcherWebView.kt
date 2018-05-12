@@ -146,10 +146,13 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         val url = getFullUrl(urlText, html, searchUri)
                         if (url == Uri.EMPTY)
                             continue
+                        val titleText = element.text()
+                        if (titleText.isNullOrEmpty())
+                            continue
 
                         val item = ResultItem()
                         item.pageUrl = url.toString()
-                        item.pageTitle = element.text()
+                        item.pageTitle = titleText
                         item.musicTitle = item.pageTitle
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {

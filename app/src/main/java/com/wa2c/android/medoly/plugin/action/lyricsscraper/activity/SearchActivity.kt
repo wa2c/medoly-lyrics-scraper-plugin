@@ -165,6 +165,8 @@ class SearchActivity : Activity() {
 
         // Search button
         searchStartButton.setOnClickListener {
+            webView.stopLoading()
+
             // Hide keyboard
             val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodMgr.hideSoftInputFromWindow(it.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
@@ -200,6 +202,8 @@ class SearchActivity : Activity() {
 
         // List item
         searchResultListView.setOnItemClickListener { _, _, position, _ ->
+            webView.stopLoading()
+
             val item = searchResultAdapter.getItem(position) ?: return@setOnItemClickListener
             if (item.pageUrl == null)
                 return@setOnItemClickListener
@@ -246,6 +250,11 @@ class SearchActivity : Activity() {
 
         showSearchResult(null)
         showLyrics(null)
+    }
+
+    public override fun onDestroy() {
+        super.onDestroy()
+        webView.stopLoading()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
