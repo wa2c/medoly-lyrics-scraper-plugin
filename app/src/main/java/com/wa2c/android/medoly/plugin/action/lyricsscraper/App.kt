@@ -3,11 +3,8 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
-//import com.github.gfx.android.orma.AccessThreadConstraint
-//import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.OrmaDatabase
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
-
 
 /**
  * App class.
@@ -22,15 +19,14 @@ class App : Application() {
         val pref = Prefs(context)
         val previousVersion = pref.getInt(APP_PREVIOUS_VERSION, -1)
 
-        // 4
+        // 4 -
         if (previousVersion < 0) {
-            // deleteCache tables
-//            try {
-//                val od = OrmaDatabase.builder(context).writeOnMainThread(AccessThreadConstraint.NONE).build()
-//                od.connection.rawQuery("drop table sites;")
-//                od.connection.rawQuery("drop table groups;")
-//            } catch (ignore: Exception) {
-//            }
+            // delete db
+            try {
+                context.deleteDatabase("medoly_lyricsscraper")
+            } catch (e: Exception) {
+                Logger.d(e)
+            }
 
             // deleteCache prefs
             pref.remove("previous_media_enabled")

@@ -175,7 +175,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         item.pageUrl = url.toString()
                         //item.pageTitle = m.group(2)
                         item.pageTitle = m.group("name")
-                        item.musicTitle = AppUtils.adjustHtmltext(item.pageTitle)
+                        item.musicTitle = AppUtils.adjustHtmlText(item.pageTitle)
                         searchResultItemList[item.pageUrl!!] = item
                     } catch (ignore: Exception) {
                     }
@@ -221,7 +221,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 }
             }
 
-            lyrics = AppUtils.adjustHtmltext(lyrics)
+            lyrics = AppUtils.adjustHtmlText(lyrics)
         } catch (e: Exception) {
             Logger.e(e)
         } finally {

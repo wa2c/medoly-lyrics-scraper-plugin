@@ -25,7 +25,7 @@ public class DbHelper {
      * @param context context.
      * @return OrmaDatabase object.
      */
-    static synchronized OrmaDatabase provideOrmaDatabase(Context context) {
+    private static synchronized OrmaDatabase provideOrmaDatabase(Context context) {
         if (ormaDatabase == null) {
             ormaDatabase = OrmaDatabase.builder(context).build();
         }
@@ -92,15 +92,9 @@ public class DbHelper {
     public boolean insertOrUpdateCache(@NonNull String title, String artist, @Nullable ResultItem resultItem) {
         OrmaDatabase od = provideOrmaDatabase(context);
 
-        String language = null;
-        String from = null;
-        String file_name = null;
         Boolean has_lyrics = false;
         String result = gson.toJson(resultItem);
         if (resultItem != null) {
-            //language = resultItem.getLanguage();
-            //from = resultItem.getLyricUploader();
-            //file_name = resultItem.getLyricURL().substring(resultItem.getLyricURL().lastIndexOf("/") + 1).replace(".lrc", "");
             has_lyrics = (resultItem.getLyrics() != null);
         }
 
@@ -110,9 +104,6 @@ public class DbHelper {
         SearchCache cache = selectCache(title, artist);
         if (cache != null) {
             int count = od.updateSearchCache()._idEq(cache._id)
-                    //.language(language)
-                    //.from(from)
-                    //.file_name(file_name)
                     .has_lyrics(has_lyrics)
                     .result(result)
                     .execute();
@@ -122,9 +113,6 @@ public class DbHelper {
             cache = new SearchCache();
             cache.title = title;
             cache.artist = artist;
-            cache.language = language;
-            cache.from = from;
-            cache.file_name =  file_name;
             cache.has_lyrics = has_lyrics;
             cache.result = result;
             long id = od.insertIntoSearchCache(cache);

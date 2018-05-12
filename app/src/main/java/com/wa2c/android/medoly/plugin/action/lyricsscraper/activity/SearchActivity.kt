@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -30,9 +28,9 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.layout_search_item.view.*
-import java.io.BufferedWriter
-import java.io.OutputStream
-import java.io.OutputStreamWriter
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 
 
 /**
@@ -77,15 +75,26 @@ class SearchActivity : Activity() {
             -1
         }
 
-
-        val selectedPosition = siteList.indexOfFirst { i -> i.site_id == initSiteId }
-        var currentSite = if (selectedPosition < 0) {
+        // Get selected position
+        val selectedPosition = if (siteList.isEmpty()) {
             searchStartButton.isEnabled = false
-            null
+            -1
+        } else {
+           siteList.indexOfFirst { i -> i.site_id == initSiteId }
+
+        }
+
+        // Get selected site
+        var currentSite = if (selectedPosition < 0 || selectedPosition >= siteList.size) {
+            if (siteList.isEmpty())
+                null
+            else
+                siteList[0]
         } else {
             siteList[selectedPosition]
         }
 
+        // Set list adapter
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapter.addAll(siteList.map { i -> i.site_name })
@@ -123,6 +132,7 @@ class SearchActivity : Activity() {
             }
         })
 
+        // Title button
         searchTitleButton.setOnClickListener {
             val dialogFragment = NormalizeDialogFragment.newInstance(searchTitleEditText.text.toString(), intentSearchTitle)
             dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
@@ -133,6 +143,7 @@ class SearchActivity : Activity() {
             dialogFragment.show(this)
         }
 
+        // Artist button
         searchArtistButton.setOnClickListener {
             val dialogFragment = NormalizeDialogFragment.newInstance(searchArtistEditText.text.toString(), intentSearchArtist)
             dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
@@ -143,11 +154,13 @@ class SearchActivity : Activity() {
             dialogFragment.show(this)
         }
 
+        // Clear[x] button
         searchClearButton.setOnClickListener {
             searchTitleEditText.text = null
             searchArtistEditText.text = null
         }
 
+        // Search button
         searchStartButton.setOnClickListener {
             // Hide keyboard
             val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -182,15 +195,13 @@ class SearchActivity : Activity() {
             }
         }
 
+        // List item
         searchResultListView.setOnItemClickListener { _, _, position, _ ->
             val item = searchResultAdapter.getItem(position) ?: return@setOnItemClickListener
             if (item.pageUrl == null)
                 return@setOnItemClickListener
 
             try {
-
-
-                //webView.download(item.pageUrl!!)
                 webView.download(item.pageUrl!!)
                 searchResultAdapter.selectedItem = item
                 searchLyricsScrollView.visibility = View.INVISIBLE
@@ -235,6 +246,7 @@ class SearchActivity : Activity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.activity_search, menu)
         for (i in 0 until menu.size()) {
             menu.getItem(i).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
@@ -279,7 +291,13 @@ class SearchActivity : Activity() {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         val title = searchTitleEditText.text.toString()
                         val artist = searchArtistEditText.text.toString()
-                        saveToCacheBackground(title, artist, searchResultAdapter.selectedItem)
+                        launch(UI) {
+                            val result = async {
+                                return@async DbHelper(this@SearchActivity).insertOrUpdateCache(title, artist, searchResultAdapter.selectedItem)
+                            }
+                            if (result.await())
+                                AppUtils.showToast(this@SearchActivity, R.string.message_save_cache)
+                        }
                     }
                 }
                 dialog.show(this)
@@ -298,17 +316,39 @@ class SearchActivity : Activity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun saveToCacheBackground(title: String, artist: String, item: ResultItem?) {
-        val searchCacheHelper = DbHelper(this)
-        val saveHandlerThread = HandlerThread("saveThreadHandler")
-        saveHandlerThread.start()
-        val saveHandler = Handler(saveHandlerThread.looper)
-        saveHandler.post {
-            if (searchCacheHelper.insertOrUpdateCache(title, artist, item))
-                AppUtils.showToast(applicationContext, R.string.message_save_cache)
+    /**
+     * On activity result
+     */
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE && resultCode == Activity.RESULT_OK) {
+            // Save to lyrics file
+            if (!existsLyrics()) {
+                AppUtils.showToast(this, R.string.error_exists_lyrics)
+                return
+            }
+
+            val uri = resultData?.data
+            try {
+                contentResolver.openOutputStream(uri).bufferedWriter(Charsets.UTF_8).use {
+                    it.write(searchResultAdapter.selectedItem!!.lyrics)
+                }
+                AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
+            } catch (e: Exception) {
+                Logger.e(e)
+                AppUtils.showToast(this, R.string.message_lyrics_save_failed)
+            }
+        }
+
+        // Hide keyboard
+        if (currentFocus != null) {
+            val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodMgr.hideSoftInputFromWindow(currentFocus.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
+    /**
+     * Show search result list.
+     */
     internal fun showSearchResult(itemList: List<ResultItem>?) {
         try {
             searchResultAdapter.clear()
@@ -323,6 +363,9 @@ class SearchActivity : Activity() {
         }
     }
 
+    /**
+     * Show lyrics.
+     */
     internal fun showLyrics(lyrics: String?) {
         val item = searchResultAdapter.selectedItem ?: return
         item.lyrics = lyrics
@@ -342,50 +385,7 @@ class SearchActivity : Activity() {
         return searchResultAdapter.selectedItem != null && !searchResultAdapter.selectedItem!!.pageUrl.isNullOrEmpty()
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent) {
-        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE) {
-            // save to file
-            if (resultCode == Activity.RESULT_OK) {
-                if (!existsLyrics()) {
-                    AppUtils.showToast(this, R.string.error_exists_lyrics)
-                    return
-                }
 
-                val uri = resultData.data
-                var stream: OutputStream? = null
-                var writer: BufferedWriter? = null
-                try {
-                    stream = contentResolver.openOutputStream(uri!!)
-                    writer = BufferedWriter(OutputStreamWriter(stream!!, "UTF-8"))
-                    writer.write(searchResultAdapter.selectedItem!!.lyrics!!)
-                    writer.flush()
-                    AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
-                } catch (e: Exception) {
-                    Logger.e(e)
-                    AppUtils.showToast(this, R.string.message_lyrics_save_failed)
-                } finally {
-                    if (writer != null)
-                        try {
-                            writer.close()
-                        } catch (ignore: Exception) {
-                        }
-
-                    if (stream != null)
-                        try {
-                            stream.close()
-                        } catch (ignore: Exception) {
-                        }
-
-                }
-            }
-        }
-
-        // Hide keyboard
-        if (currentFocus != null) {
-            val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodMgr.hideSoftInputFromWindow(currentFocus.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-        }
-    }
 
     companion object {
         const val INTENT_SEARCH_TITLE = "INTENT_SEARCH_TITLE"

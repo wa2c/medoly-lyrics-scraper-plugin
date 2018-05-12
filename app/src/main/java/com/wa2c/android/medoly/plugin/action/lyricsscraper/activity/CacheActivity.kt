@@ -23,10 +23,8 @@ import kotlinx.android.synthetic.main.layout_cache_item.view.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import java.io.BufferedWriter
-import java.io.IOException
-import java.io.OutputStreamWriter
 import java.util.*
+
 
 /**
  * Cache activity
@@ -173,23 +171,19 @@ class CacheActivity : Activity() {
     /**
      * On activity result
      */
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent) {
-        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE) {
-            // Save lyrics file
-            val uri = resultData.data
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
+        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE && resultCode == Activity.RESULT_OK) {
+            // Save to lyrics file
+            val uri = resultData?.data
             try {
-                contentResolver.openOutputStream(uri!!)!!.use { stream ->
-                    BufferedWriter(OutputStreamWriter(stream, "UTF-8")).use { writer ->
-                        writer.write(currentCacheItem!!.makeResultItem()!!.lyrics)
-                        writer.flush()
-                        AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
-                    }
+                contentResolver.openOutputStream(uri).bufferedWriter(Charsets.UTF_8).use {
+                    it.write(currentCacheItem!!.makeResultItem()!!.lyrics)
                 }
-            } catch (e: IOException) {
+                AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
+            } catch (e: Exception) {
                 Logger.e(e)
                 AppUtils.showToast(this, R.string.message_lyrics_save_failed)
             }
-
         }
 
         currentCacheItem = null
@@ -201,6 +195,9 @@ class CacheActivity : Activity() {
         }
     }
 
+    /**
+     * Search cache.
+     */
     private fun searchCache(title: String, artist: String) {
         launch(UI) {
             val result = async {

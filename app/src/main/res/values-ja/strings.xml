@@ -77,6 +77,7 @@
     <string name="message_dialog_cache_delete_error">削除中にエラーが発生しました。</string>
 
     <!-- Site Activity -->
+    <string name="message_site_update_request">サイト情報を更新し、サイトを選択してください。</string>
     <string name="message_renew_list_succeeded">サイト情報の更新を完了しました。</string>
     <string name="message_renew_list_failed">サイト情報の更新に失敗しました。</string>
 

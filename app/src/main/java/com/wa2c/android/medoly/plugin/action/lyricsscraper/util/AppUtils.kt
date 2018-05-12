@@ -72,7 +72,7 @@ object AppUtils {
      * @param inputText lyrics text.
      * @return adjusted lyrics text.
      */
-    fun adjustHtmltext(inputText: String?): String? {
+    fun adjustHtmlText(inputText: String?): String? {
         if (inputText.isNullOrEmpty() || inputText == "null") // "null" for  JOYSOUND
             return null
 
@@ -85,6 +85,9 @@ object AppUtils {
 
         // Trimming
         text = trimLines(text)
+
+        // Convert EOL Character
+        text = unifyEOLCode(text)
 
         return text
     }
@@ -99,6 +102,17 @@ object AppUtils {
                 .replace("(?m)^[\\t 　]*".toRegex(), "")
                 .replace("(?m)[\\t 　]*$".toRegex(), "")
                 .trim { it <= ' ' }
+    }
+
+    /**
+     * Unify EOL characters to CR+LF.
+     * @param text Text.
+     * @param eol EOL code.
+     * @return Converted text.
+     */
+    fun unifyEOLCode(text: String?, eol: String = "\r\n"): String {
+        return if (text.isNullOrEmpty()) ""
+            else "\r\n|[\n\r\u2028\u2029\u0085]".toRegex().replace(text!!, eol)
     }
 
     /**

@@ -69,8 +69,9 @@ dependencies {
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '0.21.2'
 
     // https://mvnrepository.com/artifact/com.github.tony19/named-regexp
-    compile group: 'com.github.tony19', name: 'named-regexp', version: '0.2.5'
+    implementation group: 'com.github.tony19', name: 'named-regexp', version: '0.2.5'
 
+    compile 'com.android.support:multidex:1.0.3'
 }
 
 kotlin {

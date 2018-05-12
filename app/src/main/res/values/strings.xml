@@ -77,6 +77,7 @@
     <string name="message_dialog_cache_delete_error">An error occurred during deletion.</string>
 
     <!-- Site Activity -->
+    <string name="message_site_update_request">Update the site info and select one.</string>
     <string name="message_renew_list_succeeded">Site information updated.</string>
     <string name="message_renew_list_failed">Failed to update site information.</string>
 
