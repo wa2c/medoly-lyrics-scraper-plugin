@@ -17,3 +17,12 @@
 #}
 
 -keepattributes *Annotation*
+-keep class com.github.gfx.android.orma.** { *; }
+-dontwarn com.github.gfx.android.orma.**
+
+-keep class org.assertj.core.** {*;}
+-dontwarn org.assertj.core.**
+
+-dontnote org.apache.http.**
+-dontnote android.net.http.**
+

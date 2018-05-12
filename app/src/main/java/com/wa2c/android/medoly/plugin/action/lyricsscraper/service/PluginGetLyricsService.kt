@@ -30,8 +30,6 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         super.onStartCommand(intent, flags, startId)
         Logger.d("onStartCommand")
 
-        // TODO サイト未取得時
-
         try {
             getLyrics()
         } catch (e: Exception) {
