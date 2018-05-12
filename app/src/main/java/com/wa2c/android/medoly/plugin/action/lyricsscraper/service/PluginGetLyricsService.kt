@@ -110,7 +110,9 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         })
         val selectedSiteId = prefs.getLong(R.string.prefkey_selected_site_id, -1)
         if (!webView.search(propertyData, selectedSiteId)) {
-            startActivity(Intent(this, SiteActivity::class.java))
+            val intent = Intent(this, SiteActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
             AppUtils.showToast(this, R.string.message_site_update_request)
             sendLyricsResult(null)
         }
