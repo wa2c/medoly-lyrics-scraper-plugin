@@ -15,7 +15,6 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
-import org.apache.http.client.utils.URIUtils
 import org.jsoup.Jsoup
 import us.codecraft.xsoup.Xsoup
 import java.io.UnsupportedEncodingException
@@ -253,7 +252,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                     val baseUrlText = e[0].attr("href")
                     if (!baseUrlText.isNullOrEmpty()) {
                         val baseUrl = URI(baseUrlText)
-                        val url = URIUtils.resolve(baseUrl, sourceUrl)
+                        val url = resolve(baseUrl, sourceUrl)
                         return Uri.parse(url.toASCIIString())
                     }
                 }
@@ -263,12 +262,39 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         try {
             if (!pageUrl.isNullOrEmpty()) {
                 val baseUrl = URI(pageUrl)
-                val url = URIUtils.resolve(baseUrl, sourceUrl)
+                //val url = URIUtils.resolve(baseUrl, sourceUrl)
+                val url = resolve(baseUrl, sourceUrl)
                 return Uri.parse(url.toASCIIString())
             }
         } catch (ignored: Exception) {}
 
         return Uri.EMPTY
+    }
+
+    /**
+     * Resolve url. (from HtmlClient)
+     * @param baseURI Base url.
+     * @param referenceText pathText.
+     */
+    private fun resolve(baseURI: URI, referenceText: String?): URI {
+        val reference = URI.create(referenceText)
+        val s = reference.toASCIIString()
+        if (s.startsWith("?")) {
+            var baseUri = baseURI.toASCIIString()
+            val i = baseUri.indexOf('?')
+            baseUri = if (i > -1) baseUri.substring(0, i) else baseUri
+            return URI.create(baseUri + s)
+        }
+        val emptyReference = s.isEmpty()
+        var resolved: URI
+        if (emptyReference) {
+            resolved = baseURI.resolve(URI.create("#"))
+            val resolvedString = resolved.toASCIIString()
+            resolved = URI.create(resolvedString.substring(0, resolvedString.indexOf('#')))
+        } else {
+            resolved = baseURI.resolve(reference)
+        }
+        return resolved.normalize()
     }
 
     /**

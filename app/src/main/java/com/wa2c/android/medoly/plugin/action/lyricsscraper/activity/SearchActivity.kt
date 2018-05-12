@@ -118,6 +118,9 @@ class SearchActivity : Activity() {
             }
 
             override fun onGetLyrics(lyrics: String?) {
+                if (lyrics.isNullOrEmpty()) {
+                    AppUtils.showToast(this@SearchActivity, R.string.message_lyrics_failure)
+                }
                 showLyrics(lyrics)
             }
 

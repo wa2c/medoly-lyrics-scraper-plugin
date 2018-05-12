@@ -29,9 +29,15 @@
     <!--<string name="app_user_agent">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit (KHTML, like Gecko) Chrome Safari</string>-->
     <string name="app_user_agent">Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.52 Safari/537.36</string>
 
-    <string name="sheet_id_debug">1VLhimcS6VbnWxasaUZSwWn1Le4uK_sdmsL7ItJxsgpo</string>
-    <string name="sheet_id">1rAtZzpOmwkAigUJ4ENOCglaXPK5klmGfAhGasQrVg6U</string>
     <string name="sheet_uri">https://docs.google.com/spreadsheets/d/%1s</string>
+    <string name="sheet_export_uri">https://docs.google.com/spreadsheets/d/%s/export?format=csv&amp;gid=%s</string>
+
+    <string name="sheet_id">1rAtZzpOmwkAigUJ4ENOCglaXPK5klmGfAhGasQrVg6U</string>
+    <string name="sheet_site_gid">0</string>
+    <string name="sheet_group_gid">1919240742</string>
+    <string name="sheet_id_debug">1VLhimcS6VbnWxasaUZSwWn1Le4uK_sdmsL7ItJxsgpo</string>
+    <string name="sheet_site_gid_debug">0</string>
+    <string name="sheet_group_gid_debug">1919240742</string>
 
     <!-- Site info -->
 
