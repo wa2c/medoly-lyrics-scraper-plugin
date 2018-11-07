@@ -14,7 +14,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
+import com.wa2c.android.prefs.Prefs
 import org.jsoup.Jsoup
 import us.codecraft.xsoup.Xsoup
 import java.io.UnsupportedEncodingException

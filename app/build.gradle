@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
@@ -38,9 +38,10 @@ android {
 }
 
 repositories {
-    jcenter()
     google()
-    maven { url 'https://api.bitbucket.org/1.0/repositories/wa2c/medoly-library/raw/master/repository/' }
+    jcenter()
+    maven { url 'https://github.com/wa2c/medoly-library/raw/master/repository/' }
+    maven { url 'https://github.com/wa2c/prefs/raw/master/repository/' }
 }
 
 dependencies {
@@ -48,7 +49,9 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
 
     // Medoly library
-    implementation 'com.wa2c.android:medolylibrary:1.2.3'
+    implementation 'com.wa2c.android:medolylibrary:1.2.4'
+    // Prefs
+    implementation 'com.wa2c.android:prefs:0.1.0'
     // Orma
     annotationProcessor 'com.github.gfx.android.orma:orma-processor:4.2.5'
     implementation 'com.github.gfx.android.orma:orma:4.2.5'
@@ -58,7 +61,7 @@ dependencies {
     // https://mvnrepository.com/artifact/us.codecraft/xsoup
     implementation group: 'us.codecraft', name: 'xsoup', version: '0.3.1'
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
     // https://mvnrepository.com/artifact/com.github.tony19/named-regexp
     implementation group: 'com.github.tony19', name: 'named-regexp', version: '0.2.5'
     // https://mvnrepository.com/artifact/de.siegmar/fastcsv

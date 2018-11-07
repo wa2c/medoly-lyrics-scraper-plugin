@@ -16,7 +16,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteGroup
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
+import com.wa2c.android.prefs.Prefs
 import de.siegmar.fastcsv.reader.CsvReader
 import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.layout_site_item.view.*
@@ -52,7 +52,7 @@ class SiteActivity : Activity() {
             if (groupListView.adapter is SiteGroupListAdapter) {
                 openSiteList((item as SiteGroup).group_id)
             } else if (groupListView.adapter is SiteListAdapter) {
-                prefs.putValue(R.string.prefkey_selected_site_id, (item as Site).site_id)
+                prefs.putLong(R.string.prefkey_selected_site_id, (item as Site).site_id)
                 (groupListView.adapter as SiteListAdapter).notifyDataSetChanged()
             }
         }

@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
+import com.wa2c.android.prefs.Prefs
 
 /**
  * App class.
@@ -35,18 +35,18 @@ class App : Application() {
 
             // replace prefs
             if (pref.contains("event_get_lyrics"))
-                pref.putValue(R.string.pref_event_get_lyrics, pref.getString("event_get_lyrics"))
+                pref.putString(R.string.pref_event_get_lyrics, pref.getString("event_get_lyrics"))
             if (pref.contains("success_message_show"))
-                pref.putValue(R.string.pref_success_message_show, pref.getBoolean("success_message_show"))
+                pref.putBoolean(R.string.pref_success_message_show, pref.getBoolean("success_message_show"))
             if (pref.contains("failure_message_show"))
-                pref.putValue(R.string.pref_failure_message_show, pref.getBoolean("failure_message_show"))
+                pref.putBoolean(R.string.pref_failure_message_show, pref.getBoolean("failure_message_show"))
         }
 
         // update version
         try {
             val packageInfo = packageManager.getPackageInfo(context.packageName, 0)
             if (previousVersion < packageInfo.versionCode)
-                pref.putValue(APP_PREVIOUS_VERSION, packageInfo.versionCode)
+                pref.putInt(APP_PREVIOUS_VERSION, packageInfo.versionCode)
         } catch (e: PackageManager.NameNotFoundException) {
             Logger.e(e)
         }

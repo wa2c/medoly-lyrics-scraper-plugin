@@ -61,7 +61,7 @@ object AppUtils {
     fun coalesce(vararg texts: String?): String {
         for (text in texts) {
             if (!text.isNullOrEmpty())
-                return text!!
+                return text
         }
         return ""
     }
@@ -98,7 +98,7 @@ object AppUtils {
      * @return Trimmed text.
      */
     fun trimLines(text: String?): String {
-        return if (text.isNullOrEmpty()) "" else text!!
+        return if (text.isNullOrEmpty()) "" else text
                 .replace("(?m)^[\\t 　]*".toRegex(), "")
                 .replace("(?m)[\\t 　]*$".toRegex(), "")
                 .trim { it <= ' ' }
@@ -112,7 +112,7 @@ object AppUtils {
      */
     fun unifyEOLCode(text: String?, eol: String = "\r\n"): String {
         return if (text.isNullOrEmpty()) ""
-            else "\r\n|[\n\r\u2028\u2029\u0085]".toRegex().replace(text!!, eol)
+            else "\r\n|[\n\r\u2028\u2029\u0085]".toRegex().replace(text, eol)
     }
 
     /**
@@ -139,7 +139,7 @@ object AppUtils {
      * @return removed text.
      */
     fun removeParentheses(text: String?): String {
-        return if (text.isNullOrEmpty()) "" else text!!
+        return if (text.isNullOrEmpty()) "" else text
                 .replace("([^\\(]+)\\(.*?\\)".toRegex(), "$1")
                 .replace("([^\\[]+)\\[.*?\\]".toRegex(), "$1")
                 .replace("([^\\{]+)\\{.*?\\}".toRegex(), "$1")
@@ -163,7 +163,7 @@ object AppUtils {
      * @return removed text.
      */
     fun removeDash(text: String?): String {
-        return if (text.isNullOrEmpty()) "" else text!!
+        return if (text.isNullOrEmpty()) "" else text
                 .replace("\\s+(-|－|―|ー|ｰ|~|～|〜|〰|=|＝).*".toRegex(), "")
     }
 
@@ -173,7 +173,7 @@ object AppUtils {
      * @return removed text.
      */
     fun removeTextInfo(text: String?): String {
-        return if (text.isNullOrEmpty()) "" else text!!
+        return if (text.isNullOrEmpty()) "" else text
                 .replace("(?i)[\\(\\<\\[\\{\\s]?off vocal.*".toRegex(), "")
                 .replace("(?i)[\\(\\<\\[\\{\\s]?no vocal.*".toRegex(), "")
                 .replace("(?i)[\\(\\<\\[\\{\\s]?less vocal.*".toRegex(), "")

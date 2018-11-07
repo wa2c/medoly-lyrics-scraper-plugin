@@ -12,8 +12,7 @@ import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
-
+import com.wa2c.android.prefs.Prefs
 
 
 /**
@@ -36,7 +35,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     /** Notification manager. */
     private var notificationManager : NotificationManager? = null
     /** True if initialized. */
-    private var initialized = false;
+    private var initialized = false
 
 
 

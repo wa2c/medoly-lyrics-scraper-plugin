@@ -67,7 +67,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
             val cache = cacheHelper.selectCache(titleText, artistText)
             if (cache != null) {
                 sendLyricsResult(cache.makeResultItem())
-                return;
+                return
             }
         }
 
@@ -156,7 +156,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
             sharedLyricsDir.mkdir()
         }
         val sharedLyricsFile = File(sharedLyricsDir, SHARED_FILE_NAME)
-        sharedLyricsFile.writeText(lyricsText!!)
+        sharedLyricsFile.writeText(lyricsText)
 
         return FileProvider.getUriForFile(this, PROVIDER_AUTHORITIES, sharedLyricsFile)
     }

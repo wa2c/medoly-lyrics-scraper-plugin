@@ -25,7 +25,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcher
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Prefs
+import com.wa2c.android.prefs.Prefs
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.layout_search_item.view.*
 import kotlinx.coroutines.experimental.android.UI
