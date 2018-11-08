@@ -20,10 +20,10 @@ import com.wa2c.android.prefs.Prefs
 import de.siegmar.fastcsv.reader.CsvReader
 import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.layout_site_item.view.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -78,24 +78,9 @@ class SiteActivity : Activity() {
                 return true
             }
             R.id.menu_update_list -> {
-//                // update list
-//                val task = SpreadSheetReadTask(applicationContext)
-//                task.setOnPropertyActionListener(object: SpreadSheetReadTask.SiteUpdateListener {
-//                    override fun onListUpdated(isSucceeded: Boolean) {
-//                        if (isSucceeded) {
-//                            openGroupList()
-//                            AppUtils.showToast(applicationContext, R.string.message_renew_list_succeeded)
-//                        } else {
-//                            AppUtils.showToast(applicationContext, R.string.message_renew_list_failed)
-//                        }
-//                        groupListView.visibility = View.VISIBLE
-//                        loadingLayout.visibility = View.INVISIBLE
-//                    }
-//                })
-
-                launch (UI)  {
+                GlobalScope.launch(Dispatchers.Main) {
                     val sheetId = getString(if (BuildConfig.DEBUG) R.string.sheet_id_debug else R.string.sheet_id)
-                    val siteResult = async (coroutineContext + CommonPool) {
+                    val siteResult = async(coroutineContext + Dispatchers.Default) {
                         downloadSiteList(sheetId)
                     }
                     if (!siteResult.await()) {
@@ -103,7 +88,7 @@ class SiteActivity : Activity() {
                         return@launch
                     }
 
-                    val groupResult = async (coroutineContext + CommonPool) {
+                    val groupResult = async (coroutineContext + Dispatchers.Default) {
                         downloadGroupList(sheetId)
                     }
                     if (!groupResult.await()) {
@@ -116,75 +101,10 @@ class SiteActivity : Activity() {
 
                     groupListView.visibility = View.VISIBLE
                     loadingLayout.visibility = View.INVISIBLE
-
-
-//                    val sheetId = getString(if (BuildConfig.DEBUG) R.string.sheet_id_debug else R.string.sheet_id)
-//                    val siteGid = getString(if (BuildConfig.DEBUG) R.string.sheet_site_gid_debug else R.string.sheet_site_gid)
-//                    val groupGid = getString(if (BuildConfig.DEBUG) R.string.sheet_group_gid_debug else R.string.sheet_group_gid)
-//                    val siteExportUrl = getString(R.string.sheet_export_uri, sheetId, siteGid)
-//
-//                    val siteTask = async (coroutineContext + CommonPool) {
-//                        val siteUrl = URL(siteExportUrl)
-//                        var con: HttpURLConnection? = null
-//                        try {
-//                            con = siteUrl.openConnection() as HttpURLConnection
-//                            con.requestMethod = "GET"
-//                            con.doInput = true
-//                            con.connect()
-//                            con.inputStream.bufferedReader(Charsets.UTF_8).use {
-//                                try {
-//                                    val csvReader = CsvReader()
-//                                    csvReader.setContainsHeader(true)
-//                                    val csv = csvReader.read(it)
-//                                    val siteList = mutableListOf<Site>()
-//                                    for (row in csv.rows) {
-//                                        val site = Site()
-//                                        site.site_id = row.getField("SITE_ID").toLong()
-//                                        site.group_id = row.getField("GROUP_ID").toLong()
-//                                        site.site_name = row.getField("SITE_NAME")
-//                                        site.site_uri = row.getField("SITE_URI")
-//                                        site.search_uri = row.getField("SEARCH_URI")
-//                                        site.result_page_uri_encoding = row.getField("RESULT_PAGE_URI_ENCODING")
-//                                        site.result_page_encoding = row.getField("RESULT_PAGE_ENCODING")
-//                                        site.result_page_parse_type = row.getField("RESULT_PAGE_PARSE_TYPE")
-//                                        site.result_page_parse_text = row.getField("RESULT_PAGE_PARSE_TEXT")
-//                                        site.lyrics_page_encoding = row.getField("LYRICS_PAGE_ENCODING")
-//                                        site.lyrics_page_parse_type = row.getField("LYRICS_PAGE_PARSE_TYPE")
-//                                        site.lyrics_page_parse_text = row.getField("LYRICS_PAGE_PARSE_TEXT")
-//                                        site.delay = row.getField("DELAY").toLong()
-//                                        site.timeout = row.getField("TIMEOUT").toLong()
-//                                        siteList.add(site)
-//                                    }
-//                                    DbHelper(this@SiteActivity).renewSite(siteList)
-//                                } catch (ex : Exception) {
-//                                    Logger.d(ex)
-//                                }
-//                            }
-//                            true
-//                        }  catch (e: Exception) {
-//                            Logger.d(e)
-//                            false
-//                        } finally {
-//                            con?.disconnect()
-//                        }
-//                    }
-//
-//                    if (siteTask.await()) {
-//                        openGroupList()
-//                        AppUtils.showToast(applicationContext, R.string.message_renew_list_succeeded)
-//                    } else {
-//                        AppUtils.showToast(applicationContext, R.string.message_renew_list_failed)
-//                    }
-//
-//                    groupListView.visibility = View.VISIBLE
-//                    loadingLayout.visibility = View.INVISIBLE
-
-
                 }
 
                 groupListView.visibility = View.INVISIBLE
                 loadingLayout.visibility = View.VISIBLE
-//                task.execute()
                 return true
             }
             R.id.menu_open_sheet -> {

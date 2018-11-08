@@ -17,7 +17,9 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcher
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -174,7 +176,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
         val title = propertyData.getFirst(MediaProperty.TITLE)
         val artist = propertyData.getFirst(MediaProperty.ARTIST)
         val searchCacheHelper = DbHelper(this)
-        launch {
+        GlobalScope.launch(Dispatchers.Default) {
             searchCacheHelper.insertOrUpdateCache(title!!, artist, resultItem)
         }
     }

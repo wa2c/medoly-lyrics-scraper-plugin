@@ -20,9 +20,10 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import kotlinx.android.synthetic.main.activity_cache.*
 import kotlinx.android.synthetic.main.layout_cache_item.view.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -144,8 +145,8 @@ class CacheActivity : Activity() {
                 )
                 dialog.clickListener = DialogInterface.OnClickListener { _, which ->
                     if (which == DialogInterface.BUTTON_POSITIVE) {
-                        launch(UI) {
-                            val result = async {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            val result = async(Dispatchers.Default) {
                                 return@async dbHelper.deleteCache(cacheAdapter.checkedSet)
                             }
                             if (result.await()) {
@@ -199,8 +200,8 @@ class CacheActivity : Activity() {
      * Search cache.
      */
     private fun searchCache(title: String, artist: String) {
-        launch(UI) {
-            val result = async {
+        GlobalScope.launch(Dispatchers.Main) {
+            val result = async(Dispatchers.Default) {
                 return@async dbHelper.searchCache(title, artist)
             }
             cacheAdapter.setList(result.await().toMutableList())

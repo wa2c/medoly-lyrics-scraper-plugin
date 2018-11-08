@@ -21,24 +21,24 @@ class MainActivity : Activity() {
         actionBar.setDisplayShowTitleEnabled(true)
 
         // Search
-        openSearchButton.setOnClickListener({
+        openSearchButton.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
-        })
+        }
 
         // Cache
-        openCacheButton.setOnClickListener({
+        openCacheButton.setOnClickListener {
             startActivity(Intent(this, CacheActivity::class.java))
-        })
+        }
 
         // Site
-        openSitesButton.setOnClickListener({
-            startActivity(Intent(this@MainActivity, SiteActivity::class.java))
-        })
+        openSitesButton.setOnClickListener {
+            startActivity(Intent(this, SiteActivity::class.java))
+        }
 
         // Settings
-        openSettingsButton.setOnClickListener({
+        openSettingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
-        })
+        }
 
         // Launch Medoly
         launchMedolyButton.setOnClickListener {

@@ -28,9 +28,10 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.layout_search_item.view.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 /**
@@ -303,8 +304,8 @@ class SearchActivity : Activity() {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         val title = searchTitleEditText.text.toString()
                         val artist = searchArtistEditText.text.toString()
-                        launch(UI) {
-                            val result = async {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            val result = async(Dispatchers.Default) {
                                 return@async DbHelper(this@SearchActivity).insertOrUpdateCache(title, artist, searchResultAdapter.selectedItem)
                             }
                             if (result.await())

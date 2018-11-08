@@ -67,10 +67,11 @@ dependencies {
     // https://mvnrepository.com/artifact/de.siegmar/fastcsv
     implementation group: 'de.siegmar', name: 'fastcsv', version: '1.0.2'
 
+    // Kotlin
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '0.21.2'
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.0.1'
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-android
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '0.21.2'
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.0.1'
 
 }
 

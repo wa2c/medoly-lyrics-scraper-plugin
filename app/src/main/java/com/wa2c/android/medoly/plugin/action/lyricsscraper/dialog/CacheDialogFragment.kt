@@ -9,9 +9,10 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import kotlinx.android.synthetic.main.dialog_cache.view.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * Cache dialog.
@@ -59,8 +60,8 @@ class CacheDialogFragment : AbstractDialogFragment() {
      */
     private fun deleteLyrics(cache: SearchCache) {
         val searchCacheHelper = DbHelper(this@CacheDialogFragment.activity)
-        launch(UI) {
-            val deleteResult = async {
+        GlobalScope.launch(Dispatchers.Main) {
+            val deleteResult = async(Dispatchers.Default) {
                 try {
                     searchCacheHelper.insertOrUpdateCache(cache.title, cache.artist, null)
                 } catch (e: Exception) {
@@ -79,8 +80,8 @@ class CacheDialogFragment : AbstractDialogFragment() {
      */
     private fun deleteCache(cache: SearchCache) {
         val searchCacheHelper = DbHelper(this@CacheDialogFragment.activity)
-        launch(UI) {
-            val deleteResult = async {
+        GlobalScope.launch(Dispatchers.Main) {
+            val deleteResult = async(Dispatchers.Default) {
                 try {
                     searchCacheHelper.deleteCache(listOf(cache))
                 } catch (e: Exception) {
