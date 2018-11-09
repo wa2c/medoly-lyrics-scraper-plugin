@@ -24,7 +24,6 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.exception.SiteNotSele
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.layout_search_item.view.*
@@ -32,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 /**
@@ -128,7 +128,7 @@ class SearchActivity : Activity() {
             override fun onError(message: String?) {
                 val text = message ?: getString(R.string.message_lyrics_failure)
                 AppUtils.showToast(this@SearchActivity, text)
-                Logger.d(text)
+                Timber.d(text)
                 if (webView.currentState == LyricsSearcherWebView.STATE_SEARCH) {
                     showSearchResult(null)
                 }
@@ -197,7 +197,7 @@ class SearchActivity : Activity() {
             } catch (e: SiteNotFoundException) {
                 AppUtils.showToast(this, R.string.message_no_site)
             } catch (e: Exception) {
-                Logger.e(e)
+                Timber.e(e)
             }
         }
 
@@ -219,7 +219,7 @@ class SearchActivity : Activity() {
             } catch (e: SiteNotFoundException) {
                 AppUtils.showToast(this, R.string.message_no_site)
             } catch (e: Exception) {
-                Logger.e(e)
+                Timber.e(e)
             }
         }
 
@@ -347,7 +347,7 @@ class SearchActivity : Activity() {
                 }
                 AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
             } catch (e: Exception) {
-                Logger.e(e)
+                Timber.e(e)
                 AppUtils.showToast(this, R.string.message_lyrics_save_failed)
             }
         }
@@ -369,7 +369,7 @@ class SearchActivity : Activity() {
                 searchResultAdapter.addAll(itemList)
             searchResultAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
         } finally {
             searchResultListView.visibility = View.VISIBLE
             searchResultLoadingLayout.visibility = View.INVISIBLE

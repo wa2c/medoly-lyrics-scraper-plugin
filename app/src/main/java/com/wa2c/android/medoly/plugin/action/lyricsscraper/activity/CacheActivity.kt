@@ -17,13 +17,13 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.CacheDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.ConfirmDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import kotlinx.android.synthetic.main.activity_cache.*
 import kotlinx.android.synthetic.main.layout_cache_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 
 
@@ -182,7 +182,7 @@ class CacheActivity : Activity() {
                 }
                 AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
             } catch (e: Exception) {
-                Logger.e(e)
+                Timber.e(e)
                 AppUtils.showToast(this, R.string.message_lyrics_save_failed)
             }
         }

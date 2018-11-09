@@ -10,8 +10,8 @@ import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.medoly.library.PluginTypeCategory
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
+import timber.log.Timber
 
 
 /**
@@ -21,7 +21,7 @@ class PluginReceivers {
 
     abstract class AbstractPluginReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Logger.d("onReceive: " + this.javaClass.simpleName)
+            Timber.d("onReceive: " + this.javaClass.simpleName)
 
             val pluginIntent = MediaPluginIntent(intent)
             val propertyData = pluginIntent.propertyData ?: return

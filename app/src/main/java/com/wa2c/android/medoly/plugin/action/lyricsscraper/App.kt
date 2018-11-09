@@ -3,8 +3,8 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper
 import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
+import timber.log.Timber
 
 /**
  * App class.
@@ -12,6 +12,7 @@ import com.wa2c.android.prefs.Prefs
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         versionUp(this)
     }
 
@@ -25,7 +26,7 @@ class App : Application() {
             try {
                 context.deleteDatabase("medoly_lyricsscraper")
             } catch (e: Exception) {
-                Logger.d(e)
+                Timber.d(e)
             }
 
             // deleteCache prefs
@@ -48,7 +49,7 @@ class App : Application() {
             if (previousVersion < packageInfo.versionCode)
                 pref.putInt(APP_PREVIOUS_VERSION, packageInfo.versionCode)
         } catch (e: PackageManager.NameNotFoundException) {
-            Logger.e(e)
+            Timber.e(e)
         }
     }
 

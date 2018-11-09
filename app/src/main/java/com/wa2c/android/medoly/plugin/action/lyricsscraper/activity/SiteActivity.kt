@@ -15,7 +15,6 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteGroup
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
 import de.siegmar.fastcsv.reader.CsvReader
 import kotlinx.android.synthetic.main.activity_group.*
@@ -24,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -170,12 +170,12 @@ class SiteActivity : Activity() {
                     }
                     DbHelper(this@SiteActivity).renewSite(siteList)
                 } catch (ex: Exception) {
-                    Logger.d(ex)
+                    Timber.d(ex)
                 }
             }
             return true
         }  catch (e: Exception) {
-            Logger.d(e)
+            Timber.d(e)
             return false
         } finally {
             con?.disconnect()
@@ -210,12 +210,12 @@ class SiteActivity : Activity() {
                     }
                     DbHelper(this@SiteActivity).renewSiteGroup(groupList)
                 } catch (ex: Exception) {
-                    Logger.d(ex)
+                    Timber.d(ex)
                 }
             }
             return true
         }  catch (e: Exception) {
-            Logger.d(e)
+            Timber.d(e)
             return false
         } finally {
             con?.disconnect()
@@ -374,7 +374,7 @@ class SiteActivity : Activity() {
 //
 //                    return result > 0
 //                } catch (e: Exception) {
-//                    Logger.e(e)
+//                    Timber.e(e)
 //                    return false
 //                }
 //
@@ -408,7 +408,7 @@ class SiteActivity : Activity() {
 //
 //                    return siteList.size
 //                } catch (e: Exception) {
-//                    Logger.e(e)
+//                    Timber.e(e)
 //                    return -1
 //                }
 //
@@ -432,7 +432,7 @@ class SiteActivity : Activity() {
 //                    db.renewSiteGroup(groupList)
 //                    return groupList.size
 //                } catch (e: Exception) {
-//                    Logger.e(e)
+//                    Timber.e(e)
 //                    return -1
 //                }
 //

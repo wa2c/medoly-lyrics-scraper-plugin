@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import timber.log.Timber
 
 /**
  * Toast receiver.
@@ -25,7 +26,7 @@ class ToastReceiver : BroadcastReceiver() {
             val intent = Intent(context, ToastReceiver::class.java)
             intent.putExtra(MESSAGE_TOAST, text)
             context.sendBroadcast(intent)
-            Logger.d(text)
+            Timber.d(text)
         }
     }
 

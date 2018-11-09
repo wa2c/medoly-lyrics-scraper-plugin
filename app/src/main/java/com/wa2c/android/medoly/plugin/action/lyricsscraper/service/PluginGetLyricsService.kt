@@ -16,10 +16,10 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.LyricsSearcherWebView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 
 
@@ -30,12 +30,12 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        Logger.d("onStartCommand")
+        Timber.d("onStartCommand")
 
         try {
             getLyrics()
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
             //AppUtils.showToast(this, R.string.error_app);
         }
 
@@ -44,7 +44,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
 
     override fun onHandleIntent(intent: Intent?) {
         super.onHandleIntent(intent)
-        Logger.d("onHandleIntent")
+        Timber.d("onHandleIntent")
 
         // prevent service destroying
         val startTime = System.currentTimeMillis()
@@ -98,9 +98,9 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
             }
             override fun onError(message: String?) {
                 if (message.isNullOrEmpty())
-                    Logger.e(getString(R.string.message_lyrics_failure))
+                    Timber.e(getString(R.string.message_lyrics_failure))
                 else
-                    Logger.d(message)
+                    Timber.d(message)
 
                 // save to cache.
                 if (prefs.getBoolean(R.string.pref_cache_result, true) && prefs.getBoolean(R.string.pref_cache_non_result, true)) {

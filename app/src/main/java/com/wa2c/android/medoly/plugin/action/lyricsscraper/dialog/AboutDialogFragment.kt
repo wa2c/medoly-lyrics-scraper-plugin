@@ -13,8 +13,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import kotlinx.android.synthetic.main.dialog_about.view.*
+import timber.log.Timber
 import java.util.regex.Pattern
 
 /**
@@ -34,7 +34,7 @@ class AboutDialogFragment : AbstractDialogFragment() {
             val packageInfo = activity.packageManager.getPackageInfo(activity.packageName, PackageManager.GET_ACTIVITIES)
             content.dialogAboutAppVersionTextView.text = getString(R.string.label_dialog_about_ver, packageInfo.versionName)
         } catch (e: PackageManager.NameNotFoundException) {
-            Logger.e(e)
+            Timber.e(e)
         }
 
         // Email

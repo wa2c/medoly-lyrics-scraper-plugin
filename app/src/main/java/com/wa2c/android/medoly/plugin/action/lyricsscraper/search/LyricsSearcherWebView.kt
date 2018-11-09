@@ -13,9 +13,9 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
 import org.jsoup.Jsoup
+import timber.log.Timber
 import us.codecraft.xsoup.Xsoup
 import java.io.UnsupportedEncodingException
 import java.net.URI
@@ -101,7 +101,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         this.site = site
 
         searchUri = replaceProperty(site.search_uri, true, false)
-        Logger.d("Search URL: $searchUri")
+        Timber.d("Search URL: $searchUri")
 
         try {
             currentState = STATE_SEARCH
@@ -158,10 +158,10 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                     } catch (ignore: Exception) {
                     }
                 }
-                Logger.d(searchResultItemList)
+                Timber.d(searchResultItemList.toString())
             } else if (site!!.result_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                 val parseText = replaceProperty(site!!.result_page_parse_text, false, true)
-                Logger.d("Parse Text: $parseText")
+                Timber.d("Parse Text: $parseText")
 
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE)
                 val m = p.matcher(html)
@@ -185,7 +185,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                 }
             }
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
         } finally {
             webHandler.post {
                 if (!searchResultItemList.isEmpty())
@@ -200,7 +200,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
     fun getLyrics(html: String) {
         var lyrics: String? = null
         try {
-            Logger.d("Lyrics HTML: $html")
+            Timber.d("Lyrics HTML: $html")
 
             if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_XPATH) {
                 // XPath
@@ -215,7 +215,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             } else if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                 // Regular expression
                 val parseText = replaceProperty(site!!.lyrics_page_parse_text, false, true)
-                Logger.d("Parse Text: $parseText")
+                Timber.d("Parse Text: $parseText")
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
                 val m = p.matcher(html)
                 if (m.find()) {
@@ -225,7 +225,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
             lyrics = AppUtils.adjustHtmlText(lyrics)
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
         } finally {
             webHandler.post {
                 handleListener?.onGetLyrics(lyrics)
@@ -333,7 +333,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                         text = URLEncoder.encode(text, site!!.result_page_uri_encoding)
                     outputBuffer.append(text)
                 } catch (e: UnsupportedEncodingException) {
-                    Logger.e(e)
+                    Timber.e(e)
                 }
 
             }

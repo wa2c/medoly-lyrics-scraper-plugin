@@ -6,13 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.wa2c.android.medoly.library.ExtraData
-
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Logger
 import com.wa2c.android.prefs.Prefs
+import timber.log.Timber
 
 
 /**
@@ -42,7 +41,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     @SuppressLint("NewApi")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        Logger.d("onStartCommand")
+        Timber.d("onStartCommand")
 
         initialize(intent)
 
@@ -51,7 +50,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
 
     @SuppressLint("NewApi")
     override fun onHandleIntent(intent: Intent?) {
-        Logger.d("onHandleIntent")
+        Timber.d("onHandleIntent")
 
         initialize(intent)
 
@@ -67,7 +66,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
                 startForeground(NOTIFICATION_ID, builder.build())
             }
         } catch (e: Exception) {
-            Logger.e(e)
+            Timber.e(e)
         }
     }
 
@@ -98,7 +97,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     @SuppressLint("NewApi")
     override fun onDestroy() {
         super.onDestroy()
-        Logger.d("onDestroy" + this.javaClass.simpleName)
+        Timber.d("onDestroy" + this.javaClass.simpleName)
 
         if (notificationManager != null) {
             notificationManager!!.deleteNotificationChannel(NOTIFICATION_CHANNEL_ID)
