@@ -23,9 +23,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_search"
+                android:drawableStart="@drawable/ic_find"
                 android:drawableLeft="@drawable/ic_find"
-                android:drawableStart="@drawable/ic_find" />
+                android:text="@string/title_activity_search" />
 
             <Button
                 android:id="@+id/openCacheButton"
@@ -33,9 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_cache"
+                android:drawableStart="@drawable/ic_db"
                 android:drawableLeft="@drawable/ic_db"
-                android:drawableStart="@drawable/ic_db"/>
+                android:text="@string/title_activity_cache" />
 
             <Button
                 android:id="@+id/openSitesButton"
@@ -43,9 +43,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_site"
-                android:drawableLeft="@drawable/ic_list"
-                android:drawableStart="@drawable/ic_list"/>
+                android:drawableStart="@drawable/ic_web"
+                android:drawableLeft="@drawable/ic_web"
+                android:text="@string/title_activity_site" />
 
             <Button
                 android:id="@+id/openSettingsButton"
@@ -53,9 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_settings"
+                android:drawableStart="@drawable/ic_settings"
                 android:drawableLeft="@drawable/ic_settings"
-                android:drawableStart="@drawable/ic_settings" />
+                android:text="@string/title_activity_settings" />
 
             <Button
                 android:id="@+id/launchMedolyButton"
@@ -63,6 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
+                android:drawableStart="@drawable/ic_medoly"
+                android:drawableLeft="@drawable/ic_medoly"
                 android:text="@string/label_button_launch_medoly" />
 
         </LinearLayout>
