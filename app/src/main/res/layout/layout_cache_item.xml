@@ -60,6 +60,6 @@
         android:layout_height="32dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_action_file" />
+        android:src="@drawable/ic_lyrics" />
 
 </RelativeLayout>

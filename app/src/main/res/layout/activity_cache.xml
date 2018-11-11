@@ -58,7 +58,7 @@
                 android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="@android:dimen/app_icon_size"
                 android:id="@+id/cacheInputClearButton"
-                android:src="@drawable/ic_action_cancel"
+                android:src="@drawable/ic_close"
                 android:contentDescription="@null"
                 android:scaleType="centerCrop" />
 
@@ -84,7 +84,7 @@
                 android:labelFor="@id/cacheArtistEditText"/>
 
             <ImageButton
-                android:src="@drawable/ic_action_search"
+                android:src="@drawable/ic_search"
                 android:layout_width="@android:dimen/app_icon_size"
                 android:layout_height="@android:dimen/app_icon_size"
                 android:id="@+id/cacheInputSearchButton"

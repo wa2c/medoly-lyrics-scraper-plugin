@@ -23,7 +23,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_search" />
+                android:text="@string/title_activity_search"
+                android:drawableLeft="@drawable/ic_find"
+                android:drawableStart="@drawable/ic_find" />
 
             <Button
                 android:id="@+id/openCacheButton"
@@ -31,7 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_cache" />
+                android:text="@string/title_activity_cache"
+                android:drawableLeft="@drawable/ic_db"
+                android:drawableStart="@drawable/ic_db"/>
 
             <Button
                 android:id="@+id/openSitesButton"
@@ -39,7 +43,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_site" />
+                android:text="@string/title_activity_site"
+                android:drawableLeft="@drawable/ic_list"
+                android:drawableStart="@drawable/ic_list"/>
 
             <Button
                 android:id="@+id/openSettingsButton"
@@ -47,7 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/main_button_margin"
-                android:text="@string/title_activity_settings" />
+                android:text="@string/title_activity_settings"
+                android:drawableLeft="@drawable/ic_settings"
+                android:drawableStart="@drawable/ic_settings" />
 
             <Button
                 android:id="@+id/launchMedolyButton"

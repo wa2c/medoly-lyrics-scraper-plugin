@@ -43,6 +43,6 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:id="@+id/siteLaunchImageButton"
-        android:src="@drawable/ic_action_launch" />
+        android:src="@drawable/ic_launch" />
 
 </LinearLayout>

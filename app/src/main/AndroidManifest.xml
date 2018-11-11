@@ -16,6 +16,7 @@
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
@@ -61,7 +62,7 @@
         <receiver
             android:name=".service.PluginReceivers$EventGetLyricsReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_download"
+            android:icon="@drawable/ic_lyrics"
             android:label="@string/label_execute_get_lyrics">
 
             <!-- Get lyrics -->
@@ -82,7 +83,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteGetLyricsReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_download"
+            android:icon="@drawable/ic_lyrics"
             android:label="@string/label_execute_get_lyrics">
             <intent-filter>
                 <action android:name="com.wa2c.android.medoly.plugin.action.ACTION_MEDIA" />
@@ -96,7 +97,7 @@
         <receiver
             android:name=".service.PluginReceivers$ExecuteSearchLyricsReceiver"
             android:exported="true"
-            android:icon="@drawable/ic_action_find"
+            android:icon="@drawable/ic_find"
             android:label="@string/label_execute_search_lyrics"
             android:permission="">
             <intent-filter>
