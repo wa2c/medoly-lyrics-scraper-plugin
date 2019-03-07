@@ -48,9 +48,9 @@ class CacheDialogFragment : AbstractDialogFragment() {
         builder.setTitle(R.string.title_activity_cache)
         builder.setView(contentView)
         builder.setNeutralButton(R.string.label_close, null)
-        builder.setNegativeButton(R.string.label_dialog_cache_research, clickListener)
+        builder.setNegativeButton(R.string.label_dialog_cache_research, null)
         if (result != null && !result.lyrics.isNullOrEmpty()) {
-            builder.setPositiveButton(R.string.menu_search_save_file, clickListener)
+            builder.setPositiveButton(R.string.menu_search_save_file, null)
         }
         return builder.create()
     }
@@ -71,7 +71,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
             val r = deleteResult.await()
             if (r != true)
                 AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
-            onClickButton(dialog, DIALOG_RESULT_DELETE_LYRICS)
+            clickListener?.invoke(dialog, DIALOG_RESULT_DELETE_LYRICS, null)
         }
     }
 
@@ -91,7 +91,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
             val r = deleteResult.await()
             if (r != true)
                 AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
-            onClickButton(dialog, DIALOG_RESULT_DELETE_CACHE)
+            clickListener?.invoke(dialog, DIALOG_RESULT_DELETE_CACHE, null)
         }
     }
 

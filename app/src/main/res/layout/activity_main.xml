@@ -1,76 +1,80 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.MainActivity"
-    tools:ignore="MergeRootFrame">
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.MainActivity"
+        tools:ignore="MergeRootFrame">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/openSearchButton"
-                android:layout_width="@dimen/main_button_width"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/main_button_margin"
-                android:drawableStart="@drawable/ic_find"
-                android:drawableLeft="@drawable/ic_find"
-                android:text="@string/title_activity_search" />
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/openCacheButton"
-                android:layout_width="@dimen/main_button_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/main_button_margin"
-                android:drawableStart="@drawable/ic_db"
-                android:drawableLeft="@drawable/ic_db"
-                android:text="@string/title_activity_cache" />
+                <Button
+                    android:id="@+id/openSearchButton"
+                    android:layout_width="@dimen/main_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/main_button_margin"
+                    android:drawableStart="@drawable/ic_find"
+                    android:drawableLeft="@drawable/ic_find"
+                    android:text="@string/title_activity_search" />
 
-            <Button
-                android:id="@+id/openSitesButton"
-                android:layout_width="@dimen/main_button_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/main_button_margin"
-                android:drawableStart="@drawable/ic_web"
-                android:drawableLeft="@drawable/ic_web"
-                android:text="@string/title_activity_site" />
+                <Button
+                    android:id="@+id/openCacheButton"
+                    android:layout_width="@dimen/main_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/main_button_margin"
+                    android:drawableStart="@drawable/ic_db"
+                    android:drawableLeft="@drawable/ic_db"
+                    android:text="@string/title_activity_cache" />
 
-            <Button
-                android:id="@+id/openSettingsButton"
-                android:layout_width="@dimen/main_button_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/main_button_margin"
-                android:drawableStart="@drawable/ic_settings"
-                android:drawableLeft="@drawable/ic_settings"
-                android:text="@string/title_activity_settings" />
+                <Button
+                    android:id="@+id/openSitesButton"
+                    android:layout_width="@dimen/main_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/main_button_margin"
+                    android:drawableStart="@drawable/ic_web"
+                    android:drawableLeft="@drawable/ic_web"
+                    android:text="@string/title_activity_site" />
 
-            <Button
-                android:id="@+id/launchMedolyButton"
-                android:layout_width="@dimen/main_button_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/main_button_margin"
-                android:drawableStart="@drawable/ic_medoly"
-                android:drawableLeft="@drawable/ic_medoly"
-                android:text="@string/label_button_launch_medoly" />
+                <Button
+                    android:id="@+id/openSettingsButton"
+                    android:layout_width="@dimen/main_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/main_button_margin"
+                    android:drawableStart="@drawable/ic_settings"
+                    android:drawableLeft="@drawable/ic_settings"
+                    android:text="@string/title_activity_settings" />
 
-        </LinearLayout>
-    </ScrollView>
+                <Button
+                    android:id="@+id/launchMedolyButton"
+                    android:layout_width="@dimen/main_button_width"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/main_button_margin"
+                    android:drawableStart="@drawable/ic_medoly"
+                    android:drawableLeft="@drawable/ic_medoly"
+                    android:text="@string/label_button_launch_medoly" />
 
-</FrameLayout>
+            </LinearLayout>
+        </ScrollView>
 
+    </FrameLayout>
+
+</layout>
 
 

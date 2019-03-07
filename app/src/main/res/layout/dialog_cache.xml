@@ -1,49 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-        <Button
-            android:text="@string/label_dialog_cache_delete_lyrics"
-            android:layout_height="wrap_content"
-            android:id="@+id/dialogCacheDeleteLyricsButton"
-            android:layout_weight="1"
-            android:layout_width="144dp" />
-
-        <Button
-            android:text="@string/label_dialog_cache_delete_cache"
-            android:layout_width="144dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/dialogCacheDeleteCacheButton"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dialog_vertical_margin"
-            android:paddingLeft="@dimen/dialog_horizontal_margin"
-            android:paddingRight="@dimen/dialog_horizontal_margin"
-            android:paddingTop="@dimen/dialog_vertical_margin"
-            android:gravity="fill_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/dialogCacheDeleteLyricsButton"
+                android:layout_width="144dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/dialogCacheLyricsTextView"
-                android:layout_gravity="center_horizontal" />
+                android:layout_weight="1"
+                android:text="@string/label_dialog_cache_delete_lyrics" />
+
+            <Button
+                android:id="@+id/dialogCacheDeleteCacheButton"
+                android:layout_width="144dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_dialog_cache_delete_cache" />
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="fill_horizontal"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dialog_horizontal_margin"
+                android:paddingTop="@dimen/dialog_vertical_margin"
+                android:paddingRight="@dimen/dialog_horizontal_margin"
+                android:paddingBottom="@dimen/dialog_vertical_margin">
+
+                <TextView
+                    android:id="@+id/dialogCacheLyricsTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</layout>

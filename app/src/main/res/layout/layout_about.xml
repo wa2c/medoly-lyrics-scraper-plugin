@@ -1,232 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:padding="16dp" >
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-	<RelativeLayout
-		android:id="@+id/aboutAppRelativeLayout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true"
-		android:layout_centerHorizontal="true" >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/dialog_horizontal_margin"
+        android:paddingTop="@dimen/dialog_vertical_margin"
+        android:paddingEnd="@dimen/dialog_horizontal_margin"
+        android:paddingBottom="@dimen/dialog_vertical_margin">
 
-		<ImageView
-		    android:id="@+id/aboutAppIconImageView"
-		    android:layout_width="48dp"
-		    android:layout_height="48dp"
-		    android:layout_marginRight="8dp"
-		    android:contentDescription="@null"
-		    android:src="@drawable/ic_launcher" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-		<TextView
-		    android:id="@+id/aboutAppNameTextView"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignParentTop="true"
-		    android:layout_toRightOf="@+id/aboutAppIconImageView"
-		    android:text="@string/app_name"
-		    android:textAppearance="?android:attr/textAppearanceMedium" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal">
 
-		<TextView
-			android:id="@+id/abountAppDescriptionTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@+id/aboutAppNameTextView"
-			android:layout_below="@+id/aboutAppNameTextView"
-			android:text="@string/app_description"
-			android:textAppearance="?android:attr/textAppearanceSmall" />
+                <ImageView
+                    android:id="@+id/dialogAboutAppIconImageView"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_launcher" />
 
-		<TextView
-			android:id="@+id/aboutAppVersionTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@+id/aboutAppNameTextView"
-			android:layout_below="@+id/abountAppDescriptionTextView" />
-	</RelativeLayout>
+                <TextView
+                    android:id="@+id/dialogAboutAppNameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/dialogAboutAppIconImageView"
+                    android:layout_toRightOf="@+id/dialogAboutAppIconImageView"
+                    android:text="@string/app_name"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/primary_text_dark"
+                    tools:textStyle="bold" />
 
-	<RelativeLayout
-		android:id="@+id/aboutDeveloperRelativeLayout"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/aboutAppRelativeLayout"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="18dp"
-		android:gravity="center" >
+                <TextView
+                    android:id="@+id/dialogAboutAppVersionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dialogAboutAppNameTextView"
+                    android:layout_alignStart="@+id/dialogAboutAppNameTextView"
+                    android:layout_alignLeft="@+id/dialogAboutAppNameTextView"
+                    android:layout_alignEnd="@+id/dialogAboutAppNameTextView"
+                    android:layout_alignRight="@+id/dialogAboutAppNameTextView"
+                    android:gravity="center_horizontal"
+                    android:text="@string/label_dialog_about_ver" />
 
-		<TextView
-			android:id="@+id/aboutDeveloperTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:lines="1"
-			android:paddingRight="4dp"
-			android:singleLine="true"
-			android:text="Developer:" />
+                <TextView
+                    android:id="@+id/dialogAboutAppDescriptionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dialogAboutAppVersionTextView"
+                    android:layout_alignStart="@+id/dialogAboutAppNameTextView"
+                    android:layout_alignLeft="@+id/dialogAboutAppNameTextView"
+                    android:text="@string/app_description"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
 
-		<TextView
-			android:id="@+id/aboutDeveloperNameTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentTop="true"
-			android:layout_toRightOf="@+id/aboutDeveloperTextView"
-			android:lines="1"
-			android:singleLine="true"
-			android:text="developer" />
+            </RelativeLayout>
 
-		<TextView
-			android:id="@+id/aboutLinkTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/aboutDeveloperTextView"
-			android:layout_toLeftOf="@+id/aboutGooglePlayTextView"
-			android:lines="1"
-			android:paddingRight="4dp"
-			android:singleLine="true"
-			android:text="Link:" />
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                tools:layout_width="wrap_content">
 
-		<TextView
-			android:id="@+id/aboutGooglePlayTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@+id/aboutDeveloperNameTextView"
-			android:layout_below="@+id/aboutDeveloperNameTextView"
-			android:lines="1"
-			android:singleLine="true"
-			android:text="Google Play" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-		<TextView
-			android:id="@+id/aboutContactTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/aboutLinkTextView"
-			android:layout_toLeftOf="@+id/aboutEmailTextView"
-			android:lines="1"
-			android:paddingRight="4dp"
-			android:singleLine="true"
-			android:text="Email:" />
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="@string/label_dialog_about_developer"
+                        android:textColor="@android:color/secondary_text_dark" />
 
-		<TextView
-			android:id="@+id/aboutEmailTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignLeft="@+id/aboutDeveloperNameTextView"
-			android:layout_below="@+id/aboutGooglePlayTextView"
-			android:autoLink="email"
-			android:lines="1"
-			android:singleLine="true"
-			android:text="mail" />
-	</RelativeLayout>
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_header_separator"
+                        android:textColor="@android:color/secondary_text_dark" />
 
-	<RelativeLayout
-		android:id="@+id/aboutLibraryRelativeLayout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/aboutDeveloperRelativeLayout"
-		android:layout_centerHorizontal="true"
-		android:layout_marginTop="16dp"
-		android:gravity="center"
-		android:visibility="gone" >
+                    <TextView
+                        android:id="@+id/dialogAboutDeveloperTextView"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_author" />
+                </TableRow>
 
-		<TextView
-			android:id="@+id/aboutLibraryTextView"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:gravity="center"
-			android:lines="1"
-			android:text="[Library]"
-			android:textStyle="bold" />
 
-		<TextView
-			android:id="@+id/aboutLibraryJaudiotaggerTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_below="@+id/aboutLibraryTextView"
-			android:layout_marginTop="8dp"
-			android:lines="1"
-			android:text="Jaudiotagger"
-			android:textStyle="bold" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-		<TextView
-			android:id="@+id/aboutLibraryJaudiotaggerUrlTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_alignRight="@+id/aboutLibraryJuniversalchardetUrlTextView"
-			android:layout_below="@+id/aboutLibraryJaudiotaggerTextView"
-			android:autoLink="web"
-			android:ellipsize="end"
-			android:lines="1"
-			android:text="http://www.jthink.net/jaudiotagger/" />
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="@string/label_dialog_about_email"
+                        android:textColor="@android:color/secondary_text_dark" />
 
-		<TextView
-			android:id="@+id/aboutLibraryJuniversalchardetTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_below="@+id/aboutLibraryJaudiotaggerUrlTextView"
-			android:layout_marginTop="8dp"
-			android:lines="1"
-			android:text="juniversalchardet"
-			android:textStyle="bold" />
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_header_separator"
+                        android:textColor="@android:color/secondary_text_dark" />
 
-		<TextView
-			android:id="@+id/aboutLibraryJuniversalchardetUrlTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentRight="true"
-			android:layout_below="@+id/aboutLibraryJuniversalchardetTextView"
-			android:autoLink="web"
-			android:ellipsize="end"
-			android:lines="1"
-			android:text="http://code.google.com/p/juniversalchardet/" />
+                    <TextView
+                        android:id="@+id/dialogAboutEmailTextView"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autoLink="email"
+                        android:text="@string/app_mail_domain" />
+                </TableRow>
 
-		<TextView
-			android:id="@+id/aboutLibraryDragSortListViewTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_below="@+id/aboutLibraryJuniversalchardetUrlTextView"
-			android:layout_marginTop="8dp"
-			android:lines="1"
-			android:text="DragSortListView"
-			android:textStyle="bold" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-		<TextView
-			android:id="@+id/aboutLibraryDragSortListViewUrlTextView"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentLeft="true"
-			android:layout_alignParentRight="true"
-			android:layout_below="@+id/aboutLibraryDragSortListViewTextView"
-			android:autoLink="web"
-			android:ellipsize="end"
-			android:lines="1"
-			android:text="https://github.com/bauerca/drag-sort-listview" />
-	</RelativeLayout>
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="@string/label_dialog_about_license"
+                        android:textColor="@android:color/secondary_text_dark" />
 
-	<LinearLayout
-		android:id="@+id/abountLibraryLayout"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_alignLeft="@+id/aboutDeveloperRelativeLayout"
-		android:layout_alignRight="@+id/aboutDeveloperRelativeLayout"
-		android:layout_below="@+id/aboutDeveloperRelativeLayout"
-		android:layout_marginTop="16dp"
-		android:gravity="center"
-		android:orientation="vertical" >
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_header_separator"
+                        android:textColor="@android:color/secondary_text_dark" />
 
-		<TextView
-			android:id="@+id/aboutLibraryTextView2"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:gravity="center"
-			android:lines="1"
-			android:text="[Library]"
-			android:textStyle="bold" />
-	</LinearLayout>
+                    <TextView
+                        android:id="@+id/dialogAboutLicenseTextView"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/app_license" />
+                </TableRow>
 
-</RelativeLayout>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="@string/label_dialog_about_privacy_policy"
+                        android:textColor="@android:color/secondary_text_dark" />
+
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_header_separator"
+                        android:textColor="@android:color/secondary_text_dark" />
+
+                    <TextView
+                        android:id="@+id/dialogAboutPrivacyPolicyTextView"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_dialog_about_link" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:text="@string/label_dialog_about_google_play"
+                        android:textColor="@android:color/secondary_text_dark" />
+
+                    <TextView
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_header_separator"
+                        android:textColor="@android:color/secondary_text_dark" />
+
+                    <TextView
+                        android:id="@+id/dialogAboutGooglePlayTextView"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_dialog_about_link" />
+                </TableRow>
+
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/dialogAboutLibraryLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="fill_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:lines="1"
+                    android:text="@string/label_dialog_about_library"
+                    android:textColor="@android:color/secondary_text_dark" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>

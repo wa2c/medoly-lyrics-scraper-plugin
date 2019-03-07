@@ -1,184 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activity.SearchActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TableLayout
-        android:id="@+id/searchInputLayout"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        tools:stretchColumns="1">
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        tools:context=".activity.SearchActivity">
 
-        <TableRow
+        <TableLayout
+            android:id="@+id/searchInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="@android:dimen/app_icon_size">
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            tools:stretchColumns="1">
 
-            <Button
-                android:id="@+id/searchTitleButton"
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="@android:dimen/app_icon_size">
+
+                <Button
+                    android:id="@+id/searchTitleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:gravity="center_vertical|center_horizontal|center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="@string/label_title" />
+
+                <EditText
+                    android:id="@+id/searchTitleEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="textPersonName"
+                    android:labelFor="@+id/searchTitleEditText"
+                    tools:layout_width="match_parent" />
+
+                <ImageButton
+                    android:id="@+id/searchClearButton"
+                    android:layout_width="@android:dimen/app_icon_size"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:contentDescription="@null"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_close" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="@android:dimen/app_icon_size">
+
+                <Button
+                    android:id="@+id/searchArtistButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="@string/label_artist" />
+
+                <EditText
+                    android:id="@+id/searchArtistEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:inputType="textPersonName"
+                    android:labelFor="@+id/searchArtistEditText" />
+
+                <ImageButton
+                    android:id="@+id/searchStartButton"
+                    android:layout_width="@android:dimen/app_icon_size"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:contentDescription="@null"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_search" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="@android:dimen/app_icon_size">
+
+                <Spinner
+                    android:id="@+id/searchSiteSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@android:dimen/app_icon_size"
+                    android:layout_span="3" />
+
+            </TableRow>
+        </TableLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignBottom="@+id/searchInputLayout"
+            android:background="@drawable/divider" />
+
+        <ListView
+            android:id="@+id/searchResultListView"
+            android:layout_width="wrap_content"
+            android:layout_height="160dp"
+            android:layout_below="@+id/searchInputLayout"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+        <LinearLayout
+            android:id="@+id/searchResultLoadingLayout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/search_result_height"
+            android:layout_below="@+id/searchInputLayout"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+            <ProgressBar
+                android:id="@+id/searchResultLoadingProgressBar"
                 android:layout_width="wrap_content"
-                android:layout_height="@android:dimen/app_icon_size"
-                android:gravity="center_vertical|center_horizontal|center"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
-                android:text="@string/label_title" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
 
-            <EditText
-                android:id="@+id/searchTitleEditText"
+            <TextView
+                android:id="@+id/searchResultLoadingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignBottom="@+id/searchResultListView"
+            android:background="@drawable/divider" />
+
+
+        <ScrollView
+            android:id="@+id/searchLyricsScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/searchResultListView"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/searchLyricsTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:labelFor="@+id/searchTitleEditText"
-                android:inputType="textPersonName"
-                tools:layout_width="match_parent" />
+                android:text="" />
 
-            <ImageButton
-                android:id="@+id/searchClearButton"
-                android:layout_width="@android:dimen/app_icon_size"
-                android:layout_height="@android:dimen/app_icon_size"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_close"
-                android:scaleType="centerCrop" />
-        </TableRow>
+        </ScrollView>
 
-        <TableRow
+        <LinearLayout
+            android:id="@+id/searchLyricsLoadingLayout"
             android:layout_width="match_parent"
-            android:layout_height="@android:dimen/app_icon_size">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/searchResultListView"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="invisible">
 
-            <Button
-                android:id="@+id/searchArtistButton"
+            <ProgressBar
+                android:id="@+id/searchLyricsLoadingProgressBar"
                 android:layout_width="wrap_content"
-                android:layout_height="@android:dimen/app_icon_size"
-                android:paddingEnd="8dp"
-                android:paddingStart="8dp"
-                android:text="@string/label_artist" />
-
-            <EditText
-                android:id="@+id/searchArtistEditText"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/searchArtistEditText"
-                android:layout_weight="1"
-                android:inputType="textPersonName" />
+                android:layout_gravity="center" />
 
-            <ImageButton
-                android:id="@+id/searchStartButton"
-                android:layout_width="@android:dimen/app_icon_size"
-                android:layout_height="@android:dimen/app_icon_size"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_search"
-                android:scaleType="centerCrop" />
+            <TextView
+                android:id="@+id/searchLyricsLoadingTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        </TableRow>
+        </LinearLayout>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="@android:dimen/app_icon_size">
+    </RelativeLayout>
 
-            <Spinner
-                android:id="@+id/searchSiteSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="@android:dimen/app_icon_size"
-                android:layout_span="3" />
-
-        </TableRow>
-    </TableLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignBottom="@+id/searchInputLayout"
-        android:background="@drawable/divider" />
-
-    <ListView
-        android:id="@+id/searchResultListView"
-        android:layout_width="wrap_content"
-        android:layout_height="160dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/searchInputLayout" />
-
-    <LinearLayout
-        android:id="@+id/searchResultLoadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/search_result_height"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/searchInputLayout"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="invisible">
-
-        <ProgressBar
-            android:id="@+id/searchResultLoadingProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:id="@+id/searchResultLoadingTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignBottom="@+id/searchResultListView"
-        android:background="@drawable/divider" />
-
-
-    <ScrollView
-        android:id="@+id/searchLyricsScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/searchResultListView">
-
-        <TextView
-            android:id="@+id/searchLyricsTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="" />
-
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/searchLyricsLoadingLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/searchResultListView"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="invisible">
-
-        <ProgressBar
-            android:id="@+id/searchLyricsLoadingProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:id="@+id/searchLyricsLoadingTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/loading"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</layout>

@@ -139,7 +139,7 @@ class SearchActivity : Activity() {
         // Title button
         searchTitleButton.setOnClickListener {
             val dialogFragment = NormalizeDialogFragment.newInstance(searchTitleEditText.text.toString(), intentSearchTitle)
-            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
+            dialogFragment.clickListener = listener@{ _, which, _ ->
                 if (which == DialogInterface.BUTTON_POSITIVE) {
                     searchTitleEditText.setText(dialogFragment.inputText)
                 }
@@ -150,7 +150,7 @@ class SearchActivity : Activity() {
         // Artist button
         searchArtistButton.setOnClickListener {
             val dialogFragment = NormalizeDialogFragment.newInstance(searchArtistEditText.text.toString(), intentSearchArtist)
-            dialogFragment.clickListener = DialogInterface.OnClickListener { _, which ->
+            dialogFragment.clickListener = listener@{ _, which, _ ->
                 if (which == DialogInterface.BUTTON_POSITIVE) {
                     searchArtistEditText.setText(dialogFragment.inputText)
                 }
@@ -300,7 +300,7 @@ class SearchActivity : Activity() {
                         getString(R.string.label_dialog_confirm_save_cache), null,
                         getString(android.R.string.cancel)
                 )
-                dialog.clickListener = DialogInterface.OnClickListener { _, which ->
+                dialog.clickListener = listener@{ _, which, _ ->
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         val title = searchTitleEditText.text.toString()
                         val artist = searchArtistEditText.text.toString()

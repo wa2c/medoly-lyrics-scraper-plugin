@@ -76,7 +76,7 @@ class CacheActivity : Activity() {
         cacheListView.setOnItemClickListener { _, _, position, _ ->
             val item = cacheAdapter.getItem(position)
             val dialog = CacheDialogFragment.newInstance(item)
-            dialog.clickListener = DialogInterface.OnClickListener { _, which ->
+            dialog.clickListener = listener@{ _, which, _ ->
                 when (which) {
                     // Save
                     DialogInterface.BUTTON_POSITIVE -> {
@@ -143,7 +143,7 @@ class CacheActivity : Activity() {
                         null,
                         getString(android.R.string.cancel)
                 )
-                dialog.clickListener = DialogInterface.OnClickListener { _, which ->
+                dialog.clickListener = listener@{ _, which, _ ->
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         GlobalScope.launch(Dispatchers.Main) {
                             val result = async(Dispatchers.Default) {

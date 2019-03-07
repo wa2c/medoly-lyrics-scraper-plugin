@@ -11,8 +11,8 @@
     <string name="app_author">wa2c</string>
 
     <string name="app_license">MIT License</string>
-    <string name="app_license_url">https://bitbucket.org/wa2c/medoly-lyrics-scraper-plugin/raw/ae8523638c9e6ea3772a279f0287c9207577d870/LICENSE.txt</string>
-    <string name="app_privacy_policy_url">http://wa2c.com/documents/dokuwiki/doku.php?id=medoly_lyrics_scraper_plugin:privacy_policy</string>
+    <string name="app_license_url">https://raw.githubusercontent.com/wa2c/medoly-lyrics-scraper-plugin/master/LICENSE</string>
+    <string name="app_privacy_policy_url">https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly:privacy_policy</string>
     <string name="app_market">market://details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
     <string name="app_market_web">https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
 

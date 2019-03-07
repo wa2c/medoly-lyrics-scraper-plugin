@@ -1,48 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:descendantFocusability="blocksDescendants"
-    android:divider="@drawable/divider"
-    android:dividerPadding="0dp">
-
-    <RadioButton
-        android:id="@+id/siteSelectRadioButton"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:gravity="top|center_horizontal"
-        android:layout_margin="8dp" />
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
-        android:id="@+id/siteParamContentLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:showDividers="middle"
-        android:layout_marginBottom="16dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:divider="@drawable/divider"
+        android:dividerPadding="0dp"
+        android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/siteParamTitleTextView"
-            android:gravity="center_vertical" />
+        <RadioButton
+            android:id="@+id/siteSelectRadioButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:gravity="top|center_horizontal" />
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/siteParamContentLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/siteParamUriTextView"
-            android:gravity="center_vertical"
-            android:textColor="#c0c0c0" />
+            android:layout_marginBottom="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/siteParamTitleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/siteParamUriTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#c0c0c0" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/siteLaunchImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_launch" />
+
     </LinearLayout>
 
-    <ImageButton
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:id="@+id/siteLaunchImageButton"
-        android:src="@drawable/ic_launch" />
-
-</LinearLayout>
+</layout>

@@ -9,9 +9,6 @@ import android.os.Bundle
  */
 class ConfirmDialogFragment : AbstractDialogFragment() {
 
-    /**
-     * onCreateDialog
-     */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
         val args = arguments
@@ -21,25 +18,26 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
         builder.setTitle(args.getCharSequence(ARG_TITLE))
         builder.setMessage(args.getCharSequence(ARG_MESSAGE))
 
+
         // button
         if (args.getBoolean(ARG_IS_BUTTON_DEFAULT)) {
-            builder.setPositiveButton(android.R.string.ok, clickListener)
-            builder.setNeutralButton(android.R.string.cancel, clickListener)
+            builder.setPositiveButton(android.R.string.ok, null)
+            builder.setNeutralButton(android.R.string.cancel, null)
         } else {
             // Positive button
             val positive = args.getString(ARG_POSITIVE_BUTTON)
             if (!positive.isNullOrEmpty()) {
-                builder.setPositiveButton(positive, clickListener)
+                builder.setPositiveButton(positive, null)
             }
             // Neutral button
             val neutral = args.getString(ARG_NEUTRAL_BUTTON)
             if (!neutral.isNullOrEmpty()) {
-                builder.setNeutralButton(neutral, clickListener)
+                builder.setNeutralButton(neutral, null)
             }
             // Negative button
             val negative = args.getString(ARG_NEGATIVE_BUTTON)
             if (!negative.isNullOrEmpty()) {
-                builder.setNegativeButton(negative, clickListener)
+                builder.setNegativeButton(negative, null)
             }
         }
 
@@ -62,21 +60,20 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
         /** Negative button key.  */
         private const val ARG_NEGATIVE_BUTTON = "NEGATIVE_BUTTON"
 
-
         /**
          * Create dialog instance. (OK/Cancel)
          * @param message A message.
          * @param title A title.
          * @return New dialog instance.
          */
-        fun newInstance(message: CharSequence, title: CharSequence): ConfirmDialogFragment {
-            val fragment = ConfirmDialogFragment()
+        fun newInstance(message: CharSequence, title: CharSequence?): ConfirmDialogFragment {
             val args = Bundle()
             args.putCharSequence(ARG_MESSAGE, message)
             args.putCharSequence(ARG_TITLE, title)
             args.putBoolean(ARG_IS_BUTTON_DEFAULT, true)
-            fragment.arguments = args
 
+            val fragment = ConfirmDialogFragment()
+            fragment.arguments = args
             return fragment
         }
 
@@ -89,8 +86,7 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
          * @param negativeButton Negative button. None if null.
          * @return New dialog instance.
          */
-        fun newInstance(message: String, title: String, positiveButton: String?, neutralButton: String?, negativeButton: String?): ConfirmDialogFragment {
-            val fragment = ConfirmDialogFragment()
+        fun newInstance(message: CharSequence, title: CharSequence?, positiveButton: String?, neutralButton: String?, negativeButton: String?): ConfirmDialogFragment {
             val args = Bundle()
             args.putCharSequence(ARG_MESSAGE, message)
             args.putCharSequence(ARG_TITLE, title)
@@ -98,10 +94,12 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
             args.putString(ARG_NEUTRAL_BUTTON, neutralButton)
             args.putString(ARG_NEGATIVE_BUTTON, negativeButton)
             args.putBoolean(ARG_IS_BUTTON_DEFAULT, false)
-            fragment.arguments = args
 
+            val fragment = ConfirmDialogFragment()
+            fragment.arguments = args
             return fragment
         }
+
     }
 
 }

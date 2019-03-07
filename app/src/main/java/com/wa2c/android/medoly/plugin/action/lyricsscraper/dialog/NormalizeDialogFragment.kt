@@ -58,7 +58,7 @@ class NormalizeDialogFragment : AbstractDialogFragment() {
         builder.setView(contentView)
         builder.setTitle(R.string.title_dialog_normalize)
         builder.setNeutralButton(R.string.label_close, null)
-        builder.setPositiveButton(R.string.label_edit, clickListener)
+        builder.setPositiveButton(R.string.label_edit, null)
 
         return builder.create()
     }
