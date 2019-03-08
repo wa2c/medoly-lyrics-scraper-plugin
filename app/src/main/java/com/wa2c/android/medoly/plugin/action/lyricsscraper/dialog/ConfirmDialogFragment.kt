@@ -18,7 +18,6 @@ class ConfirmDialogFragment : AbstractDialogFragment() {
         builder.setTitle(args.getCharSequence(ARG_TITLE))
         builder.setMessage(args.getCharSequence(ARG_MESSAGE))
 
-
         // button
         if (args.getBoolean(ARG_IS_BUTTON_DEFAULT)) {
             builder.setPositiveButton(android.R.string.ok, null)

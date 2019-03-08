@@ -3,6 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -11,13 +12,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.ActivityGroupBinding
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.Site
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SiteGroup
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import com.wa2c.android.prefs.Prefs
 import de.siegmar.fastcsv.reader.CsvReader
-import kotlinx.android.synthetic.main.activity_group.*
 import kotlinx.android.synthetic.main.layout_site_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -34,35 +35,39 @@ import java.net.URL
 class SiteActivity : Activity() {
 
     private lateinit var prefs: Prefs
+    private lateinit var binding: ActivityGroupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_group)
         prefs = Prefs(this)
 
-        setContentView(R.layout.activity_group)
-        groupListView.visibility = View.VISIBLE
-        loadingLayout.visibility = View.INVISIBLE
+        binding.groupListView.visibility = View.VISIBLE
+        binding.loadingLayout.visibility = View.INVISIBLE
 
         // action bar
         actionBar.setDisplayShowHomeEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        groupListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
-            val item = groupListView.adapter.getItem(position)
-            if (groupListView.adapter is SiteGroupListAdapter) {
+        binding.groupListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            val item = binding.groupListView.adapter.getItem(position)
+            if (binding.groupListView.adapter is SiteGroupListAdapter) {
                 openSiteList((item as SiteGroup).group_id)
-            } else if (groupListView.adapter is SiteListAdapter) {
+            } else if (binding.groupListView.adapter is SiteListAdapter) {
                 prefs.putLong(R.string.prefkey_selected_site_id, (item as Site).site_id)
-                (groupListView.adapter as SiteListAdapter).notifyDataSetChanged()
+                (binding.groupListView.adapter as SiteListAdapter).notifyDataSetChanged()
             }
         }
-        groupListView.choiceMode = AbsListView.CHOICE_MODE_SINGLE
-        groupListView.adapter = SiteGroupListAdapter(this)
+        binding.groupListView.choiceMode = AbsListView.CHOICE_MODE_SINGLE
+        binding.groupListView.adapter = SiteGroupListAdapter(this)
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.site_list, menu)
+        for (i in 0 until menu.size()) {
+            menu.getItem(i).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        }
         return true
     }
 
@@ -70,7 +75,7 @@ class SiteActivity : Activity() {
         when (item.itemId) {
             android.R.id.home -> {
                 // home
-                if (groupListView.adapter is SiteListAdapter) {
+                if (binding.groupListView.adapter is SiteListAdapter) {
                     openGroupList()
                 } else {
                     finish()
@@ -99,12 +104,12 @@ class SiteActivity : Activity() {
                     openGroupList()
                     AppUtils.showToast(applicationContext, R.string.message_renew_list_succeeded)
 
-                    groupListView.visibility = View.VISIBLE
-                    loadingLayout.visibility = View.INVISIBLE
+                    binding.groupListView.visibility = View.VISIBLE
+                    binding.loadingLayout.visibility = View.INVISIBLE
                 }
 
-                groupListView.visibility = View.INVISIBLE
-                loadingLayout.visibility = View.VISIBLE
+                binding.groupListView.visibility = View.INVISIBLE
+                binding.loadingLayout.visibility = View.VISIBLE
                 return true
             }
             R.id.menu_open_sheet -> {
@@ -121,7 +126,7 @@ class SiteActivity : Activity() {
     override fun dispatchKeyEvent(e: KeyEvent): Boolean {
         when (e.keyCode) {
             // back key
-            KeyEvent.KEYCODE_BACK -> if (groupListView.adapter is SiteListAdapter) {
+            KeyEvent.KEYCODE_BACK -> if (binding.groupListView.adapter is SiteListAdapter) {
                 openGroupList()
                 return true
             }
@@ -226,14 +231,14 @@ class SiteActivity : Activity() {
      * Open site list.
      */
     private fun openSiteList(groupId: Long) {
-        groupListView.adapter = SiteListAdapter(this, groupId)
+        binding.groupListView.adapter = SiteListAdapter(this, groupId)
     }
 
     /**
      * Open group list.
      */
     private fun openGroupList() {
-        groupListView.adapter = SiteGroupListAdapter(this)
+        binding.groupListView.adapter = SiteGroupListAdapter(this)
     }
 
 
@@ -341,126 +346,6 @@ class SiteActivity : Activity() {
                 }
             }
         }
-//
-//        /**
-//         * Spread sheet reading task class.
-//         */
-//        class SpreadSheetReadTask(context: Context) : AsyncTask<String, Void, Boolean>() {
-//            private val service: SpreadsheetService = SpreadsheetService(context.getString(R.string.app_name))
-//            private val db = DbHelper(context)
-//            private val sheetId = context.getString(if (BuildConfig.DEBUG) R.string.sheet_id_debug else R.string.sheet_id)
-//
-//            /** Event listener.  */
-//            private var actionListener: SiteUpdateListener? = null
-//
-//            override fun doInBackground(vararg params: String): Boolean? {
-//                try {
-//                    val feedURL = FeedURLFactory.getDefault().getWorksheetFeedUrl(sheetId, "public", "values")
-//                    val feed = service.getFeed<WorksheetFeed>(feedURL, WorksheetFeed::class.java)
-//                    val worksheetList = feed.entries
-//
-//                    var result = 1
-//                    for (entry in worksheetList) {
-//                        val query = ListQuery(entry.listFeedUrl)
-//                        val listFeed = service.query<ListFeed>(query, ListFeed::class.java)
-//
-//                        val title = entry.title.plainText
-//                        if (title == SITE_SHEET_NAME) {
-//                            result *= writeSiteTable(listFeed)
-//                        } else if (title == GROUP_SHEET_NAME) {
-//                            result *= writeGroupTable(listFeed)
-//                        }
-//                    }
-//
-//                    return result > 0
-//                } catch (e: Exception) {
-//                    Timber.e(e)
-//                    return false
-//                }
-//
-//            }
-//
-//            private fun writeSiteTable(listFeed: ListFeed): Int {
-//                try {
-//                    val siteList = mutableListOf<Site>()
-//
-//                    val list = listFeed.entries
-//                    for (row in list) {
-//                        val site = Site()
-//                        site.site_id = row.customElements.getValue("siteid").toLong()
-//                        site.group_id = row.customElements.getValue("groupid").toLong()
-//                        site.site_name = row.customElements.getValue("sitename")
-//                        site.site_uri = row.customElements.getValue("siteuri")
-//                        site.search_uri = row.customElements.getValue("searchuri")
-//                        site.result_page_uri_encoding = row.customElements.getValue("resultpageuriencoding")
-//                        site.result_page_encoding = row.customElements.getValue("resultpageencoding")
-//                        site.result_page_parse_type = row.customElements.getValue("resultpageparsetype")
-//                        site.result_page_parse_text = row.customElements.getValue("resultpageparsetext")
-//                        site.lyrics_page_encoding = row.customElements.getValue("lyricspageencoding")
-//                        site.lyrics_page_parse_type = row.customElements.getValue("lyricspageparsetype")
-//                        site.lyrics_page_parse_text = row.customElements.getValue("lyricspageparsetext")
-//                        site.delay = row.customElements.getValue("delay").toLong()
-//                        site.timeout = row.customElements.getValue("timeout").toLong()
-//                        siteList.add(site)
-//                    }
-//
-//                    db.renewSite(siteList)
-//
-//                    return siteList.size
-//                } catch (e: Exception) {
-//                    Timber.e(e)
-//                    return -1
-//                }
-//
-//            }
-//
-//            private fun writeGroupTable(listFeed: ListFeed): Int {
-//                try {
-//
-//                    val groupList = mutableListOf<SiteGroup>()
-//
-//                    // insert
-//                    val list = listFeed.entries
-//                    for (row in list) {
-//                        val g = SiteGroup()
-//                        g.group_id = row.customElements.getValue("groupid").toLong()
-//                        g.name = row.customElements.getValue("name")
-//                        g.name_ja = row.customElements.getValue("nameja")
-//                        groupList.add(g)
-//                    }
-//
-//                    db.renewSiteGroup(groupList)
-//                    return groupList.size
-//                } catch (e: Exception) {
-//                    Timber.e(e)
-//                    return -1
-//                }
-//
-//            }
-//
-//            override fun onPostExecute(result: Boolean?) {
-//                if (actionListener != null) {
-//                    actionListener!!.onListUpdated(result!!)
-//                }
-//            }
-//
-//            // Event Listener
-//
-//            /**
-//             * Event listener class.
-//             */
-//            interface SiteUpdateListener : EventListener {
-//                fun onListUpdated(isSucceeded: Boolean)
-//            }
-//
-//            /**
-//             * Set event listener.
-//             * @param listener event listener.
-//             */
-//            fun setOnPropertyActionListener(listener: SiteUpdateListener) {
-//                this.actionListener = listener
-//            }
-//        }
-
     }
+
 }

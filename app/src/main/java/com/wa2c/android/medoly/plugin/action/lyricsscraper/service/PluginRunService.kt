@@ -19,7 +19,6 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
             }
         } catch (e: Exception) {
             Timber.e(e)
-            //AppUtils.showToast(this, R.string.error_app);
         }
     }
 

@@ -2,13 +2,14 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.DialogCacheBinding
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import kotlinx.android.synthetic.main.dialog_cache.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -19,9 +20,8 @@ import kotlinx.coroutines.launch
  */
 class CacheDialogFragment : AbstractDialogFragment() {
 
-    /**
-     * onCreateDialog
-     */
+    private lateinit var binding: DialogCacheBinding
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
 
@@ -30,23 +30,23 @@ class CacheDialogFragment : AbstractDialogFragment() {
         val result = cache.makeResultItem()
 
         // view
-        val contentView = View.inflate(activity, R.layout.dialog_cache, null)
-        contentView.dialogCacheLyricsTextView.text = if (cache.has_lyrics != null && cache.has_lyrics!!) result!!.lyrics else getString(R.string.message_dialog_cache_none)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_cache, null, false)
+        binding.dialogCacheLyricsTextView.text = if (cache.has_lyrics != null && cache.has_lyrics!!) result!!.lyrics else getString(R.string.message_dialog_cache_none)
 
         // deleteCache lyrics button
-        contentView.dialogCacheDeleteLyricsButton.setOnClickListener {
+        binding.dialogCacheDeleteLyricsButton.setOnClickListener {
             deleteLyrics(cache)
         }
 
         // deleteCache cache button
-        contentView.dialogCacheDeleteCacheButton.setOnClickListener {
+        binding.dialogCacheDeleteCacheButton.setOnClickListener {
             deleteCache(cache)
         }
 
         // build dialog
         val builder = AlertDialog.Builder(activity)
         builder.setTitle(R.string.title_activity_cache)
-        builder.setView(contentView)
+        builder.setView(binding.root)
         builder.setNeutralButton(R.string.label_close, null)
         builder.setNegativeButton(R.string.label_dialog_cache_research, null)
         if (result != null && !result.lyrics.isNullOrEmpty()) {

@@ -2,19 +2,22 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.DialogNormalizeBinding
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
-import kotlinx.android.synthetic.main.dialog_normalize.*
-import kotlinx.android.synthetic.main.dialog_normalize.view.*
 
 
 /**
  * Normalize dialog.
  */
 class NormalizeDialogFragment : AbstractDialogFragment() {
+
+    private lateinit var binding: DialogNormalizeBinding
 
     /** Initial text. */
     private var initialText: String? = null
@@ -26,28 +29,26 @@ class NormalizeDialogFragment : AbstractDialogFragment() {
     /** Check change listener */
     private val textCheckChangeListener = CompoundButton.OnCheckedChangeListener { _, _ -> setAfterText() }
 
-    /**
-     * onCreateDialog
-     */
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        val contentView = View.inflate(activity, R.layout.dialog_normalize, null)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        super.onCreateDialog(savedInstanceState)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_normalize, null, false)
 
         initialText = arguments.getString(ARG_INITIAL_TEXT)
         inputText = arguments.getString(ARG_INPUT_TEXT)
-        contentView.dialogNormalizeBeforeTextView.text = inputText
-        contentView.dialogNormalizeAfterTextView.text = inputText
+        binding.dialogNormalizeBeforeTextView.text = inputText
+        binding.dialogNormalizeAfterTextView.text = inputText
 
         if (initialText.isNullOrEmpty()) {
-            contentView.dialogNormalizeResetButton.visibility = View.GONE
+            binding.dialogNormalizeResetButton.visibility = View.GONE
         }
 
-        contentView.dialogNormalizeCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
-        contentView.dialogNormalizeParenthesesCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
-        contentView.dialogNormalizeDashCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
-        contentView.dialogNormalizeInfoCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
-        contentView.dialogNormalizeResetButton.setOnClickListener {
-            contentView.dialogNormalizeBeforeTextView.text = initialText
+        binding.dialogNormalizeCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
+        binding.dialogNormalizeParenthesesCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
+        binding.dialogNormalizeDashCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
+        binding.dialogNormalizeInfoCheckBox.setOnCheckedChangeListener(textCheckChangeListener)
+        binding.dialogNormalizeResetButton.setOnClickListener {
+            binding.dialogNormalizeBeforeTextView.text = initialText
             setAfterText()
         }
 
@@ -55,7 +56,7 @@ class NormalizeDialogFragment : AbstractDialogFragment() {
 
         // build dialog
         val builder = AlertDialog.Builder(activity)
-        builder.setView(contentView)
+        builder.setView(binding.root)
         builder.setTitle(R.string.title_dialog_normalize)
         builder.setNeutralButton(R.string.label_close, null)
         builder.setPositiveButton(R.string.label_edit, null)
@@ -64,21 +65,21 @@ class NormalizeDialogFragment : AbstractDialogFragment() {
     }
 
     private fun setAfterText() {
-        var text = dialog.dialogNormalizeBeforeTextView.text.toString()
-        if (dialog.dialogNormalizeCheckBox.isChecked) {
+        var text = binding.dialogNormalizeBeforeTextView.text.toString()
+        if (binding.dialogNormalizeCheckBox.isChecked) {
             text = AppUtils.normalizeText(text)
         }
-        if (dialog.dialogNormalizeParenthesesCheckBox.isChecked) {
+        if (binding.dialogNormalizeParenthesesCheckBox.isChecked) {
             text = AppUtils.removeParentheses(text)
         }
-        if (dialog.dialogNormalizeDashCheckBox.isChecked) {
+        if (binding.dialogNormalizeDashCheckBox.isChecked) {
             text = AppUtils.removeDash(text)
         }
-        if (dialog.dialogNormalizeInfoCheckBox.isChecked) {
+        if (binding.dialogNormalizeInfoCheckBox.isChecked) {
             text = AppUtils.removeTextInfo(text)
         }
         inputText = AppUtils.trimLines(text)
-        dialog.dialogNormalizeAfterTextView.text = text
+        binding.dialogNormalizeAfterTextView.text = text
     }
 
     companion object {
