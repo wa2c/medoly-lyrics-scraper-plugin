@@ -27,7 +27,7 @@ data class Site (
         @Setter @Column var lyrics_page_parse_text: String?,
         @Setter @Column var delay: Long?,
         @Setter @Column var timeout: Long?
-) {
+): Serializable {
     companion object {
         /** Parse type: XPath.   */
         const val PARSE_TYPE_XPATH = "XPath"

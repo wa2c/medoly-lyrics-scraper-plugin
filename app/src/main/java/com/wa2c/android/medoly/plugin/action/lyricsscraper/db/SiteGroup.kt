@@ -4,6 +4,7 @@ import com.github.gfx.android.orma.annotation.Column
 import com.github.gfx.android.orma.annotation.PrimaryKey
 import com.github.gfx.android.orma.annotation.Setter
 import com.github.gfx.android.orma.annotation.Table
+import java.io.Serializable
 
 import java.util.Locale
 
@@ -16,7 +17,7 @@ data class SiteGroup (
         @Setter @Column(indexed = true) var group_id: Long,
         @Setter @Column(indexed = true) var name: String?,
         @Setter @Column var name_ja: String?
-) {
+): Serializable {
 
     /**
      * Get locale name;
