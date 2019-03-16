@@ -4,7 +4,7 @@
     <PreferenceCategory android:title="@string/title_preference_category_event">
 
         <ListPreference
-            android:defaultValue="@string/event_get_lyrics_values_default"
+            android:defaultValue="@string/pref_default_event_get_lyrics"
             android:entries="@array/event_get_lyrics_entries"
             android:entryValues="@array/event_get_lyrics_values"
             android:key="@string/pref_event_get_lyrics"
@@ -12,25 +12,25 @@
             android:title="@string/pref_title_event_get_lyrics" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_use_cache"
             android:key="@string/pref_use_cache"
             android:summary="@string/pref_summary_use_cache"
             android:title="@string/pref_title_use_cache" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_cache_result"
             android:key="@string/pref_cache_result"
             android:summary="@string/pref_summary_cache_result"
             android:title="@string/pref_title_cache_result" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_cache_non_result"
             android:key="@string/pref_cache_non_result"
             android:summary="@string/pref_summary_cache_non_result"
             android:title="@string/pref_title_cache_non_result" />
 
         <ListPreference
-            android:defaultValue="@string/file_name_default_default"
+            android:defaultValue="@string/pref_default_file_name_default"
             android:entries="@array/file_name_default_entries"
             android:entryValues="@array/file_name_default_values"
             android:key="@string/pref_file_name_default"
@@ -38,19 +38,19 @@
             android:title="@string/pref_title_file_name_default" />
 
         <EditTextPreference
-            android:defaultValue="@string/file_name_separator_default"
+            android:defaultValue="@string/pref_default_file_name_separator"
             android:key="@string/pref_file_name_separator"
             android:summary="@string/pref_summary_file_name_separator"
             android:title="@string/pref_title_file_name_separator" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="@bool/pref_default_success_message_show"
             android:key="@string/pref_success_message_show"
             android:summary="@string/pref_summary_post_success_message_show"
             android:title="@string/pref_title_post_success_message_show" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/pref_default_failure_message_show"
             android:key="@string/pref_failure_message_show"
             android:summary="@string/pref_summary_post_failure_message_show"
             android:title="@string/pref_title_post_failure_message_show" />

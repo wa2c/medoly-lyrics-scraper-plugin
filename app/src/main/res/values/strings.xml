@@ -155,19 +155,6 @@
 
 
     <!-- List -->
-
-    <!-- Plugin event -->
-    <string-array name="event_get_lyrics_entries">
-        <item>Invalid</item>
-        <item>@string/label_plugin_operation_media_open</item>
-        <item>@string/label_plugin_operation_play_start</item>
-    </string-array>
-
-    <!-- File name -->
-    <string-array name="file_name_default_entries">
-        <item>[Title]</item>
-        <item>[Title] [Artist]</item>
-        <item>[Artist] [Title]</item>
-    </string-array>
+    <string name="label_plugin_operation_disable">Disabled</string>
 
 </resources>

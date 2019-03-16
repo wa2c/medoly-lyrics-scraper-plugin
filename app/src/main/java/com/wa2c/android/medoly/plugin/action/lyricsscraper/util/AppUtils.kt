@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.preference.PreferenceManager
 import android.text.Html
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
 
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
+import com.wa2c.android.prefs.Prefs
 import timber.log.Timber
 
 import java.text.Normalizer
@@ -207,13 +207,9 @@ object AppUtils {
             if (artist == null)
                 artist = ""
 
-            val pref = PreferenceManager.getDefaultSharedPreferences(activity)
-
-            val defaultNameKey = activity.getString(R.string.pref_file_name_default)
-            val defaultName = pref.getString(defaultNameKey, activity.getString(R.string.file_name_default_default))
-
-            val separatorKey = activity.getString(R.string.pref_file_name_separator)
-            val separator = pref.getString(separatorKey, activity.getString(R.string.file_name_separator_default))
+            val prefs = Prefs(activity)
+            val defaultName = prefs.getString(R.string.pref_file_name_default, defRes = R.string.pref_default_file_name_default)
+            val separator = prefs.getString(R.string.pref_file_name_separator, defRes = R.string.pref_default_file_name_separator)
 
             val fileName  = when (defaultName) {
                 "TITLE_ARTIST" -> title + separator + artist

@@ -62,7 +62,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
     private fun getLyrics() {
 
         // search cache
-        if (prefs.getBoolean(R.string.pref_use_cache, true)) {
+        if (prefs.getBoolean(R.string.pref_use_cache, defRes = R.bool.pref_default_use_cache)) {
             val titleText = propertyData.getFirst(MediaProperty.TITLE) ?: ""
             val artistText = propertyData.getFirst(MediaProperty.ARTIST) ?: ""
             val cacheHelper = DbHelper(this)
@@ -89,7 +89,7 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
 
                 // save to cache.
                 if (resultItem != null) {
-                    if (prefs.getBoolean(R.string.pref_cache_result, true)) {
+                    if (prefs.getBoolean(R.string.pref_cache_result, defRes = R.bool.pref_default_cache_result)) {
                         saveCache(pluginIntent, resultItem)
                     }
                 }
@@ -103,7 +103,8 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
                     Timber.d(message)
 
                 // save to cache.
-                if (prefs.getBoolean(R.string.pref_cache_result, true) && prefs.getBoolean(R.string.pref_cache_non_result, true)) {
+                if (prefs.getBoolean(R.string.pref_cache_result, defRes = R.bool.pref_default_cache_result) &&
+                        prefs.getBoolean(R.string.pref_cache_non_result, defRes = R.bool.pref_default_cache_non_result)) {
                     saveCache(pluginIntent, null)
                 }
 
@@ -125,22 +126,32 @@ class PluginGetLyricsService : AbstractPluginService(IntentService::class.java.s
      * @param resultItem search result.
      */
     private fun sendLyricsResult(resultItem: ResultItem?) {
-        val resultPropertyData = PropertyData()
-        if (!resultItem?.lyrics.isNullOrEmpty()) {
-            val fileUri = saveLyricsFile(resultItem?.lyrics) // save lyrics and get uri
-            resultPropertyData[LyricsProperty.DATA_URI] = fileUri?.toString()
-            resultPropertyData[LyricsProperty.SOURCE_TITLE] = resultItem?.pageTitle
-            resultPropertyData[LyricsProperty.SOURCE_URI] = resultItem?.pageUrl
-            applicationContext.grantUriPermission(pluginIntent.srcPackage, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            if (prefs.getBoolean(R.string.pref_success_message_show)) {
-                AppUtils.showToast(this, R.string.message_lyrics_success)
+        var result = CommandResult.IGNORE
+        var resultProperty: PropertyData? = null
+        try {
+            resultProperty = PropertyData()
+            if (!resultItem?.lyrics.isNullOrEmpty()) {
+                val fileUri = saveLyricsFile(resultItem?.lyrics) // save lyrics and get uri
+                resultProperty[LyricsProperty.DATA_URI] = fileUri?.toString()
+                resultProperty[LyricsProperty.SOURCE_TITLE] = resultItem?.pageTitle
+                resultProperty[LyricsProperty.SOURCE_URI] = resultItem?.pageUrl
+                applicationContext.grantUriPermission(pluginIntent.srcPackage, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                result = CommandResult.SUCCEEDED
+            } else {
+                result = CommandResult.FAILED
             }
-        } else {
-            if (prefs.getBoolean(R.string.pref_failure_message_show)) {
-                AppUtils.showToast(this, R.string.message_lyrics_failure)
-            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            resultProperty = null
+            result = CommandResult.FAILED
+        } finally {
+            sendResult(resultProperty)
+
+            // show message
+            val succeeded = getString(R.string.message_lyrics_success)
+            val failed = getString(R.string.message_lyrics_failure)
+            showMessage(result, succeeded, failed)
         }
-        sendResult(resultPropertyData)
     }
 
     /**

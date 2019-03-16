@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
+import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
@@ -116,6 +117,23 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
         if (!resultSent && (this is PluginGetLyricsService)) {
             AppUtils.sendResult(this, pluginIntent, resultProperty, resultExtra)
             resultSent = true
+        }
+    }
+
+    /**
+     * Show message.
+     */
+    fun showMessage(result: CommandResult, succeededMessage: String?, failedMessage: String?) {
+        if (result == CommandResult.NO_MEDIA) {
+            AppUtils.showToast(context, R.string.message_no_media)
+        } else if (result == CommandResult.SUCCEEDED && !succeededMessage.isNullOrEmpty()) {
+            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.pref_success_message_show, defRes = R.bool.pref_default_success_message_show)) {
+                AppUtils.showToast(context, succeededMessage)
+            }
+        } else if (result == CommandResult.FAILED && !failedMessage.isNullOrEmpty()) {
+            if (pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) || prefs.getBoolean(R.string.pref_failure_message_show, defRes = R.bool.pref_default_failure_message_show)) {
+                AppUtils.showToast(context, failedMessage)
+            }
         }
     }
 

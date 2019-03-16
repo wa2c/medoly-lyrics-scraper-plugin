@@ -72,6 +72,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
             if (r != true)
                 AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
             clickListener?.invoke(dialog, DIALOG_RESULT_DELETE_LYRICS, null)
+            dialog.dismiss()
         }
     }
 
@@ -92,6 +93,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
             if (r != true)
                 AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
             clickListener?.invoke(dialog, DIALOG_RESULT_DELETE_CACHE, null)
+            dialog.dismiss()
         }
     }
 

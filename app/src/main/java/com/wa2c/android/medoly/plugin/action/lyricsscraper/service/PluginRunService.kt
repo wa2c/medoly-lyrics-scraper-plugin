@@ -2,6 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.service
 
 import android.content.Intent
 import com.wa2c.android.medoly.library.MediaProperty
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SearchActivity
 import timber.log.Timber
 
@@ -31,6 +32,7 @@ class PluginRunService : AbstractPluginService(PluginRunService::class.java.simp
         searchIntent.putExtra(SearchActivity.INTENT_SEARCH_TITLE, propertyData.getFirst(MediaProperty.TITLE))
         searchIntent.putExtra(SearchActivity.INTENT_SEARCH_ARTIST, propertyData.getFirst(MediaProperty.ARTIST))
         startActivity(searchIntent)
+        showMessage(CommandResult.SUCCEEDED, null, null)
     }
 
 }

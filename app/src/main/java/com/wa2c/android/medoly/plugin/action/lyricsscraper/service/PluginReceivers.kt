@@ -49,7 +49,7 @@ class PluginReceivers {
                     return result
                 }
                 // operation
-                val operation = try { PluginOperationCategory.valueOf(prefs.getString(R.string.pref_event_get_lyrics)) } catch (ignore : Exception) { null }
+                val operation = prefs.getString(R.string.pref_event_get_lyrics, defRes = R.string.pref_default_event_get_lyrics)
                 if (!pluginIntent.hasCategory(PluginOperationCategory.OPERATION_EXECUTE) && !pluginIntent.hasCategory(operation)) {
                     return result
                 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <!-- App Infos -->
+    <!-- App Info -->
     <string name="app_name">Medoly Lyrics Scraper Plugin</string>
     <string name="base_app_name">Medoly</string>
     <string name="package_name">com.wa2c.android.medoly.plugin.action.lyricsscraper</string>
@@ -55,6 +55,14 @@
         <item>https://github.com/google/gdata-java-client</item>
     </string-array>
 
+
+
+    <!-- Const -->
+    <string name="empty_value" />
+    <integer name="download_timeout_sec">30</integer>
+
+
+
     <!-- Preferences -->
     <string name="prefkey_selected_site_id">selected_site_id</string>
 
@@ -73,31 +81,43 @@
 
     <string name="pref_app_previous_version">pref_app_previous_version</string>
 
-    <string name="id_lyrics">Lyrics</string>
 
-    <integer name="download_timeout_sec">30</integer>
+
+    <!-- Default -->
+    <string name="pref_default_event_get_lyrics">@string/empty_value</string>
+    <bool name="pref_default_use_cache">true</bool>
+    <bool name="pref_default_cache_result">true</bool>
+    <bool name="pref_default_cache_non_result">true</bool>
+    <string name="pref_default_file_name_default">ARTIST_TITLE</string>
+    <string name="pref_default_file_name_separator">" - "</string>
+    <bool name="pref_default_success_message_show">false</bool>
+    <bool name="pref_default_failure_message_show">true</bool>
+
 
 
     <!-- List -->
 
-    <string name="empty_value" />
-
     <!-- Plugin event -->
-    <string name="event_get_lyrics_values_default" />
     <string-array name="event_get_lyrics_values">
         <item />
-        <item>OPERATION_MEDIA_OPEN</item>
-        <item>OPERATION_PLAY_START</item>
+        <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_START</item>
+        <item>com.wa2c.android.medoly.plugin.category.OPERATION_PLAY_NOW</item>
     </string-array>
-
-
+    <string-array name="event_get_lyrics_entries">
+        <item>@string/label_plugin_operation_disable</item>
+        <item>@string/label_plugin_operation_media_open</item>
+        <item>@string/label_plugin_operation_play_start</item>
+    </string-array>
     <!-- File name -->
-    <string name="file_name_default_default">ARTIST_TITLE</string>
     <string-array name="file_name_default_values">
         <item>TITLE</item>
         <item>TITLE_ARTIST</item>
         <item>ARTIST_TITLE</item>
     </string-array>
+    <string-array name="file_name_default_entries">
+        <item>[Title]</item>
+        <item>[Title] [Artist]</item>
+        <item>[Artist] [Title]</item>
+    </string-array>
 
-    <string name="file_name_separator_default">" - "</string>
 </resources>
