@@ -156,21 +156,38 @@ class SiteActivity : Activity() {
                     val csv = csvReader.read(it)
                     val siteList = mutableListOf<Site>()
                     for (row in csv.rows) {
-                        val site = Site()
-                        site.site_id = row.getField("SITE_ID").toLong()
-                        site.group_id = row.getField("GROUP_ID").toLong()
-                        site.site_name = row.getField("SITE_NAME")
-                        site.site_uri = row.getField("SITE_URI")
-                        site.search_uri = row.getField("SEARCH_URI")
-                        site.result_page_uri_encoding = row.getField("RESULT_PAGE_URI_ENCODING")
-                        site.result_page_encoding = row.getField("RESULT_PAGE_ENCODING")
-                        site.result_page_parse_type = row.getField("RESULT_PAGE_PARSE_TYPE")
-                        site.result_page_parse_text = row.getField("RESULT_PAGE_PARSE_TEXT")
-                        site.lyrics_page_encoding = row.getField("LYRICS_PAGE_ENCODING")
-                        site.lyrics_page_parse_type = row.getField("LYRICS_PAGE_PARSE_TYPE")
-                        site.lyrics_page_parse_text = row.getField("LYRICS_PAGE_PARSE_TEXT")
-                        site.delay = row.getField("DELAY").toLong()
-                        site.timeout = row.getField("TIMEOUT").toLong()
+                        val site = Site(
+                                0,
+                                row.getField("SITE_ID").toLong(),
+                                row.getField("GROUP_ID").toLong(),
+                                row.getField("SITE_NAME"),
+                                row.getField("SITE_URI"),
+                                row.getField("SEARCH_URI"),
+                                row.getField("RESULT_PAGE_URI_ENCODING"),
+                                row.getField("RESULT_PAGE_ENCODING"),
+                                row.getField("RESULT_PAGE_PARSE_TYPE"),
+                                row.getField("RESULT_PAGE_PARSE_TEXT"),
+                                row.getField("LYRICS_PAGE_ENCODING"),
+                                row.getField("LYRICS_PAGE_PARSE_TYPE"),
+                                row.getField("LYRICS_PAGE_PARSE_TEXT"),
+                                row.getField("DELAY").toLong(),
+                                row.getField("TIMEOUT").toLong()
+                        )
+//                        val site = Site()
+//                        site.site_id = row.getField("SITE_ID").toLong()
+//                        site.group_id = row.getField("GROUP_ID").toLong()
+//                        site.site_name = row.getField("SITE_NAME")
+//                        site.site_uri = row.getField("SITE_URI")
+//                        site.search_uri = row.getField("SEARCH_URI")
+//                        site.result_page_uri_encoding = row.getField("RESULT_PAGE_URI_ENCODING")
+//                        site.result_page_encoding = row.getField("RESULT_PAGE_ENCODING")
+//                        site.result_page_parse_type = row.getField("RESULT_PAGE_PARSE_TYPE")
+//                        site.result_page_parse_text = row.getField("RESULT_PAGE_PARSE_TEXT")
+//                        site.lyrics_page_encoding = row.getField("LYRICS_PAGE_ENCODING")
+//                        site.lyrics_page_parse_type = row.getField("LYRICS_PAGE_PARSE_TYPE")
+//                        site.lyrics_page_parse_text = row.getField("LYRICS_PAGE_PARSE_TEXT")
+//                        site.delay = row.getField("DELAY").toLong()
+//                        site.timeout = row.getField("TIMEOUT").toLong()
                         siteList.add(site)
                     }
                     DbHelper(this@SiteActivity).renewSite(siteList)
@@ -207,10 +224,16 @@ class SiteActivity : Activity() {
                     val csv = csvReader.read(it)
                     val groupList = mutableListOf<SiteGroup>()
                     for (row in csv.rows) {
-                        val group = SiteGroup()
-                        group.group_id = row.getField("GROUP_ID").toLong()
-                        group.name = row.getField("NAME")
-                        group.name_ja = row.getField("NAME_JA")
+                        val group = SiteGroup(
+                                0,
+                                row.getField("GROUP_ID").toLong(),
+                                row.getField("NAME"),
+                                row.getField("NAME_JA")
+                        )
+//                        val group = SiteGroup()
+//                        group.group_id = row.getField("GROUP_ID").toLong()
+//                        group.name = row.getField("NAME")
+//                        group.name_ja = row.getField("NAME_JA")
                         groupList.add(group)
                     }
                     DbHelper(this@SiteActivity).renewSiteGroup(groupList)

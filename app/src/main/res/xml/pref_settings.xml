@@ -60,11 +60,16 @@
     <PreferenceCategory android:title="@string/title_preference_category_info">
 
         <Preference
-            android:key="@string/prefkey_application_details"
+            android:key="@string/pref_device_auto_start"
+            android:summary="@string/pref_summary_device_auto_start"
+            android:title="@string/pref_title_device_auto_start" />
+
+        <Preference
+            android:key="@string/pref_application_details"
             android:summary="@string/pref_summary_application_details"
             android:title="@string/pref_title_application_details" />
         <Preference
-            android:key="@string/prefkey_about"
+            android:key="@string/pref_about"
             android:summary="@string/pref_summary_about"
             android:title="@string/pref_title_about" />
 

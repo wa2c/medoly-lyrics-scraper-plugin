@@ -52,6 +52,7 @@
     <string name="message_lyrics_failure">歌詞の取得に失敗しました。</string>
 
     <!-- Main Activity -->
+    <string name="label_button_auto_start">自動起動</string>
     <string name="label_button_launch_medoly">Medoly 起動</string>
     <string name="message_no_medoly">Medolyをインストールしてください。</string>
 
@@ -83,6 +84,7 @@
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>
+    <string name="message_unsupported_device">このデバイスではサポートされていません。</string>
 
 
 
@@ -139,6 +141,9 @@
     <string name="pref_summary_post_success_message_show">送信に成功した際にメッセージを表示します。</string>
     <string name="pref_title_post_failure_message_show">失敗メッセージ表示</string>
     <string name="pref_summary_post_failure_message_show">送信に失敗した際にメッセージを表示します。</string>
+
+    <string name="pref_title_device_auto_start">自動起動管理</string>
+    <string name="pref_summary_device_auto_start">デバイスの自動起動マネージャを起動します。一部のデバイスではプラグインの起動に設定が必要です。</string>
     <string name="pref_title_application_details">アプリ情報</string>
     <string name="pref_summary_application_details">アプリ情報を表示します。</string>
     <string name="pref_title_about">About</string>

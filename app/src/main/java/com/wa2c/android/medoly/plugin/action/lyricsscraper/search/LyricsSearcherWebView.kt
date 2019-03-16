@@ -100,7 +100,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         this.propertyData = propertyData
         this.site = site
 
-        searchUri = replaceProperty(site.search_uri, true, false)
+        searchUri = replaceProperty(site.search_uri ?: "", true, false)
         Timber.d("Search URL: $searchUri")
 
         try {
@@ -133,7 +133,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
         try {
             val doc = Jsoup.parse(html)
-            if (site!!.result_page_parse_type == Site.PARSE_TYPE_XPATH) {
+            if (site?.result_page_parse_type == Site.PARSE_TYPE_XPATH) {
                 // XPath
                 val e = Xsoup.compile(site!!.result_page_parse_text).evaluate(doc).elements
                 if (e == null || e.size == 0) {
@@ -159,8 +159,8 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
                     }
                 }
                 Timber.d(searchResultItemList.toString())
-            } else if (site!!.result_page_parse_type == Site.PARSE_TYPE_REGEXP) {
-                val parseText = replaceProperty(site!!.result_page_parse_text, false, true)
+            } else if (site?.result_page_parse_type == Site.PARSE_TYPE_REGEXP) {
+                val parseText = replaceProperty(site!!.result_page_parse_text ?: "", false, true)
                 Timber.d("Parse Text: $parseText")
 
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE)
@@ -202,7 +202,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         try {
             Timber.d("Lyrics HTML: $html")
 
-            if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_XPATH) {
+            if (site?.lyrics_page_parse_type == Site.PARSE_TYPE_XPATH) {
                 // XPath
                 val doc = Jsoup.parse(html)
                 val e = Xsoup.compile(site!!.lyrics_page_parse_text).evaluate(doc).elements
@@ -212,9 +212,9 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
 
                 val elem = e[0]
                 lyrics = elem.html()
-            } else if (site!!.lyrics_page_parse_type == Site.PARSE_TYPE_REGEXP) {
+            } else if (site?.lyrics_page_parse_type == Site.PARSE_TYPE_REGEXP) {
                 // Regular expression
-                val parseText = replaceProperty(site!!.lyrics_page_parse_text, false, true)
+                val parseText = replaceProperty(site!!.lyrics_page_parse_text ?: "", false, true)
                 Timber.d("Parse Text: $parseText")
                 val p = Pattern.compile(parseText, Pattern.CASE_INSENSITIVE or Pattern.MULTILINE or Pattern.DOTALL)
                 val m = p.matcher(html)
@@ -323,7 +323,7 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             outputBuffer.append(inputText.substring(lastIndex, matcher.start()))
             val tag = matcher.group() // タグ (%KEY%)
             val key = tag.substring(1, tag.length - 1) // プロパティキー (KEY)
-            val value = propertyData!!.getFirst(key) // プロパティ値
+            val value = propertyData?.getFirst(key) // プロパティ値
             if (!value.isNullOrEmpty()) {
                 try {
                     var text = AppUtils.normalizeText(value)

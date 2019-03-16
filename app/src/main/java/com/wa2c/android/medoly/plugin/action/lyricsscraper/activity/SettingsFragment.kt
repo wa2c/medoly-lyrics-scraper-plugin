@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.preference.*
 import android.provider.Settings
 import android.text.InputType
+import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.AboutDialogFragment
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import java.util.*
 
 
@@ -23,6 +25,15 @@ class SettingsFragment : PreferenceFragment() {
     }
 
 
+    /**
+     * Device auto start.
+     */
+    private val deviceAutoStartPreferenceClickListener = Preference.OnPreferenceClickListener {
+        if (!KillerManager.doAction(activity, managerAction)) {
+            AppUtils.showToast(activity, R.string.message_unsupported_device)
+        }
+        true
+    }
 
     /**
      * App info.
@@ -43,22 +54,34 @@ class SettingsFragment : PreferenceFragment() {
         true
     }
 
-    /**
-     * On change settings.
-     */
+    /** On change settings. */
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key -> updatePrefSummary(findPreference(key)) }
 
-    /**
-     * onCreate event.
-     */
+    /** KillerManager action */
+    private var managerAction: KillerManager.Actions? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.pref_settings)
 
+        KillerManager.init(activity)
+        managerAction = when {
+            KillerManager.isActionAvailable(activity, KillerManager.Actions.ACTION_POWERSAVING) -> KillerManager.Actions.ACTION_POWERSAVING
+            KillerManager.isActionAvailable(activity, KillerManager.Actions.ACTION_AUTOSTART) -> KillerManager.Actions.ACTION_AUTOSTART
+            KillerManager.isActionAvailable(activity, KillerManager.Actions.ACTION_NOTIFICATIONS) -> KillerManager.Actions.ACTION_NOTIFICATIONS
+            else -> null
+        }
+
+        // Device auto start
+        if (managerAction != null) {
+            findPreference(getString(R.string.pref_device_auto_start)).onPreferenceClickListener = deviceAutoStartPreferenceClickListener
+        } else {
+            findPreference(getString(R.string.pref_device_auto_start)).isEnabled = false
+        }
         // App info
-        findPreference(getString(R.string.prefkey_application_details)).onPreferenceClickListener = applicationDetailsPreferenceClickListener
+        findPreference(getString(R.string.pref_application_details)).onPreferenceClickListener = applicationDetailsPreferenceClickListener
         // About
-        findPreference(getString(R.string.prefkey_about)).onPreferenceClickListener = aboutPreferenceClickListener
+        findPreference(getString(R.string.pref_about)).onPreferenceClickListener = aboutPreferenceClickListener
 
         initSummary(preferenceScreen)
     }

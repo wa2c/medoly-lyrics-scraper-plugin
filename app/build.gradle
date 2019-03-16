@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -11,6 +12,7 @@ android {
         targetSdkVersion 27
         versionCode 4
         versionName "2.5.0"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -48,10 +50,11 @@ repositories {
 dependencies {
 
     // Medoly library
-    implementation 'com.wa2c.android:medolylibrary:1.2.5'
+    implementation 'com.wa2c.android:medolylibrary:1.2.6'
     // Prefs
     implementation 'com.wa2c.android:prefs:0.1.1'
 
+    implementation 'com.android.support:multidex:1.0.3'
     // Support library
     implementation 'com.android.support:appcompat-v7:27.1.1'
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
@@ -60,7 +63,7 @@ dependencies {
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.1.1'
 
     // Orma
-    annotationProcessor 'com.github.gfx.android.orma:orma-processor:4.2.5'
+    kapt 'com.github.gfx.android.orma:orma-processor:4.2.5'
     implementation 'com.github.gfx.android.orma:orma:4.2.5'
 
     // https://mvnrepository.com/artifact/com.jakewharton.timber/timber
@@ -77,6 +80,8 @@ dependencies {
     implementation group: 'com.github.tony19', name: 'named-regexp', version: '0.2.5'
     // https://mvnrepository.com/artifact/de.siegmar/fastcsv
     implementation group: 'de.siegmar', name: 'fastcsv', version: '1.0.2'
+
+    implementation 'com.thelittlefireman:AppKillerManager:2.1.1'
 
 }
 

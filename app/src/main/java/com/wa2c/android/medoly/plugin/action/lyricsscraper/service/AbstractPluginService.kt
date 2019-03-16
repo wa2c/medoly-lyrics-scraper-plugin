@@ -62,7 +62,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
                 val builder = Notification.Builder(this, NOTIFICATION_CHANNEL_ID)
                         .setContentTitle(getString(R.string.app_name))
                         .setContentText("")
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_notification)
                 startForeground(NOTIFICATION_ID, builder.build())
             }
         } catch (e: Exception) {

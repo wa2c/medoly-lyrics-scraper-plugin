@@ -67,9 +67,11 @@
     <string name="pref_success_message_show">pref_success_message_show</string>
     <string name="pref_failure_message_show">pref_failure_message_show</string>
 
+    <string name="pref_device_auto_start">device_auto_start</string>
+    <string name="pref_application_details">application_details</string>
+    <string name="pref_about">about</string>
 
-    <string name="prefkey_application_details">application_details</string>
-    <string name="prefkey_about">about</string>
+    <string name="pref_app_previous_version">pref_app_previous_version</string>
 
     <string name="id_lyrics">Lyrics</string>
 

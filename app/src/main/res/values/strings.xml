@@ -52,6 +52,7 @@
     <string name="message_lyrics_failure">Failed to get lyrics.</string>
 
     <!-- Main Activity -->
+    <string name="label_button_auto_start">Auto Start</string>
     <string name="label_button_launch_medoly">Launch Medoly</string>
     <string name="message_no_medoly">Please install Medoly.</string>
 
@@ -83,7 +84,7 @@
 
     <!-- Settings Activity -->
     <string name="settings_summary_current_value">[Current Value: %1$s]</string>
-
+    <string name="message_unsupported_device">This device is unsupported.</string>
 
 
     <!-- Confirm Dialog -->
@@ -140,6 +141,8 @@
     <string name="pref_title_post_failure_message_show">Show Failure Message</string>
     <string name="pref_summary_post_failure_message_show">Show the message when send failed. </string>
 
+    <string name="pref_title_device_auto_start">Auto Start Manager</string>
+    <string name="pref_summary_device_auto_start">Launch the device auto start manager. Some devices need change settings to launch plugin.</string>
     <string name="pref_title_application_details">App Info</string>
     <string name="pref_summary_application_details">Show application information of this device.</string>
     <string name="pref_title_about">About</string>
