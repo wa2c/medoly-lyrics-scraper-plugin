@@ -188,10 +188,11 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
             Timber.e(e)
         } finally {
             webHandler.post {
-                if (!searchResultItemList.isEmpty())
-                    handleListener?.onSearchResult(searchResultItemList.values.toList())
-                else
-                    handleListener?.onError()
+                handleListener?.onSearchResult(searchResultItemList.values.toList())
+//                if (!searchResultItemList.isEmpty())
+//                    handleListener?.onSearchResult(searchResultItemList.values.toList())
+//                else
+//                    handleListener?.onError()
             }
         }
     }
