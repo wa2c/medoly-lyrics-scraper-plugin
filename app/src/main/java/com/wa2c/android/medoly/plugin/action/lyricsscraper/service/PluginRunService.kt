@@ -2,7 +2,6 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.service
 
 import android.content.Intent
 import com.wa2c.android.medoly.library.MediaProperty
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.activity.SearchActivity
 import timber.log.Timber
 

@@ -2,10 +2,9 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper
 
 import android.app.Application
 import android.content.Context
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.Migrator
-import timber.log.Timber
 import android.support.multidex.MultiDex
-
+import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.AbstractPluginService
+import timber.log.Timber
 
 
 /**
@@ -19,6 +18,9 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
 
+        // Create channel
+        AbstractPluginService.createChannel(this)
+        // Migrator
         Migrator(this).versionUp()
     }
 

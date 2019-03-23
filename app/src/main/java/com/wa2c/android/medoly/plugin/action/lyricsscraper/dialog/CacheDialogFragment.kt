@@ -24,14 +24,15 @@ class CacheDialogFragment : AbstractDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_cache, null, false)
 
         // data
         val cache = arguments.getSerializable(ARG_CACHE) as SearchCache
         val result = cache.makeResultItem()
 
         // view
-        binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_cache, null, false)
         binding.dialogCacheLyricsTextView.text = if (cache.has_lyrics != null && cache.has_lyrics!!) result!!.lyrics else getString(R.string.message_dialog_cache_none)
+        binding.dialogCacheDeleteLyricsButton.isEnabled = (cache.has_lyrics == true)
 
         // deleteCache lyrics button
         binding.dialogCacheDeleteLyricsButton.setOnClickListener {

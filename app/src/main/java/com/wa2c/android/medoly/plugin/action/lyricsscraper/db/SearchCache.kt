@@ -3,9 +3,8 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.db
 import com.github.gfx.android.orma.annotation.*
 import com.google.gson.Gson
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.search.ResultItem
-
 import java.io.Serializable
-import java.util.Date
+import java.util.*
 
 /**
  * Search condition. (Orma Model)

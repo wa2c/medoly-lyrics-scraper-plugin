@@ -1,8 +1,7 @@
-package com.wa2c.android.medoly.plugin.action.lyricsscraper.util
+package com.wa2c.android.medoly.plugin.action.lyricsscraper
 
 import android.content.Context
 import com.wa2c.android.medoly.library.PluginOperationCategory
-import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.prefs.Prefs
 import timber.log.Timber
 

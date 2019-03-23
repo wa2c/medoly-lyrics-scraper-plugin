@@ -34,7 +34,6 @@ class PluginReceivers {
 
             if (this is EventGetLyricsReceiver ||
                     this is ExecuteGetLyricsReceiver) {
-
                 // category
                 if (!pluginIntent.hasCategory(PluginTypeCategory.TYPE_GET_LYRICS)) {
                     return result
