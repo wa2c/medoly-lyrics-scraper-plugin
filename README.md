@@ -3,7 +3,7 @@ Medoly Lyrics Scraper Plugin
 
 ## About
 
-**Medoly Lyrics Scraper Plugin** is an Android app scraping lyrics from other sites .
+**Medoly Lyrics Scraper Plugin** is an Android app to get the lyrics of the media playing on [Medoly](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly) from other sites .
 
 See the following site to see details.
 
@@ -14,7 +14,7 @@ See the following site to see details.
 
 * [Google Play](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper)
 * [APK Files](https://wa2c.com/android/medoly/apk/)
-* [Source Code(GitHub)](https://github.com/wa2c/medoly-lyrics-scraper-plugin)
+* [Source Code (GitHub)](https://github.com/wa2c/medoly-lyrics-scraper-plugin)
 
 
 ## Requirement
