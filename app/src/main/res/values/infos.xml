@@ -46,13 +46,21 @@
        <item>jsoup</item>
         <item>xsoup</item>
         <item>Gson</item>
-        <item>Google Data Java Client Library</item>
+        <item>named-regexp</item>
+        <item>FastCSV</item>
+        <item>AppKillerManager</item>
+        <item>Dynamic Toasts</item>
+        <item>Timber</item>
     </string-array>
     <string-array name="about_library_urls">
         <item>http://jsoup.org/</item>
         <item>https://github.com/code4craft/xsoup</item>
         <item>http://code.google.com/p/google-gson/</item>
-        <item>https://github.com/google/gdata-java-client</item>
+        <item>https://github.com/tony19/named-regexp</item>
+        <item>https://github.com/osiegmar/FastCSV</item>
+        <item>https://github.com/thelittlefireman/AppKillerManager</item>
+        <item>https://github.com/pranavpandey/dynamic-toasts</item>
+        <item>https://github.com/JakeWharton/timber</item>
     </string-array>
 
 

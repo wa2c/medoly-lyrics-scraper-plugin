@@ -7,15 +7,15 @@ Medoly Lyrics Scraper Plugin
 
 See the following site to see details.
 
-  * [Medoly Lyrics Scraper Plugin (EN)](https://www.wa2c.com/documents/dokuwiki/doku.php?id=en:medoly_lrc_lyrics_plugin:start)
-  * [Medoly Lyrics Scraper Plugin (JA)](https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly_lrc_lyrics_plugin:start)
+  * [Medoly Lyrics Scraper Plugin (EN)](https://www.wa2c.com/documents/dokuwiki/doku.php?id=en:medoly_lyrics_scraper_plugin:start)
+  * [Medoly Lyrics Scraper Plugin (JA)](https://www.wa2c.com/documents/dokuwiki/doku.php?id=ja:medoly_lyrics_scraper_plugin:start)
 
 ## Public Site
 
 * [Google Play](https://play.google.com/store/apps/details?id=com.wa2c.android.medoly.plugin.action.lyricsscraper)
 * [APK Files](https://wa2c.com/android/medoly/apk/)
 * [Source Code (GitHub)](https://github.com/wa2c/medoly-lyrics-scraper-plugin)
-
+* [CI (Bitrise)](https://app.bitrise.io/app/6bfc0026f000496f)
 
 ## Requirement
 
