@@ -54,11 +54,11 @@ class Migrator(private val context: Context) {
             return false
 
         // migration
-        //versionUpFrom0(prevVersionCode)
-        //versionUpFrom4(prevVersionCode)
+        versionUpFrom0(prevVersionCode)
+        versionUpFrom4(prevVersionCode)
 
         // save version
-        //saveCurrentVersionCode()
+        saveCurrentVersionCode()
         return true
     }
 
@@ -93,7 +93,7 @@ class Migrator(private val context: Context) {
     /**
      * Ver > Ver. 2.5.0 (4)
      */
-    private fun versionUpFrom14(prevVersionCode: Int) {
+    private fun versionUpFrom4(prevVersionCode: Int) {
         if (prevVersionCode > 4)
             return
 
