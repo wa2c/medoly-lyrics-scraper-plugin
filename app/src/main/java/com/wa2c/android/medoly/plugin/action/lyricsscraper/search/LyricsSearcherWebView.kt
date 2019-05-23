@@ -74,8 +74,8 @@ class LyricsSearcherWebView constructor(context: Context) : WebView(context) {
         webHandler.removeCallbacks(cancelRunnable)
         when (currentState) {
             STATE_IDLE -> { }
-            STATE_SEARCH -> loadUrl(LyricsSearcherWebView.SEARCH_PAGE_GET_SCRIPT)
-            STATE_LYRICS -> loadUrl(LyricsSearcherWebView.LYRICS_PAGE_GET_SCRIPT)
+            STATE_SEARCH -> loadUrl(SEARCH_PAGE_GET_SCRIPT)
+            STATE_LYRICS -> loadUrl(LYRICS_PAGE_GET_SCRIPT)
             else -> handleListener?.onError()
         }
     }

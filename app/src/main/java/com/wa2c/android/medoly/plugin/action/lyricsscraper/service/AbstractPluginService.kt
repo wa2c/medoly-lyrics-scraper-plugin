@@ -96,7 +96,7 @@ abstract class AbstractPluginService(name: String) : IntentService(name) {
     @SuppressLint("NewApi")
     override fun onDestroy() {
         super.onDestroy()
-        Timber.d("onDestroy" + this.javaClass.simpleName)
+        Timber.d("onDestroy%s", this.javaClass.simpleName)
 
         if (notificationManager != null) {
             notificationManager?.cancel(NOTIFICATION_ID)
