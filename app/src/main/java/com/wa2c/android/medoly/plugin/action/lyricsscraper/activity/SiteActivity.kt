@@ -1,15 +1,15 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.BuildConfig
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.ActivityGroupBinding

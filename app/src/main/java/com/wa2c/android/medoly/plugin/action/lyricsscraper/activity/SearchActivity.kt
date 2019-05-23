@@ -3,7 +3,6 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R

@@ -16,6 +16,9 @@ class App : Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+            //Timber.plant(CrashlyticsTree())
+        } else {
+            Timber.plant(CrashlyticsTree())
         }
 
         // Create channel

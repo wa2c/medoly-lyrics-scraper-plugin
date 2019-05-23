@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -13,7 +15,7 @@ android {
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 5
         versionName "2.6.0"
 
@@ -68,6 +70,10 @@ dependencies {
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.2.1'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.2.1'
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.0'
+
     // Orma
     implementation "io.reactivex.rxjava2:rxjava:2.1.14"
     kapt 'com.github.maskarade.android.orma:orma-processor:6.0.2'
@@ -91,11 +97,4 @@ dependencies {
     implementation group: 'de.siegmar', name: 'fastcsv', version: '1.0.2'
 
     implementation 'com.thelittlefireman:AppKillerManager:2.1.1'
-
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }

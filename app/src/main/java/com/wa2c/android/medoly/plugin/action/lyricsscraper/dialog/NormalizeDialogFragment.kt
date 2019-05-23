@@ -1,12 +1,12 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.CompoundButton
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.DialogNormalizeBinding
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils

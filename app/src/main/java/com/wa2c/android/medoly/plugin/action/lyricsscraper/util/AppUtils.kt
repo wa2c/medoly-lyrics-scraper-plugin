@@ -2,18 +2,14 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.util
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.text.Html
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
-
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.prefs.Prefs
 import timber.log.Timber
-
 import java.text.Normalizer
 
 

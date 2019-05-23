@@ -1,19 +1,17 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.content.pm.PackageManager
-import androidx.databinding.DataBindingUtil
-import android.os.Build
 import android.os.Bundle
-import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
+import androidx.databinding.DataBindingUtil
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.DialogAboutBinding
 import timber.log.Timber

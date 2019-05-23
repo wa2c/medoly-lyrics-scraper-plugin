@@ -1,8 +1,8 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
-import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 
 /**
  * Confirmation dialog
