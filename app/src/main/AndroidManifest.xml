@@ -115,7 +115,7 @@
             android:exported="false" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.wa2c.android.medoly.plugin.action.lyricsscraper.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">

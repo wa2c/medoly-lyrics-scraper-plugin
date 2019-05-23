@@ -1,13 +1,13 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
-import android.app.DialogFragment
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import com.wa2c.android.prefs.Prefs
 
 /**
@@ -15,14 +15,17 @@ import com.wa2c.android.prefs.Prefs
  */
 abstract class AbstractDialogFragment : DialogFragment() {
 
+    /** The called activity.  */
+    protected lateinit var context: FragmentActivity
     /** Prefs */
     protected lateinit var prefs: Prefs
     /** Click listener. */
     var clickListener: ((dialog: DialogInterface?, which: Int, bundle: Bundle?) -> Unit)? = null
 
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
-        prefs = Prefs(activity)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        context = activity!!
+        prefs = Prefs(context)
         return super.onCreateDialog(savedInstanceState)
     }
 
@@ -88,11 +91,13 @@ abstract class AbstractDialogFragment : DialogFragment() {
      * Show dialog.
      * @param activity A activity.
      */
-    fun show(activity: Activity) {
-        val manager = activity.fragmentManager
+    fun show(activity: FragmentActivity?) {
+        if (activity == null)
+            return
+        val manager = activity.supportFragmentManager
         val fragment = manager.findFragmentByTag(fragmentTag) as? AbstractDialogFragment
         fragment?.dismiss()
-        super.show(activity.fragmentManager, fragmentTag)
+        super.show(manager, fragmentTag)
     }
 
 }

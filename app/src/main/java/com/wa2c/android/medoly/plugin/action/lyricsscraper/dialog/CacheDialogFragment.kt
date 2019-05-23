@@ -1,8 +1,8 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog
 
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.app.Dialog
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.LayoutInflater
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
@@ -24,10 +24,10 @@ class CacheDialogFragment : AbstractDialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
-        binding = DataBindingUtil.inflate(LayoutInflater.from(activity), R.layout.dialog_cache, null, false)
+        binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_cache, null, false)
 
         // data
-        val cache = arguments.getSerializable(ARG_CACHE) as SearchCache
+        val cache = arguments?.getSerializable(ARG_CACHE) as SearchCache
         val result = cache.makeResultItem()
 
         // view
@@ -45,7 +45,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
         }
 
         // build dialog
-        val builder = AlertDialog.Builder(activity)
+        val builder = AlertDialog.Builder(context)
         builder.setTitle(R.string.title_activity_cache)
         builder.setView(binding.root)
         builder.setNeutralButton(R.string.label_close, null)
@@ -60,7 +60,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
      * Delete cache lyrics.
      */
     private fun deleteLyrics(cache: SearchCache) {
-        val searchCacheHelper = DbHelper(this@CacheDialogFragment.activity)
+        val searchCacheHelper = DbHelper(context)
         GlobalScope.launch(Dispatchers.Main) {
             val deleteResult = async(Dispatchers.Default) {
                 try {
@@ -71,7 +71,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
             }
             val r = deleteResult.await()
             if (r != true)
-                AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
+                AppUtils.showToast(context, R.string.message_dialog_cache_delete_error)
             clickListener?.invoke(dialog, DIALOG_RESULT_DELETE_LYRICS, null)
             dialog.dismiss()
         }
@@ -81,7 +81,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
      * Delete cache.
      */
     private fun deleteCache(cache: SearchCache) {
-        val searchCacheHelper = DbHelper(this@CacheDialogFragment.activity)
+        val searchCacheHelper = DbHelper(context)
         GlobalScope.launch(Dispatchers.Main) {
             val deleteResult = async(Dispatchers.Default) {
                 try {
@@ -92,7 +92,7 @@ class CacheDialogFragment : AbstractDialogFragment() {
             }
             val r = deleteResult.await()
             if (r != true)
-                AppUtils.showToast(this@CacheDialogFragment.activity, R.string.message_dialog_cache_delete_error)
+                AppUtils.showToast(context, R.string.message_dialog_cache_delete_error)
             clickListener?.invoke(dialog, DIALOG_RESULT_DELETE_CACHE, null)
             dialog.dismiss()
         }

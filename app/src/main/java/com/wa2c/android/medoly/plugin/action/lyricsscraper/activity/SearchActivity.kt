@@ -1,10 +1,9 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.library.MediaProperty
 import com.wa2c.android.medoly.library.PropertyData
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
@@ -34,11 +34,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-
 /**
  * Search Activity.
  */
-class SearchActivity : Activity() {
+class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
@@ -58,8 +57,10 @@ class SearchActivity : Activity() {
         prefs = Prefs(this)
 
         // action bar
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
 
         searchResultAdapter = SearchResultAdapter(this)
         binding.searchResultListView.adapter = searchResultAdapter
@@ -336,16 +337,16 @@ class SearchActivity : Activity() {
      * On activity result
      */
     public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE && resultCode == RESULT_OK) {
             // Save to lyrics file
             if (!existsLyrics()) {
                 AppUtils.showToast(this, R.string.error_exists_lyrics)
                 return
             }
 
-            val uri = resultData?.data
             try {
-                contentResolver.openOutputStream(uri).bufferedWriter(Charsets.UTF_8).use {
+                val uri = resultData?.data!!
+                contentResolver.openOutputStream(uri)!!.bufferedWriter(Charsets.UTF_8).use {
                     it.write(searchResultAdapter.selectedItem!!.lyrics)
                 }
                 AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
@@ -358,7 +359,7 @@ class SearchActivity : Activity() {
         // Hide keyboard
         if (currentFocus != null) {
             val inputMethodMgr = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodMgr.hideSoftInputFromWindow(currentFocus.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            inputMethodMgr.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
     }
 
@@ -430,7 +431,7 @@ class SearchActivity : Activity() {
                 val listener : (View) -> Unit = {
                     listView.performItemClick(it, position, getItemId(position))
                 }
-                holder.bind(item, (item == selectedItem), listener)
+                holder.bind(item!!, (item == selectedItem), listener)
 
                 return itemView
             }

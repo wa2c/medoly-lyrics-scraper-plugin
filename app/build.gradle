@@ -4,7 +4,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.wa2c.android.medoly.plugin.action.lyricsscraper"
@@ -12,7 +16,9 @@ android {
         targetSdkVersion 27
         versionCode 5
         versionName "2.6.0"
+
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -48,28 +54,31 @@ repositories {
 }
 
 dependencies {
-
     // Medoly library
     implementation 'com.wa2c.android:medolylibrary:1.2.6'
     // Prefs
     implementation 'com.wa2c.android:prefs:0.1.1'
 
-    implementation 'com.android.support:multidex:1.0.3'
-    // Support library
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.1.1'
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-android
-    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.1.1'
+    // Support Library
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation "androidx.preference:preference:1.0.0"
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    // Kotlin
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: '1.2.1'
+    implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.2.1'
 
     // Orma
-    kapt 'com.github.gfx.android.orma:orma-processor:4.2.5'
-    implementation 'com.github.gfx.android.orma:orma:4.2.5'
+    implementation "io.reactivex.rxjava2:rxjava:2.1.14"
+    kapt 'com.github.maskarade.android.orma:orma-processor:6.0.2'
+    implementation 'com.github.maskarade.android.orma:orma:6.0.2'
+    // https://mvnrepository.com/artifact/com.github.maskarade.android.orma/orma-core
+    implementation group: 'com.github.maskarade.android.orma', name: 'orma-core', version: '6.0.2'
 
     // https://mvnrepository.com/artifact/com.jakewharton.timber/timber
     implementation group: 'com.jakewharton.timber', name: 'timber', version: '4.7.1'
     // https://mvnrepository.com/artifact/com.pranavpandey.android/dynamic-toasts
-    implementation group: 'com.pranavpandey.android', name: 'dynamic-toasts', version: '1.2.0'
+    implementation group: 'com.pranavpandey.android', name: 'dynamic-toasts', version: '2.3.0'
     // https://mvnrepository.com/artifact/org.jsoup/jsoup
     implementation group: 'org.jsoup', name: 'jsoup', version: '1.10.3'
     // https://mvnrepository.com/artifact/us.codecraft/xsoup

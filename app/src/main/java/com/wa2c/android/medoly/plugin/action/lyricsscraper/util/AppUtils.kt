@@ -1,10 +1,11 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.text.Html
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
 import com.wa2c.android.medoly.library.ExtraData
 import com.wa2c.android.medoly.library.MediaPluginIntent
 import com.wa2c.android.medoly.library.PropertyData
@@ -78,11 +79,7 @@ object AppUtils {
             return null
 
         // Remove tags
-        var text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(inputText, Html.FROM_HTML_MODE_LEGACY).toString()
-        } else {
-            Html.fromHtml(inputText).toString()
-        }
+        var text = HtmlCompat.fromHtml(inputText, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
 
         // Trimming
         text = trimLines(text)
@@ -198,7 +195,7 @@ object AppUtils {
      * @param inputTitle Title (searching text).
      * @param inputArtist Artist (searching text).
      */
-    fun saveFile(activity: Activity, inputTitle: String?, inputArtist: String?) {
+    fun saveFile(activity: AppCompatActivity, inputTitle: String?, inputArtist: String?) {
         var title = inputTitle
         var artist = inputArtist
         try {

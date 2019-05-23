@@ -3,7 +3,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper.util
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import timber.log.Timber
@@ -14,7 +14,6 @@ import timber.log.Timber
 class ToastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        //Toast.makeText(context, intent.getStringExtra(MESSAGE_TOAST), Toast.LENGTH_SHORT).show()
         DynamicToast.make(context, intent.getStringExtra(MESSAGE_TOAST), ContextCompat.getDrawable(context, R.drawable.ic_notification)).show()
     }
 

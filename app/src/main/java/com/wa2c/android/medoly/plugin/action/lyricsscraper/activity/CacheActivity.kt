@@ -1,6 +1,5 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -11,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.DbHelper
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.db.SearchCache
@@ -30,7 +30,7 @@ import java.util.*
 /**
  * Cache activity
  */
-class CacheActivity : Activity() {
+class CacheActivity : AppCompatActivity() {
 
     /** Search list adapter.  */
     private lateinit var cacheAdapter: CacheAdapter
@@ -43,9 +43,11 @@ class CacheActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cache)
 
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayHomeAsUpEnabled(true)
-        actionBar.setDisplayShowTitleEnabled(true)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setDisplayShowTitleEnabled(true)
+        }
 
         dbHelper = DbHelper(this)
         cacheAdapter = CacheAdapter(this)
@@ -74,7 +76,7 @@ class CacheActivity : Activity() {
         }
 
         cacheListView.setOnItemClickListener { _, _, position, _ ->
-            val item = cacheAdapter.getItem(position)
+            val item = cacheAdapter.getItem(position)!!
             val dialog = CacheDialogFragment.newInstance(item)
             dialog.clickListener = listener@{ _, which, _ ->
                 when (which) {
@@ -173,11 +175,11 @@ class CacheActivity : Activity() {
      * On activity result
      */
     public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == AppUtils.REQUEST_CODE_SAVE_FILE && resultCode == RESULT_OK) {
             // Save to lyrics file
-            val uri = resultData?.data
             try {
-                contentResolver.openOutputStream(uri).bufferedWriter(Charsets.UTF_8).use {
+                val uri = resultData?.data!!
+                contentResolver.openOutputStream(uri)!!.bufferedWriter(Charsets.UTF_8).use {
                     it.write(currentCacheItem!!.makeResultItem()!!.lyrics)
                 }
                 AppUtils.showToast(this, R.string.message_lyrics_save_succeeded)
@@ -232,7 +234,7 @@ class CacheActivity : Activity() {
                     holder = itemView.tag as ListItemViewHolder
                 }
 
-                holder.bind(getItem(position), checkedSet)
+                holder.bind(getItem(position)!!, checkedSet)
 
                 return itemView
             }

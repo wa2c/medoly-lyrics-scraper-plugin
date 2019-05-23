@@ -1,26 +1,28 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
 import android.os.Bundle
-import android.preference.PreferenceActivity
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 
 /**
  * Settings activity.
  */
-class SettingsActivity : PreferenceActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Action bar
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayHomeAsUpEnabled(true)
-        actionBar.setDisplayShowTitleEnabled(true)
-        actionBar.setTitle(R.string.title_activity_settings)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setDisplayShowTitleEnabled(true)
+            it.setTitle(R.string.title_activity_settings)
+        }
 
         if (savedInstanceState == null) {
-            fragmentManager.beginTransaction().add(android.R.id.content, SettingsFragment()).commit()
+            supportFragmentManager.beginTransaction().add(android.R.id.content, SettingsFragment()).commit()
         }
     }
 

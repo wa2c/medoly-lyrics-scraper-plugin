@@ -1,9 +1,9 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
-import android.app.Activity
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.wa2c.android.medoly.library.MedolyEnvironment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.databinding.ActivityMainBinding
@@ -12,7 +12,7 @@ import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 /**
  * Main activity.
  */
-class MainActivity : Activity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -20,8 +20,10 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayShowTitleEnabled(true)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayShowTitleEnabled(true)
+        }
 
         // Search
         binding.openSearchButton.setOnClickListener {

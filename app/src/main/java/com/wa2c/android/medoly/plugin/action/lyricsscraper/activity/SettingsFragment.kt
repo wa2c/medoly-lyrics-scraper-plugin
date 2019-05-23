@@ -4,20 +4,18 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
-import android.preference.*
 import android.provider.Settings
-import android.text.InputType
+import androidx.preference.*
 import com.thelittlefireman.appkillermanager.managers.KillerManager
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.R
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.dialog.AboutDialogFragment
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.util.AppUtils
 import java.util.*
 
-
 /**
  * Settings fragment
  */
-class SettingsFragment : PreferenceFragment() {
+class SettingsFragment : PreferenceFragmentCompat() {
 
     companion object {
         /** Summary length map.  */
@@ -29,8 +27,10 @@ class SettingsFragment : PreferenceFragment() {
      * Device auto start.
      */
     private val deviceAutoStartPreferenceClickListener = Preference.OnPreferenceClickListener {
-        if (!KillerManager.doAction(activity, managerAction)) {
-            AppUtils.showToast(activity, R.string.message_unsupported_device)
+        activity?.let {
+            if (!KillerManager.doAction(it, managerAction)) {
+                AppUtils.showToast(it, R.string.message_unsupported_device)
+            }
         }
         true
     }
@@ -39,10 +39,12 @@ class SettingsFragment : PreferenceFragment() {
      * App info.
      */
     private val applicationDetailsPreferenceClickListener = Preference.OnPreferenceClickListener {
-        val intent = Intent()
-        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-        intent.data = Uri.parse("package:" + activity.packageName)
-        startActivity(intent)
+        activity?.let {
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            intent.data = Uri.parse("package:" + it.packageName)
+            startActivity(intent)
+        }
         true
     }
 
@@ -59,6 +61,9 @@ class SettingsFragment : PreferenceFragment() {
 
     /** KillerManager action */
     private var managerAction: KillerManager.Actions? = null
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,32 +178,7 @@ class SettingsFragment : PreferenceFragment() {
             }
             is EditTextPreference -> {
                 // EditTextPreference
-                var text = p.sharedPreferences.getString(p.key, "")
-
-                // adjust numeric values
-                val inputType = p.editText.inputType
-                try {
-                    if (inputType and InputType.TYPE_CLASS_NUMBER > 0) {
-                        if (inputType and InputType.TYPE_NUMBER_FLAG_DECIMAL > 0) {
-                            // float
-                            var `val` = java.lang.Float.valueOf(text)!!
-                            if (inputType and InputType.TYPE_NUMBER_FLAG_SIGNED == 0 && `val` < 0) {
-                                `val` = 0f
-                            }
-                            text = `val`.toString()
-                        } else {
-                            // integer
-                            var `val` = Integer.valueOf(text)!!
-                            if (inputType and InputType.TYPE_NUMBER_FLAG_SIGNED == 0 && `val` < 0) {
-                                `val` = 0
-                            }
-                            text = `val`.toString()
-                        }
-                    }
-                } catch (e: NumberFormatException) {
-                    text = "0"
-                }
-
+                val text = p.sharedPreferences.getString(p.key, "")
                 p.text = text // update once
                 p.setSummary(summary.subSequence(0, labelSize).toString() + getString(R.string.settings_summary_current_value, text))
             }

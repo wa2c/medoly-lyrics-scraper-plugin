@@ -1,6 +1,7 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper
 
 import android.content.Context
+import androidx.core.content.pm.PackageInfoCompat
 import com.wa2c.android.medoly.library.PluginOperationCategory
 import com.wa2c.android.prefs.Prefs
 import timber.log.Timber
@@ -19,7 +20,7 @@ class Migrator(private val context: Context) {
         get() {
             return try {
                 val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-                packageInfo.versionCode
+                PackageInfoCompat.getLongVersionCode(packageInfo).toInt()
             } catch (e: Exception) {
                 Timber.d(e)
                 0

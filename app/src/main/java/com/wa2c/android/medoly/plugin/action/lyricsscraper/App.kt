@@ -2,7 +2,7 @@ package com.wa2c.android.medoly.plugin.action.lyricsscraper
 
 import android.app.Application
 import android.content.Context
-import android.support.multidex.MultiDex
+import androidx.multidex.MultiDex
 import com.wa2c.android.medoly.plugin.action.lyricsscraper.service.AbstractPluginService
 import timber.log.Timber
 

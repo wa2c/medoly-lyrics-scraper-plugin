@@ -1,9 +1,9 @@
 package com.wa2c.android.medoly.plugin.action.lyricsscraper.activity
 
-import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import android.content.Context
 import android.content.Intent
-import android.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
@@ -32,7 +32,7 @@ import java.net.URL
 /**
  * Site activity
  */
-class SiteActivity : Activity() {
+class SiteActivity : AppCompatActivity() {
 
     private lateinit var prefs: Prefs
     private lateinit var binding: ActivityGroupBinding
@@ -46,8 +46,10 @@ class SiteActivity : Activity() {
         binding.loadingLayout.visibility = View.INVISIBLE
 
         // action bar
-        actionBar.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.let {
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+        }
 
         binding.groupListView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val item = binding.groupListView.adapter.getItem(position)
@@ -173,21 +175,6 @@ class SiteActivity : Activity() {
                                 row.getField("DELAY").toLong(),
                                 row.getField("TIMEOUT").toLong()
                         )
-//                        val site = Site()
-//                        site.site_id = row.getField("SITE_ID").toLong()
-//                        site.group_id = row.getField("GROUP_ID").toLong()
-//                        site.site_name = row.getField("SITE_NAME")
-//                        site.site_uri = row.getField("SITE_URI")
-//                        site.search_uri = row.getField("SEARCH_URI")
-//                        site.result_page_uri_encoding = row.getField("RESULT_PAGE_URI_ENCODING")
-//                        site.result_page_encoding = row.getField("RESULT_PAGE_ENCODING")
-//                        site.result_page_parse_type = row.getField("RESULT_PAGE_PARSE_TYPE")
-//                        site.result_page_parse_text = row.getField("RESULT_PAGE_PARSE_TEXT")
-//                        site.lyrics_page_encoding = row.getField("LYRICS_PAGE_ENCODING")
-//                        site.lyrics_page_parse_type = row.getField("LYRICS_PAGE_PARSE_TYPE")
-//                        site.lyrics_page_parse_text = row.getField("LYRICS_PAGE_PARSE_TEXT")
-//                        site.delay = row.getField("DELAY").toLong()
-//                        site.timeout = row.getField("TIMEOUT").toLong()
                         siteList.add(site)
                     }
                     DbHelper(this@SiteActivity).renewSite(siteList)
@@ -230,10 +217,6 @@ class SiteActivity : Activity() {
                                 row.getField("NAME"),
                                 row.getField("NAME_JA")
                         )
-//                        val group = SiteGroup()
-//                        group.group_id = row.getField("GROUP_ID").toLong()
-//                        group.name = row.getField("NAME")
-//                        group.name_ja = row.getField("NAME_JA")
                         groupList.add(group)
                     }
                     DbHelper(this@SiteActivity).renewSiteGroup(groupList)
@@ -267,8 +250,6 @@ class SiteActivity : Activity() {
 
 
     companion object {
-//        private const val SITE_SHEET_NAME = "SITE"
-//        private const val GROUP_SHEET_NAME = "GROUP"
 
         /**
          * Site group adapter.
@@ -289,7 +270,7 @@ class SiteActivity : Activity() {
                     holder = itemView.tag as ListItemViewHolder
                 }
 
-                holder.bind(getItem(position))
+                holder.bind(getItem(position)!!)
 
                 return itemView
             }
@@ -330,7 +311,7 @@ class SiteActivity : Activity() {
                     holder = itemView.tag as ListItemViewHolder
                 }
 
-                holder.bind(getItem(position))
+                holder.bind(getItem(position)!!)
 
                 return itemView
             }
